@@ -1,5 +1,6 @@
 set -o vi
 export EDITOR="/snap/bin/nvim"
+export PATH="$PATH:$(go env GOPATH)/bin"
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
@@ -134,6 +135,9 @@ zi() {
     _zoxide_result="$(zoxide query -i -- "$@")" && _z_cd "$_zoxide_result"
 }
 
+zf() {
+   z "$(fd . $1 -t d | fzf)"
+}
 
 alias za='zoxide add'
 
@@ -168,3 +172,7 @@ export PATH=$BUN_INSTALL/bin:$PATH
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(oh-my-posh init bash --config $(brew --prefix oh-my-posh)/themes/robbyrussell.omp.json)"
 . "$HOME/.cargo/env"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
