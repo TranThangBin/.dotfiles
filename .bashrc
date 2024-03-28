@@ -1,6 +1,8 @@
+if [ -f ~/.env ]; then
+    . ~/.env
+fi
+
 set -o vi
-export EDITOR="/snap/bin/nvim"
-export PATH="$PATH:$(go env GOPATH)/bin"
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
@@ -79,15 +81,6 @@ esac
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.aliases ]; then
-    . ~/.aliases
-fi
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -98,14 +91,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-# pnpm
-export PNPM_HOME="/home/trant/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
 
 # zoxide
 _z_cd() {
@@ -139,12 +124,10 @@ zf() {
    z "$(fd . $1 -t d | fzf)"
 }
 
-alias za='zoxide add'
+_zoxide_clean() {
+    rm ~/.local/share/zoxide/db.zo
+}
 
-alias zq='zoxide query'
-alias zqi='zoxide query -i'
-
-alias zr='zoxide remove'
 zri() {
     _zoxide_result="$(zoxide query -i -- "$@")" && zoxide remove "$_zoxide_result"
 }
@@ -166,13 +149,21 @@ esac
 # zoxide end
 
 # bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH=$BUN_INSTALL/bin:$PATH
-
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(oh-my-posh init bash --config $(brew --prefix oh-my-posh)/themes/robbyrussell.omp.json)"
+# bun end
+
 . "$HOME/.cargo/env"
 
-export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+eval "$(fzf --bash)"
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+if [ -f ~/.aliases ]; then
+    . ~/.aliases
+fi
