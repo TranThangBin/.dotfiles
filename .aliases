@@ -28,5 +28,3 @@ alias zq='zoxide query'
 alias zqi='zoxide query -i'
 
 alias zr='zoxide remove'
-
-alias zc=_zoxide_clean
