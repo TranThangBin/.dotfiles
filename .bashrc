@@ -150,10 +150,8 @@ case "$PROMPT_COMMAND" in
 esac
 # zoxide end
 
-# bun
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(oh-my-posh init bash --config $(brew --prefix oh-my-posh)/themes/robbyrussell.omp.json)"
-# bun end
 
 . "$HOME/.cargo/env"
 
