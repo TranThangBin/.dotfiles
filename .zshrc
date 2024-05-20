@@ -1,94 +1,3 @@
-# Created by newuser for 5.9
-
-export SHELL="/bin/zsh"
-
-if [ -f ~/.env ]; then
-	. ~/.env
-fi
-
-set -o vi
-
-case $- in
-*i*) ;;
-*) return ;;
-esac
-
-HISTCONTROL=ignoreboth
-
-setopt APPEND_HISTORY
-
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# zoxide
-_z_cd() {
-	cd "$@" || return "$?"
-
-	if [ "$_ZO_ECHO" = "1" ]; then
-		echo "$PWD"
-	fi
-}
-
-z() {
-	if [ "$#" -eq 0 ]; then
-		_z_cd ~
-	elif [ "$#" -eq 1 ] && [ "$1" = '-' ]; then
-		if [ -n "$OLDPWD" ]; then
-			_z_cd "$OLDPWD"
-		else
-			echo 'zoxide: $OLDPWD is not set'
-			return 1
-		fi
-	else
-		_zoxide_result="$(zoxide query -- "$@")" && _z_cd "$_zoxide_result"
-	fi
-}
-
-zi() {
-	_zoxide_result="$(zoxide query -i -- "$@")" && _z_cd "$_zoxide_result"
-}
-
-zcl() {
-	rm ~/.local/share/zoxide/db.zo
-}
-
-zri() {
-	_zoxide_result="$(zoxide query -i -- "$@")" && zoxide remove "$_zoxide_result"
-}
-
-_zoxide_hook() {
-	if [ -z "${_ZO_PWD}" ]; then
-		_ZO_PWD="${PWD}"
-	elif [ "${_ZO_PWD}" != "${PWD}" ]; then
-		_ZO_PWD="${PWD}"
-		zoxide add "$(pwd -L)"
-	fi
-}
-
-case "$PROMPT_COMMAND" in
-*_zoxide_hook*) ;;
-*) PROMPT_COMMAND="_zoxide_hook${PROMPT_COMMAND:+;${PROMPT_COMMAND}}" ;;
-esac
-# zoxide end
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-
-eval "$(fzf --zsh)"
-
-fzfd() {
-	if [ -z "$1" ]; then
-		fd . . -t d | fzf --preview='ls {}'
-	else
-		fd . $1 -t d | fzf --preview='ls {}'
-	fi
-}
-
-if [ -f ~/.aliases ]; then
-	. ~/.aliases
-fi
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
@@ -190,3 +99,92 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/zsh lesspipe)"
+
+if [ -f ~/.env ]; then
+	. ~/.env
+fi
+
+set -o vi
+
+case $- in
+*i*) ;;
+*) return ;;
+esac
+
+HISTCONTROL=ignoreboth
+
+setopt APPEND_HISTORY
+
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# zoxide
+_z_cd() {
+	cd "$@" || return "$?"
+
+	if [ "$_ZO_ECHO" = "1" ]; then
+		echo "$PWD"
+	fi
+}
+
+z() {
+	if [ "$#" -eq 0 ]; then
+		_z_cd ~
+	elif [ "$#" -eq 1 ] && [ "$1" = '-' ]; then
+		if [ -n "$OLDPWD" ]; then
+			_z_cd "$OLDPWD"
+		else
+			echo 'zoxide: $OLDPWD is not set'
+			return 1
+		fi
+	else
+		_zoxide_result="$(zoxide query -- "$@")" && _z_cd "$_zoxide_result"
+	fi
+}
+
+zi() {
+	_zoxide_result="$(zoxide query -i -- "$@")" && _z_cd "$_zoxide_result"
+}
+
+zcl() {
+	rm ~/.local/share/zoxide/db.zo
+}
+
+zri() {
+	_zoxide_result="$(zoxide query -i -- "$@")" && zoxide remove "$_zoxide_result"
+}
+
+_zoxide_hook() {
+	if [ -z "${_ZO_PWD}" ]; then
+		_ZO_PWD="${PWD}"
+	elif [ "${_ZO_PWD}" != "${PWD}" ]; then
+		_ZO_PWD="${PWD}"
+		zoxide add "$(pwd -L)"
+	fi
+}
+
+case "$PROMPT_COMMAND" in
+*_zoxide_hook*) ;;
+*) PROMPT_COMMAND="_zoxide_hook${PROMPT_COMMAND:+;${PROMPT_COMMAND}}" ;;
+esac
+# zoxide end
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+eval "$(fzf --zsh)"
+
+fzfd() {
+	if [ -z "$1" ]; then
+		fd . . -t d | fzf --preview='ls {}'
+	else
+		fd . $1 -t d | fzf --preview='ls {}'
+	fi
+}
+
+if [ -f ~/.aliases ]; then
+	. ~/.aliases
+fi
