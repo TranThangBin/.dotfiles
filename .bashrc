@@ -119,14 +119,6 @@ zi() {
 	_zoxide_result="$(zoxide query -i -- "$@")" && _z_cd "$_zoxide_result"
 }
 
-fzfd() {
-	if [ -z "$1" ]; then
-		fd . . -t d | fzf --preview='ls {}'
-	else
-		fd . $1 -t d | fzf --preview='ls {}'
-	fi
-}
-
 zcl() {
 	rm ~/.local/share/zoxide/db.zo
 }
@@ -158,7 +150,17 @@ eval "$(oh-my-posh init bash --config $(brew --prefix oh-my-posh)/themes/robbyru
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
+# fzf
 eval "$(fzf --bash)"
+
+fzfd() {
+	if [ -z "$1" ]; then
+		fd . . -t d | fzf --preview='ls {}'
+	else
+		fd . $1 -t d | fzf --preview='ls {}'
+	fi
+}
+# fzf end
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
