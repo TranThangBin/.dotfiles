@@ -85,6 +85,7 @@ plugins=(
 
 FPATH="${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src:${FPATH}"
 
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
 source $ZSH/oh-my-zsh.sh
