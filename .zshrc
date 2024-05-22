@@ -71,22 +71,27 @@ ZSH_THEME="robbyrussell"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    git
-    zoxide
-    brew
-    fzf
-    nvm
-    fd
-    ripgrep
-    rust
-    tmux
-    vi-mode
+	# tools
+	git
+	zoxide
+	brew
+	fzf
+	fd
+	tmux
+	vi-mode
+
+	# languages
+	nvm
+
+	# utils
+	command-not-found
+	common-aliases
+	zsh-navigation-tools
+	aliases
+	colorize
+	colored-man-pages
+	history
 )
-
-FPATH="${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src:${FPATH}"
-
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
 source $ZSH/oh-my-zsh.sh
 
@@ -116,29 +121,58 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/zsh lesspipe)"
+# env
+export EDITOR="/home/linuxbrew/.linuxbrew/bin/nvim"
+export PATH="/snap/bin:$PATH"
+[ -f $HOME/.cargo/env ] && . "$HOME/.cargo/env"
 
-if [ -f ~/.env ]; then
-	. ~/.env
-fi
+type go &>/dev/null && export PATH="$PATH:$(go env GOPATH)/bin"
 
-if [ -f ~/.aliases ]; then
-	. ~/.aliases
-fi
-
-set -o vi
-
-case $- in
-*i*) ;;
-*) return ;;
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+*":$PNPM_HOME:"*) ;;
+*) export PATH="$PNPM_HOME:$PATH" ;;
 esac
+# pnpm end
 
-HISTCONTROL=ignoreboth
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH=$BUN_INSTALL/bin:$PATH
+# bun end
 
-setopt APPEND_HISTORY
+# perl
+PATH="/home/trant/perl5/bin${PATH:+:${PATH}}"
+export PATH
+PERL5LIB="/home/trant/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
+export PERL5LIB
+PERL_LOCAL_LIB_ROOT="/home/trant/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"
+export PERL_LOCAL_LIB_ROOT
+PERL_MB_OPT="--install_base \"/home/trant/perl5\""
+export PERL_MB_OPT
+PERL_MM_OPT="INSTALL_BASE=/home/trant/perl5"
+export PERL_MM_OPT
+# perl end
 
-HISTSIZE=1000
-HISTFILESIZE=2000
+# env end
+
+# aliases
+alias vim='nvim'
+alias ex='explorer.exe'
+alias fzf='fzf --preview="cat {}"'
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	alias ls='ls --color=auto'
+	alias dir='dir --color=auto'
+	alias vdir='vdir --color=auto'
+
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
+fi
+# aliases end
 
 fzfd() {
 	if [ -z "$1" ]; then
