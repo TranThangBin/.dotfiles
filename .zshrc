@@ -174,10 +174,16 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 # aliases end
 
+if type fastfetch &>/dev/null && [[ ! -f /tmp/.fastfetch_ran ]]; then
+	fastfetch
+	touch /tmp/.fastfetch_ran
+fi
+
 fzfd() {
-	if [ -z "$1" ]; then
-		fd . . -t d | fzf --preview='ls {}'
-	else
-		fd . $1 -t d | fzf --preview='ls {}'
+	search_dir="."
+	if [[ -n $1 ]]; then
+		search_dir=$1
+		shift
 	fi
+	fd . $search_dir -t d | fzf --preview='ls {}' $@
 }
