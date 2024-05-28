@@ -159,7 +159,6 @@ export PERL_MM_OPT
 # aliases
 alias vim='nvim'
 alias ex='explorer.exe'
-alias fzf='fzf --preview="cat {}"'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -173,17 +172,3 @@ if [ -x /usr/bin/dircolors ]; then
 	alias egrep='egrep --color=auto'
 fi
 # aliases end
-
-if type fastfetch &>/dev/null && [[ ! -f /tmp/.fastfetch_ran ]]; then
-	fastfetch
-	touch /tmp/.fastfetch_ran
-fi
-
-fzfd() {
-	search_dir="."
-	if [[ -n $1 ]]; then
-		search_dir=$1
-		shift
-	fi
-	fd . $search_dir -t d | fzf --preview='ls {}' $@
-}
