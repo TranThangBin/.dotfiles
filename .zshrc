@@ -86,10 +86,7 @@ plugins=(
 	# utils
 	command-not-found
 	common-aliases
-	zsh-navigation-tools
 	aliases
-	colorize
-	colored-man-pages
 	history
 )
 
