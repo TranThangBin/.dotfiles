@@ -70,25 +70,32 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
 plugins=(
 	# tools
-	git
-	zoxide
-	brew
-	fzf
 	fd
 	tmux
 	vi-mode
 
-	# languages
-	nvm
-
 	# utils
 	command-not-found
-	common-aliases
-	aliases
-	history
+	zsh-autosuggestions
+	zsh-syntax-highlighting
+	F-Sy-H
 )
+
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+
+if type /home/linuxbrew/.linuxbrew/bin/brew &>/dev/null; then
+	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
+ZSH_AUTOSUGGEST_STRATEGY=(
+	history
+	completion
+)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 
 source $ZSH/oh-my-zsh.sh
 
@@ -118,27 +125,29 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# env
 export EDITOR="/home/linuxbrew/.linuxbrew/bin/nvim"
+
 export PATH="/snap/bin:$PATH"
+
+type fzf &>/dev/null && source <(fzf --zsh)
+type zoxide &>/dev/null && eval "$(zoxide init zsh)"
+
 [ -f $HOME/.cargo/env ] && . "$HOME/.cargo/env"
 
 type go &>/dev/null && export PATH="$PATH:$(go env GOPATH)/bin"
 
-# pnpm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
 *":$PNPM_HOME:"*) ;;
 *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
 
-# bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
-# bun end
 
-# perl
 PATH="/home/trant/perl5/bin${PATH:+:${PATH}}"
 export PATH
 PERL5LIB="/home/trant/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
@@ -149,15 +158,10 @@ PERL_MB_OPT="--install_base \"/home/trant/perl5\""
 export PERL_MB_OPT
 PERL_MM_OPT="INSTALL_BASE=/home/trant/perl5"
 export PERL_MM_OPT
-# perl end
 
-# env end
-
-# aliases
 alias vim='nvim'
 alias ex='explorer.exe'
 
-# enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 	alias ls='ls --color=auto'
@@ -168,4 +172,5 @@ if [ -x /usr/bin/dircolors ]; then
 	alias fgrep='fgrep --color=auto'
 	alias egrep='egrep --color=auto'
 fi
-# aliases end
+
+bindkey '^ ' autosuggest-accept
