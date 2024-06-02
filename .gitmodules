@@ -1,3 +1,6 @@
 [submodule "nvim"]
 	path = nvim
 	url = git@github.com:TranThangBin/TranThangStart.nvim.git
+[submodule "komorebi"]
+	path = komorebi
+	url = git@github.com:TranThangBin/komorebi.git
