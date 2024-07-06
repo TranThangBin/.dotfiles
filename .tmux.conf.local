@@ -455,8 +455,11 @@ tmux_conf_uninstall_plugins_on_reload=false
 # visit https://github.com/tmux-plugins for available plugins
 set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @resurrect-processes '"~nvim->nvim *"'
+set -g @resurrect-strategy-nvim 'session'
 set -g @plugin 'tmux-plugins/tmux-continuum'
 set -g @continuum-restore 'on'
+set -g @continuum-save-interval '0'
 set -g @plugin 'joshmedeski/tmux-nerd-font-window-name'
 
 
