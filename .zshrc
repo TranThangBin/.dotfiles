@@ -1,9 +1,3 @@
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -73,23 +67,18 @@ ZSH_THEME="robbyrussell"
 
 plugins=(
 	# tools
-	fd
 	tmux
 	vi-mode
 
 	# utils
 	command-not-found
+
+    # external
 	zsh-autosuggestions
-	zsh-syntax-highlighting
 	F-Sy-H
 )
 
 fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
-
-if type /home/linuxbrew/.linuxbrew/bin/brew &>/dev/null; then
-	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-	FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
-fi
 
 ZSH_AUTOSUGGEST_STRATEGY=(
 	history
@@ -125,52 +114,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export EDITOR="/home/linuxbrew/.linuxbrew/bin/nvim"
-
-export PATH="/snap/bin:$PATH"
-
 type fzf &>/dev/null && source <(fzf --zsh)
 type zoxide &>/dev/null && eval "$(zoxide init zsh)"
-
-[ -f $HOME/.cargo/env ] && . "$HOME/.cargo/env"
-
-type go &>/dev/null && export PATH="$PATH:$(go env GOPATH)/bin"
-
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-*":$PNPM_HOME:"*) ;;
-*) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-
-export BUN_INSTALL="$HOME/.bun"
-export PATH=$BUN_INSTALL/bin:$PATH
-
-PATH="/home/trant/perl5/bin${PATH:+:${PATH}}"
-export PATH
-PERL5LIB="/home/trant/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
-export PERL5LIB
-PERL_LOCAL_LIB_ROOT="/home/trant/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"
-export PERL_LOCAL_LIB_ROOT
-PERL_MB_OPT="--install_base \"/home/trant/perl5\""
-export PERL_MB_OPT
-PERL_MM_OPT="INSTALL_BASE=/home/trant/perl5"
-export PERL_MM_OPT
-
-alias vim='nvim'
-alias ex='explorer.exe'
-
-if [ -x /usr/bin/dircolors ]; then
-	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-	alias ls='ls --color=auto'
-	alias dir='dir --color=auto'
-	alias vdir='vdir --color=auto'
-
-	alias grep='grep --color=auto'
-	alias fgrep='fgrep --color=auto'
-	alias egrep='egrep --color=auto'
-fi
-
 bindkey '^ ' autosuggest-accept
+[ -f $HOME/.aliases ] && . "$HOME/.aliases"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
