@@ -118,4 +118,4 @@ type fzf &>/dev/null && source <(fzf --zsh)
 type zoxide &>/dev/null && eval "$(zoxide init zsh)"
 bindkey '^ ' autosuggest-accept
 [ -f $HOME/.aliases ] && . "$HOME/.aliases"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+source /usr/share/nvm/init-nvm.sh

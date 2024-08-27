@@ -14,7 +14,7 @@ set $mod Mod1
 exec --no-startup-id picom
 exec_always --no-startup-id killall polybar
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
-exec_always feh --bg-scale --bg-scale ~/background.png
+exec_always feh --bg-fill ~/background.png
 
 bindsym $mod+space exec rofi -show combi
 
