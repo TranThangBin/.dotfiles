@@ -12,7 +12,11 @@
 git clone git@github:TranThangBin/.dotfiles $HOME/.dotfiles
 ```
 
-## Setup
+## Setup Guide
+**cd to the .dotfiles directory**
+```bash
+cd $HOME/.dotfiles
+```
 
 ### Oh My Zsh
 ```bash
@@ -33,5 +37,5 @@ git clone https://github.com/z-shell/F-Sy-H.git \
 ### .tmux
 ```bash
 git clone https://github.com/gpakosz/.tmux.git $HOME/.dotfiles/tmux/.tmux
-ln -sf $PWD/tmux/.tmux/.tmux.conf tmux/.tmux.conf
+ln -sf tmux/.tmux/.tmux.conf tmux/.tmux.conf
 ```
