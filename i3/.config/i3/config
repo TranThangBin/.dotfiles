@@ -38,6 +38,7 @@ client.background        $base
 set $mod Mod1
 
 exec --no-startup-id picom
+exec --no-startup-id fcitx -d
 exec_always --no-startup-id killall polybar
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 exec_always feh --bg-fill ~/background.png

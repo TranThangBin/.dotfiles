@@ -31,3 +31,8 @@ export PERL_MM_OPT
 [ -f $HOME/.cargo/env ] && . "$HOME/.cargo/env"
 
 type go &>/dev/null && export PATH="$PATH:$(go env GOPATH)/bin"
+
+export GTK_IM_MODULE="fcitx"
+export QT_IM_MODULE="fcitx"
+export SDL_IM_MODULE="fcitx"
+export XMODIFIERS="@im=fcitx"
