@@ -2587,9 +2587,3 @@
 #: }}}
 
 #: }}}
-
-
-# BEGIN_KITTY_THEME
-# GitHub Dark High Contrast
-include current-theme.conf
-# END_KITTY_THEME
