@@ -85,6 +85,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(
 	completion
 )
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 source $ZSH/oh-my-zsh.sh
 
@@ -118,5 +119,4 @@ type fzf &>/dev/null && source <(fzf --zsh)
 type zoxide &>/dev/null && eval "$(zoxide init zsh)"
 bindkey '^ ' autosuggest-accept
 [ -f $HOME/.aliases ] && . "$HOME/.aliases"
-[ -f /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
-nvm use node &>/dev/null
+source $NVM_DIR/nvm.sh

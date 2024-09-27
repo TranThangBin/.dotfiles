@@ -6,6 +6,8 @@ export ZSH="$HOME/.oh-my-zsh"
 
 export EDITOR="/usr/bin/nvim"
 
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
 *":$PNPM_HOME:"*) ;;
@@ -34,5 +36,5 @@ export GTK_IM_MODULE="fcitx"
 export QT_IM_MODULE="fcitx"
 export SDL_IM_MODULE="fcitx"
 export XMODIFIERS="@im=fcitx"
-export INPUT_METHOD="fcitx"
-export GLFW_IM_MODULE="ibus"
+
+export PATH=$PATH:/snap/bin
