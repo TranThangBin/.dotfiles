@@ -30,8 +30,8 @@ export PERL_MM_OPT
 
 type go &>/dev/null && export PATH="$PATH:$(go env GOPATH)/bin"
 
-export GTK_IM_MODULE="fcitx"
-export QT_IM_MODULE="fcitx"
+export GTK_IM_MODULE="wayland"
+export QT_IM_MODULE="wayland;fcitx;ibus"
 export SDL_IM_MODULE="fcitx"
 export XMODIFIERS="@im=fcitx"
 export INPUT_METHOD="fcitx"
