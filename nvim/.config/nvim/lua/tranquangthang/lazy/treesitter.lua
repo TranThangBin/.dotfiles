@@ -12,6 +12,8 @@ return {
 			"javascript",
 			"typescript",
 			"c",
+			"cpp",
+			"go",
 			"lua",
 			"vim",
 			"vimdoc",
