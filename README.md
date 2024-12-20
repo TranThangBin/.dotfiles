@@ -37,5 +37,6 @@ git clone https://github.com/z-shell/F-Sy-H.git \
 ### .tmux
 ```bash
 git clone https://github.com/gpakosz/.tmux.git $HOME/.dotfiles/tmux/.tmux
-ln -sf tmux/.tmux/.tmux.conf tmux/.tmux.conf
+cd tmux
+ln -sf .tmux/.tmux.conf .tmux.conf
 ```
