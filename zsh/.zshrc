@@ -119,3 +119,4 @@ type zoxide &>/dev/null && eval "$(zoxide init zsh)"
 bindkey '^ ' autosuggest-accept
 [ -f $HOME/.aliases ] && . "$HOME/.aliases"
 [ -f /usr/share/nvm/init-nvm.sh ] && source /usr/share/nvm/init-nvm.sh
+[ -s "/home/trant/.bun/_bun" ] && source "/home/trant/.bun/_bun"
