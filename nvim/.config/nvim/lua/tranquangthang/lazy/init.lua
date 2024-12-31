@@ -19,6 +19,11 @@ table.insert(M, {
 })
 
 table.insert(M, {
+	"habamax/vim-godot",
+	ft = "gdscript",
+})
+
+table.insert(M, {
 	"prichrd/netrw.nvim",
 	dependencies = "nvim-tree/nvim-web-devicons",
 	opts = {},

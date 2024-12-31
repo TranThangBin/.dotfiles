@@ -24,7 +24,11 @@ vim.keymap.set(
 	":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>"
 )
 
-vim.keymap.set("n", "<leader><leader>", "<cmd>so<CR>")
+vim.keymap.set("n", "<leader><leader>", function()
+	if vim.bo.filetype == "lua" then
+		vim.cmd("so")
+	end
+end)
 
 vim.keymap.set("n", "<leader>e", function()
 	local file_pattern = "^"

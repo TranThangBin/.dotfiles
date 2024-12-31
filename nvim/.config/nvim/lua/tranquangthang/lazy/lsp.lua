@@ -67,6 +67,8 @@ return {
 			},
 		})
 
+		require("lspconfig").gdscript.setup(lsp_zero.get_capabilities())
+
 		vim.diagnostic.config({
 			virtual_text = true,
 			severity_sort = true,
