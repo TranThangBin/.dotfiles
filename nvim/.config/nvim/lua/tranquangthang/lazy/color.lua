@@ -43,10 +43,7 @@ table.insert(M, {
 	},
 
 	config = function(_, opts)
-		local rose_pine = require("rose-pine")
-
-		rose_pine.setup(opts)
-		rose_pine.colorscheme()
+		require("rose-pine").setup(opts)
 	end,
 })
 

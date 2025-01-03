@@ -14,19 +14,8 @@ return {
 
 	opts = function()
 		local null_ls = require("null-ls")
-
-		null_ls.register({
-			method = null_ls.methods.FORMATTING,
-			name = "gdformat",
-			filetypes = { "gdscript" },
-			generator = null_ls.formatter({
-				command = "gdformat",
-				args = { "-" },
-				from_stdin = true,
-				to_stdin = true,
-			}),
-		})
-
+		null_ls.register(null_ls.builtins.formatting.gdformat)
+		null_ls.register(null_ls.builtins.diagnostics.gdlint)
 		return {
 			ensure_installed = { "stylua" },
 			handlers = {
