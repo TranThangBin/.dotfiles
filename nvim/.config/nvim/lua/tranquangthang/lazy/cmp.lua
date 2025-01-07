@@ -11,6 +11,7 @@ return {
 		"rafamadriz/friendly-snippets",
 		{
 			"L3MON4D3/LuaSnip",
+			cond = vim.fn.executable("make") == 1,
 			build = "make install_jsregexp",
 		},
 	},

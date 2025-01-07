@@ -107,7 +107,7 @@ return {
 
 			if client.supports_method("signatureHelpProvider") then
 				require("lsp-overloads").setup(client, opts)
-				map({ "n", "i" }, "<A-s>", vim.cmd.LspOverloadsSignature)
+				map({ "n", "i" }, "<M-s>", "<cmd>LspOverloadsSignature<CR>")
 			end
 		end)
 	end,
