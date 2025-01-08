@@ -7,22 +7,15 @@ return {
 		"williamboman/mason.nvim",
 		{
 			"nvimtools/none-ls.nvim",
-			opts = function()
-				local null_ls = require("null-ls")
-				return {
-					sources = {
-						null_ls.builtins.formatting.gdformat,
-						null_ls.builtins.diagnostics.gdlint,
-					},
-					border = "rounded",
-				}
-			end,
+			opts = { border = "rounded" },
 			config = true,
 		},
 	},
 
 	opts = function()
 		local null_ls = require("null-ls")
+		null_ls.register(null_ls.builtins.formatting.gdformat)
+		null_ls.register(null_ls.builtins.diagnostics.gdlint)
 		return {
 			ensure_installed = { "stylua" },
 			handlers = {
