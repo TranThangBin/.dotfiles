@@ -67,12 +67,12 @@ return {
 			map("n", "<leader>ds", builtin.lsp_document_symbols)
 
 			map("n", "K", function()
-				vim.lsp.buf.hover({
-					border = "rounded",
-				})
+				vim.lsp.buf.hover({ border = "rounded" })
 			end)
 
-			map("n", "<leader>vd", vim.diagnostic.open_float)
+			map("n", "<leader>vd", function()
+				vim.diagnostic.open_float({ border = "rounded" })
+			end)
 
 			map("n", "]d", function()
 				vim.diagnostic.jump({ count = 1, float = true })
