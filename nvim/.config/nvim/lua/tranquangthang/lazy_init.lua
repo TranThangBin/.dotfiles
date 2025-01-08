@@ -22,7 +22,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	spec = { import = "tranquangthang.lazy" },
+	spec = { import = "lazy_profile" },
 	ui = {
 		size = { width = 0.8, height = 0.8 },
 		wrap = true,
