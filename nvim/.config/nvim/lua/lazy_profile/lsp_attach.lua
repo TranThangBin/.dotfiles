@@ -1,11 +1,3 @@
-local function default_filter()
-	return true
-end
-
-local function null_ls_filter(client)
-	return client.name == "null-ls"
-end
-
 return {
 	"Issafalcon/lsp-overloads.nvim",
 
@@ -42,73 +34,86 @@ return {
 			previous_signature = "<C-k>",
 			next_parameter = "<C-l>",
 			previous_parameter = "<C-h>",
-			close_signature = "<A-s>",
+			close_signature = "<M-s>",
 		},
 		display_automatically = false,
 	},
 
-	config = function(_, opts)
+	config = function(self)
 		require("lsp-zero").on_attach(function(client, bufnr)
-			local function map(mode, lhs, rhs, remap_opts)
-				remap_opts = remap_opts or {}
-				remap_opts.buffer = bufnr
-				remap_opts.remap = false
-				vim.keymap.set(mode, lhs, rhs, remap_opts)
-			end
-
-			local builtin = require("telescope.builtin")
-
-			map("n", "gd", builtin.lsp_definitions)
-
-			map("n", "gr", builtin.lsp_references)
-
-			map("n", "<leader>ws", builtin.lsp_workspace_symbols)
-
-			map("n", "<leader>ds", builtin.lsp_document_symbols)
-
-			map("n", "K", function()
-				vim.lsp.buf.hover({ border = "rounded" })
-			end)
-
-			map("n", "<leader>vd", function()
-				vim.diagnostic.open_float({ border = "rounded" })
-			end)
-
-			map("n", "]d", function()
-				vim.diagnostic.jump({ count = 1, float = true })
-			end)
-
-			map("n", "[d", function()
-				vim.diagnostic.jump({ count = -1, float = true })
-			end)
-
-			map("n", "<leader>ca", vim.lsp.buf.code_action)
-
-			map("n", "<leader>rn", vim.lsp.buf.rename)
-
-			local format_opts = { async = true }
-
-			map("n", "<leader>f", function()
-				if format_opts.filter == nil then
-					local null_ls = vim.lsp.get_clients({
-						name = "null-ls",
-						bufnr = bufnr,
-					})[1]
-
-					if null_ls == nil then
-						format_opts.filter = default_filter
-					else
-						format_opts.filter = null_ls_filter
-					end
-				end
-
-				vim.lsp.buf.format(format_opts)
-			end)
-
-			if client.supports_method("signatureHelpProvider") then
-				require("lsp-overloads").setup(client, opts)
-				map({ "n", "i" }, "<M-s>", "<cmd>LspOverloadsSignature<CR>")
-			end
+			self:on_attach(client, bufnr)
 		end)
+	end,
+
+	on_attach = function(self, client, bufnr)
+		local builtin = require("telescope.builtin")
+
+		vim.keymap.set("n", "gd", builtin.lsp_definitions, { buffer = bufnr })
+		vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = bufnr })
+
+		vim.keymap.set(
+			"n",
+			"<leader>ws",
+			builtin.lsp_workspace_symbols,
+			{ buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"<leader>ds",
+			builtin.lsp_document_symbols,
+			{ buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"<leader>ca",
+			vim.lsp.buf.code_action,
+			{ buffer = bufnr }
+		)
+		vim.keymap.set(
+			"n",
+			"<leader>rn",
+			vim.lsp.buf.rename,
+			{ buffer = bufnr }
+		)
+
+		vim.keymap.set("n", "K", function()
+			vim.lsp.buf.hover({ border = "rounded" })
+		end, { buffer = bufnr })
+		vim.keymap.set("n", "<leader>vd", function()
+			vim.diagnostic.open_float({ border = "rounded" })
+		end, { buffer = bufnr })
+		vim.keymap.set("n", "]d", function()
+			vim.diagnostic.jump({ count = 1, float = true })
+		end, { buffer = bufnr })
+		vim.keymap.set("n", "[d", function()
+			vim.diagnostic.jump({ count = -1, float = true })
+		end, { buffer = bufnr })
+
+		vim.keymap.set("n", "<leader>f", function()
+			vim.lsp.buf.format({
+				bufnr = bufnr,
+				async = true,
+				filter = function(cl)
+					return (
+						vim.lsp.get_clients({
+								bufnr = bufnr,
+								name = "null-ls",
+							})[1]
+							== nil
+						and cl.name ~= "null-ls"
+					) or cl.name == "null-ls"
+				end,
+			})
+		end, { buffer = bufnr })
+
+		if client.supports_method("signatureHelpProvider") then
+			require("lsp-overloads").setup(client, self.opts)
+			vim.keymap.set(
+				{ "n", "i" },
+				"<M-s>",
+				"<cmd>LspOverloadsSignature<CR>",
+				{ buffer = bufnr }
+			)
+		end
 	end,
 }

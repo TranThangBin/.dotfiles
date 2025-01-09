@@ -42,9 +42,7 @@ table.insert(M, {
 		},
 	},
 
-	config = function(_, opts)
-		require("rose-pine").setup(opts)
-	end,
+	config = true,
 })
 
 table.insert(M, {

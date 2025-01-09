@@ -7,7 +7,10 @@ return {
 		"williamboman/mason.nvim",
 		{
 			"nvimtools/none-ls.nvim",
-			opts = { border = "rounded" },
+			opts = {
+				debug = true,
+				border = "rounded",
+			},
 			config = true,
 		},
 	},
