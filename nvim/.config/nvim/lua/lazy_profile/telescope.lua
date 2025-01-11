@@ -35,6 +35,4 @@ return {
 			{ "<leader>rs", builtin.resume },
 		}
 	end,
-
-	config = true,
 }
