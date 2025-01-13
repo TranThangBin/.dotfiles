@@ -18,6 +18,7 @@ return {
 			"vim",
 			"vimdoc",
 			"query",
+			"markdown",
 			"markdown_inline",
 		},
 		sync_install = false,
