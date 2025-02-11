@@ -39,15 +39,12 @@ return {
 			},
 		}
 
-		for i = 1, 5 do
-			table.insert(keys, {
-				"<leader>" .. i,
-				function()
-					list:select(i)
-				end,
-			})
-		end
-
 		return keys
+	end,
+
+	config = function()
+		local extensions = require("harpoon.extensions")
+		require("harpoon"):extend(extensions.builtins.navigate_with_number())
+		require("harpoon"):extend(extensions.builtins.highlight_current_file())
 	end,
 }
