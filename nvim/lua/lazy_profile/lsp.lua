@@ -42,6 +42,18 @@ return {
 					lspconfig.lua_ls.setup(lua_opts)
 				end,
 
+				nil_ls = function()
+					lspconfig.nil_ls.setup({
+						settings = {
+							["nil"] = {
+								formatting = {
+									command = { "nixfmt" },
+								},
+							},
+						},
+					})
+				end,
+
 				jsonls = function()
 					lspconfig.jsonls.setup({
 						settings = {
