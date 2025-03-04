@@ -23,7 +23,6 @@ in {
       fastfetch
       nixfmt-classic
       oh-my-zsh
-      discord
       powertop
     ];
 
@@ -36,6 +35,8 @@ in {
     nvim.source = "${homeDir}/.dotfiles/nvim";
     ghostty.source = "${homeDir}/.dotfiles/ghostty";
     kitty.source = "${homeDir}/.dotfiles/kitty";
+    hypr.source = "${homeDir}/.dotfiles/hypr";
+    waybar.source = "${homeDir}/.dotfiles/waybar";
   };
 
   programs = {
