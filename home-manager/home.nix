@@ -23,8 +23,8 @@ in {
       fastfetch
       nixfmt-classic
       oh-my-zsh
-      fira-mono
-      discord-ptb
+      discord
+      powertop
     ];
 
     file = { };
@@ -35,6 +35,7 @@ in {
   xdg.configFile = {
     nvim.source = "${homeDir}/.dotfiles/nvim";
     ghostty.source = "${homeDir}/.dotfiles/ghostty";
+    kitty.source = "${homeDir}/.dotfiles/kitty";
   };
 
   programs = {
