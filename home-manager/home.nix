@@ -35,7 +35,9 @@ in {
       pwvucontrol
       wireplumber
       networkmanagerapplet
-      libsForQt5.dolphin
+      kdePackages.dolphin
+      hyprshot
+      kdePackages.qt6ct
     ];
 
     file = { };
@@ -48,12 +50,250 @@ in {
   xdg.configFile = {
     nvim.source = "${homeDir}/.dotfiles/nvim";
     ghostty.source = "${homeDir}/.dotfiles/ghostty";
-    # waybar.source = "${homeDir}/.dotfiles/waybar";
   };
 
   programs = {
     wofi.enable = true;
     home-manager.enable = true;
+    hyprlock = {
+      enable = true;
+      settings = {
+        background = {
+          monitor = "";
+          color = "rgba(25, 20, 20, 1.0)";
+          blur_passes = 0;
+          blur_size = 7;
+          noise = 1.17e-2;
+          contrast = 0.8916;
+          brightness = 0.8172;
+          vibrancy = 0.1696;
+          vibrancy_darkness = 0.0;
+        };
+
+        input-field = {
+          monitor = "";
+          size = "200, 50";
+          outline_thickness = 3;
+          dots_size = 0.33;
+          dots_spacing = 0.15;
+          dots_center = false;
+          dots_rounding = -1;
+          dots_fade_time = 200;
+          dots_text_format = "";
+          outer_color = "rgb(151515)";
+          inner_color = "rgb(200, 200, 200)";
+          font_color = "rgb(10, 10, 10)";
+          font_family = "Noto Sans";
+          fade_on_empty = true;
+          fade_timeout = 1000;
+          placeholder_text = "<i>Input Password...</i>";
+          hide_input = false;
+          rounding = -1;
+          check_color = "rgb(204, 136, 34)";
+          fail_color = "rgb(204, 34, 34)";
+          fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>";
+          fail_timeout = 2000;
+          fail_transition = 300;
+          capslock_color = -1;
+          numlock_color = -1;
+          bothlock_color = -1;
+          invert_numlock = false;
+          swap_font_color = false;
+          position = "0, -20";
+          halign = "center";
+          valign = "center";
+        };
+      };
+    };
+    waybar = {
+      enable = true;
+      settings = {
+        mainBar = {
+          height = 30;
+          spacing = 4;
+          modules-left = [ "hyprland/workspaces" ];
+          modules-center = [ "hyprland/window" ];
+          modules-right = [
+            "mpd"
+            "idle_inhibitor"
+            "pulseaudio"
+            "network"
+            "power-profiles-daemon"
+            "cpu"
+            "memory"
+            "temperature"
+            "backlight"
+            "keyboard-state"
+            "sway/language"
+            "battery"
+            "battery#bat2"
+            "clock"
+            "tray"
+            "custom/power"
+          ];
+          "hyprland/workspaces" = {
+            disable-scroll = true;
+            all-outputs = true;
+            warp-on-scroll = false;
+            format = "{name}: {icon}";
+            format-icons = {
+              urgent = "";
+              active = "";
+              default = "";
+            };
+          };
+          keyboard-state = {
+            numlock = true;
+            capslock = true;
+            format = "{name} {icon}";
+            format-icons = {
+              "locked" = "";
+              "unlocked" = "";
+            };
+          };
+          "sway/mode" = { format = ''<span style="italic">{}</span>''; };
+          "sway/scratchpad" = {
+            format = "{icon} {count}";
+            show-empty = false;
+            format-icons = [ "" "" ];
+            tooltip = true;
+            tooltip-format = "{app}: {title}";
+          };
+          mpd = {
+            format =
+              "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
+            format-disconnected = "Disconnected ";
+            format-stopped =
+              "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
+            unknown-tag = "N/A";
+            interval = 5;
+            consume-icons = { on = " "; };
+            random-icons = {
+              off = ''<span color="#f53c3c"></span> '';
+              on = " ";
+            };
+            repeat-icons = { on = " "; };
+            single-icons = { on = "1 "; };
+            state-icons = {
+              paused = "";
+              playing = "";
+            };
+            tooltip-format = "MPD (connected)";
+            tooltip-format-disconnected = "MPD (disconnected)";
+          };
+          idle_inhibitor = {
+            format = "{icon}";
+            format-icons = {
+              activated = "";
+              deactivated = "";
+            };
+          };
+          tray = {
+            icon-size = 21;
+            spacing = 10;
+          };
+          clock = {
+            tooltip-format = ''
+              <big>{:%Y %B}</big>
+              <tt><small>{calendar}</small></tt>'';
+            format-alt = "{:%Y-%m-%d}";
+          };
+          cpu = {
+            format = "{usage}% ";
+            tooltip = false;
+          };
+          memory = { format = "{}% "; };
+          "temperature" = {
+            critical-threshold = 80;
+            format-critical = "{temperatureC}°C {icon}";
+            format = "{temperatureC}°C {icon}";
+            format-icons = [ "" "" "" ];
+          };
+          backlight = {
+            device = "acpi_video1";
+            format = "{percent}% {icon}";
+            format-icons = [ "" "" "" "" "" "" "" "" "" ];
+          };
+          battery = {
+            states = {
+              "good" = 95;
+              "warning" = 30;
+              "critical" = 15;
+            };
+            format = "{capacity}% {icon}";
+            format-full = "{capacity}% {icon}";
+            format-charging = "{capacity}% ";
+            format-plugged = "{capacity}% ";
+            format-alt = "{time} {icon}";
+            format-good = "";
+            format-icons = [ "" "" "" "" "" ];
+          };
+          "battery#bat2" = { bat = "BAT2"; };
+          power-profiles-daemon = {
+            format = "{icon}";
+            tooltip-format = ''
+                                    Power profile: {profile}
+              Driver: {driver}'';
+            tooltip = true;
+            format-icons = {
+              default = "";
+              performance = "";
+              balanced = "";
+              power-saver = "";
+            };
+          };
+          network = {
+            format-wifi = "{essid} ({signalStrength}%) ";
+            format-ethernet = "{ipaddr}/{cidr} ";
+            tooltip-format = "{ifname} via {gwaddr} ";
+            format-linked = "{ifname} (No IP) ";
+            format-disconnected = "Disconnected ⚠";
+            format-alt = "{ifname}: {ipaddr}/{cidr}";
+          };
+          pulseaudio = {
+            format = "{volume}% {icon} {format_source}";
+            format-bluetooth = "{volume}% {icon} {format_source}";
+            format-bluetooth-muted = " {icon} {format_source}";
+            format-muted = " {format_source}";
+            format-source = "{volume}% ";
+            format-source-muted = "";
+            format-icons = {
+              headphone = "";
+              hands-free = "";
+              headset = "";
+              phone = "";
+              portable = "";
+              car = "";
+              default = [ "" "" "" ];
+            };
+            on-click = "${pkgs.pwvucontrol}/bin/pwvucontrol";
+          };
+          "custom/media" = {
+            format = "{icon} {text}";
+            return-type = "json";
+            max-length = 40;
+            format-icons = {
+              spotify = "";
+              default = "🎜";
+            };
+            escape = true;
+            exec = "$HOME/.config/waybar/mediaplayer.py 2> /dev/null";
+          };
+          "custom/power" = {
+            format = "⏻ ";
+            tooltip = false;
+            menu = "on-click";
+            menu-file = "$HOME/.config/waybar/power_menu.xml";
+            menu-actions = {
+              shutdown = "shutdown";
+              reboot = "reboot";
+              suspend = "systemctl suspend";
+              hibernate = "systemctl hibernate";
+            };
+          };
+        };
+      };
+    };
 
     kitty = {
       enable = true;
@@ -85,12 +325,6 @@ in {
       envExtra = ''
         export ZSH=$HOME/.nix-profile/share/oh-my-zsh
         export PATH=$HOME/go/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-        export GTK_IM_MODULE="wayland"
-        export QT_IM_MODULE="wayland;fcitx;ibus"
-        export SDL_IM_MODULE="fcitx"
-        export XMODIFIERS="@im=fcitx"
-        export INPUT_METHOD="fcitx"
-        export GLFW_IM_MODULE="ibus"
       '';
       oh-my-zsh = {
         enable = true;
@@ -155,7 +389,61 @@ in {
 
   i18n.inputMethod = {
     enabled = "fcitx5";
-    fcitx5.addons = with pkgs.libsForQt5; [ fcitx5-unikey fcitx5-configtool ];
+    fcitx5.addons = with pkgs.kdePackages; [ fcitx5-unikey ];
+  };
+
+  services = {
+    swaync.enable = true;
+    hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd =
+            "pidof ${pkgs.hyprlock}/bin/hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
+          before_sleep_cmd = "loginctl lock-session";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+        };
+
+        listener = [
+          {
+            timeout = 150;
+            on-timeout = "brightnessctl -s set 10";
+            on-resume = "brightnessctl -r";
+          }
+
+          {
+            timeout = 150;
+            on-timeout = "brightnessctl -sd rgb:kbd_backlight set 0";
+            on-resume = "brightnessctl -rd rgb:kbd_backlight";
+          }
+
+          {
+            timeout = 300;
+            on-timeout = "loginctl lock-session";
+          }
+
+          {
+            timeout = 330;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+
+          {
+            timeout = 1800;
+            on-timeout = "systemctl suspend";
+          }
+        ];
+
+      };
+    };
+    hyprpaper = {
+      enable = true;
+      package = config.lib.nixGL.wrap pkgs.hyprpaper;
+      settings = {
+        preload = "${homeDir}/.dotfiles/images/background.jpg";
+        wallpaper = ", ${homeDir}/.dotfiles/images/background.jpg";
+      };
+    };
   };
 
   systemd.user.services = {
@@ -178,23 +466,26 @@ in {
   wayland.windowManager.hyprland = {
     enable = true;
     package = null;
+    systemd.variables = [ "--all" ];
     settings = {
       monitor = ",preferred,auto,1";
 
       "$terminal" = "${kittyPkg}/bin/kitty";
-      "$fileManager" = "${pkgs.libsForQt5.dolphin}/bin/dolphin";
+      "$fileManager" = "${pkgs.kdePackages.dolphin}/bin/dolphin";
       "$menu" = "${pkgs.wofi}/bin/wofi --show drun";
 
       exec-once = [
         "${pkgs.networkmanagerapplet}/bin/nm-applet"
-        "waybar"
-        "swaync"
-        "hypridle"
-        "${pkgs.fcitx5}/bin/fcitx5"
-        "hyprpaper"
+        "${pkgs.waybar}/bin/waybar"
+        ''gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"''
+        ''gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"''
       ];
 
-      env = [ "XCURSOR_SIZE,24" "HYPRCURSOR_SIZE,24" ];
+      env = [
+        "XCURSOR_SIZE,24"
+        "HYPRCURSOR_SIZE,24"
+        "QT_QPA_PLATFORMTHEME,${pkgs.kdePackages.qt6ct}/bin/qt6ct"
+      ];
 
       general = {
         gaps_in = 5;
@@ -273,9 +564,9 @@ in {
         "$mainMod, Space, exec, $menu"
         "$mainMod, P, pseudo, # dwindle"
         "$mainMod CTRL SHIFT, J, togglesplit,"
-        ", PRINT, exec, hyprshot -m window"
-        "SHIFT, PRINT, exec, hyprshot -m region"
-        "$mainMod CTRL SHIFT, S, exec, hyprlock"
+        ", PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
+        "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
+        "$mainMod CTRL SHIFT, S, exec, ${pkgs.hyprlock}/bin/hyprlock"
 
         "$mainMod, L, movefocus, r"
         "$mainMod, H, movefocus, l"
@@ -343,6 +634,7 @@ in {
       ];
 
       windowrulev2 = [
+        "opacity 0.8 0.8, class:kitty"
         "suppressevent maximize, class:.*"
         "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
       ];
