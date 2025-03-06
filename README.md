@@ -1,42 +1,32 @@
 # .dotfiles
 
-## Prerequisites
-- stow
-- gcc
-- fd
-- rg
-
-
 ## Installation
+
+### Clone the repos
 ```bash
 git clone git@github:TranThangBin/.dotfiles $HOME/.dotfiles
 ```
 
-## Setup Guide
-**cd to the .dotfiles directory**
+### Install nix (if you don't already have)
 ```bash
-cd $HOME/.dotfiles
+curl -L https://nixos.org/nix/install | sh -s -- --daemon
 ```
 
-### Oh My Zsh
+### Also home-manager
 ```bash
-git clone https://github.com/ohmyzsh/ohmyzsh.git $HOME/.dotfiles/zsh/.oh-my-zsh
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
 ```
 
-### zsh-autosuggestions
+### And nixGL
 ```bash
-git clone https://github.com/zsh-users/zsh-autosuggestions \
-    $HOME/.dotfiles/zsh/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-```
-### F-Sy-H
-```bash
-git clone https://github.com/z-shell/F-Sy-H.git \
-    $HOME/.dotfiles/zsh/.oh-my-zsh/custom/plugins/F-Sy-H
+nix-channel --add https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl && nix-channel --update
+nix-env -iA nixgl.auto.nixGLDefault
 ```
 
-### .tmux
+### You are ready
 ```bash
-git clone https://github.com/gpakosz/.tmux.git $HOME/.dotfiles/tmux/.tmux
-cd tmux
-ln -sf .tmux/.tmux.conf .tmux.conf
+rm -rf $HOME/.config/home-manager # if the default home-manager config already there
+ln -sf $HOME/.dotfiles/home-manager $HOME/.config/home-manager
+home-manager switch
 ```

@@ -43,6 +43,7 @@ in {
       kdePackages.qt6ct
       brightnessctl
       stylua
+      openjdk
     ];
 
     file = { };
@@ -50,9 +51,11 @@ in {
     sessionVariables = { };
   };
 
-  xdg.portal.config.common.default = "*";
-
-  xdg.configFile = { nvim.source = "${homeDir}/.dotfiles/nvim"; };
+  xdg = {
+    enable = true;
+    portal.config.common.default = "*";
+    configFile = { nvim.source = "${homeDir}/.dotfiles/nvim"; };
+  };
 
   programs = {
     wofi.enable = true;
@@ -312,9 +315,9 @@ in {
               critical = 15;
             };
             format = "{icon} {capacity}%";
-            format-charging = "󰂄";
-            format-plugged = "";
-            format-alt = "{icon}";
+            format-charging = "󰂄 {capacity}%";
+            format-plugged = " {capacity}%";
+            format-alt = "{icon} {capacity}%";
             format-icons = {
               "10" = "󰁺";
               "20" = "󰁻";
@@ -455,7 +458,7 @@ in {
         {
           plugin = resurrect;
           extraConfig = ''
-            set -g @resurrect-processes '"~nvim->nvim *"'
+            set -g @resurrect-processes '"~nvim->nvim"'
             set -g @resurrect-strategy-nvim 'session'
           '';
         }
@@ -473,7 +476,7 @@ in {
           extraConfig = ''
             set -g @catppuccin_flavor "mocha"
             set -g @catppuccin_window_status_style "rounded"
-            run ~/.config/tmux/plugins/catppuccin/tmux/catppuccin.tmux
+            run ${pkgs.tmuxPlugins.catppuccin}/share/tmux-plugins/catppuccin/catppuccin.tmux
             set -g status-right-length 100
             set -g status-left-length 100
             set -g status-left ""
@@ -482,8 +485,8 @@ in {
             set -ag status-right "#{E:@catppuccin_status_session}"
             set -ag status-right "#{E:@catppuccin_status_uptime}"
             set -agF status-right "#{E:@catppuccin_status_battery}"
-            run ~/.config/tmux/plugins/tmux-plugins/tmux-cpu/cpu.tmux
-            run ~/.config/tmux/plugins/tmux-plugins/tmux-battery/battery.tmux
+            run ${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/cpu.tmux
+            run ${pkgs.tmuxPlugins.battery}/share/tmux-plugins/battery/battery.tmux
           '';
         }
       ];
