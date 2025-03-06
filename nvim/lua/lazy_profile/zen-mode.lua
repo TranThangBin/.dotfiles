@@ -5,7 +5,7 @@ return {
 		local number = vim.wo.number
 		local rnu = vim.wo.rnu
 		local colorcolumn = vim.opt.colorcolumn
-		local zen_group = vim.api.nvim_create_augroup("zen", {})
+		local zen_group = vim.api.nvim_create_augroup("tranquangthang/zen", {})
 		return {
 			window = {
 				backdrop = 0.95,

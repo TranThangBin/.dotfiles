@@ -1,8 +1,19 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   homeDir = config.home.homeDirectory;
   kittyPkg = config.lib.nixGL.wrap pkgs.kitty;
+  PATH = builtins.getEnv "PATH";
+  XDG_DATA_DIRS = builtins.getEnv "XDG_DATA_DIRS";
+  fromGitHub = ref: repo:
+    pkgs.vimUtils.buildVimPlugin {
+      pname = "${lib.strings.sanitizeDerivationName repo}";
+      version = ref;
+      src = builtins.fetchGit {
+        url = "https://github.com/${repo}.git";
+        ref = ref;
+      };
+    };
 in {
   nixGL.packages = import <nixgl> { inherit pkgs; };
   nixGL.defaultWrapper = "mesa";
@@ -47,10 +58,7 @@ in {
 
   xdg.portal.config.common.default = "*";
 
-  xdg.configFile = {
-    nvim.source = "${homeDir}/.dotfiles/nvim";
-    ghostty.source = "${homeDir}/.dotfiles/ghostty";
-  };
+  xdg.configFile = { nvim.source = "${homeDir}/.dotfiles/nvim"; };
 
   programs = {
     wofi.enable = true;
@@ -83,7 +91,7 @@ in {
           outer_color = "rgb(151515)";
           inner_color = "rgb(200, 200, 200)";
           font_color = "rgb(10, 10, 10)";
-          font_family = "Noto Sans";
+          font_family = "FiraMono Nerd Font";
           fade_on_empty = true;
           fade_timeout = 1000;
           placeholder_text = "<i>Input Password...</i>";
@@ -105,191 +113,217 @@ in {
         };
       };
     };
+
     waybar = {
       enable = true;
+      style = ''
+        @define-color base   #1e1e2e;
+        @define-color mantle #181825;
+        @define-color crust  #11111b;
+
+        @define-color text     #cdd6f4;
+        @define-color subtext0 #a6adc8;
+        @define-color subtext1 #bac2de;
+
+        @define-color surface0 #474862;
+        @define-color surface1 #45475a;
+        @define-color surface2 #585b70;
+
+        @define-color overlay0 #6c7086;
+        @define-color overlay1 #7f849c;
+        @define-color overlay2 #9399b2;
+
+        @define-color blue      #89b4fa;
+        @define-color lavender  #b4befe;
+        @define-color sapphire  #74c7ec;
+        @define-color sky       #89dceb;
+        @define-color teal      #94e2d5;
+        @define-color green     #a6e3a1;
+        @define-color yellow    #f9e2af;
+        @define-color peach     #fab387;
+        @define-color maroon    #eba0ac;
+        @define-color red       #f38ba8;
+        @define-color mauve     #cba6f7;
+        @define-color pink      #f5c2e7;
+        @define-color flamingo  #f2cdcd;
+        @define-color rosewater #f5e0dc;
+
+        * {
+          font-family: FiraMono Nerd Font;
+          font-size: 17px;
+          min-height: 0;
+        }
+
+        #waybar {
+          background: transparent;
+          color: @text;
+          margin: 5px 5px;
+        }
+
+        #workspaces {
+          border-radius: 1rem;
+          margin: 5px;
+          background-color: @surface0;
+          margin-left: 1rem;
+        }
+
+        #workspaces button {
+          color: @lavender;
+          border-radius: 1rem;
+          padding: 0.4rem;
+        }
+
+        #workspaces button.active {
+          color: @sky;
+          border-radius: 1rem;
+        }
+
+        #workspaces button:hover {
+          color: @sapphire;
+          border-radius: 1rem;
+        }
+
+        #custom-music,
+        #tray,
+        #backlight,
+        #clock,
+        #battery,
+        #pulseaudio,
+        #custom-lock,
+        #custom-power {
+          background-color: @surface0;
+          padding: 0.5rem 1rem;
+          margin: 5px 0;
+        }
+
+        #clock {
+          color: @blue;
+          border-radius: 0px 1rem 1rem 0px;
+          margin-right: 1rem;
+        }
+
+        #battery {
+          color: @green;
+        }
+
+        #battery.charging {
+          color: @green;
+        }
+
+        #battery.warning:not(.charging) {
+          color: @red;
+        }
+
+        #backlight {
+          color: @yellow;
+        }
+
+        #backlight, #battery {
+            border-radius: 0;
+        }
+
+        #pulseaudio {
+          color: @maroon;
+          border-radius: 1rem 0px 0px 1rem;
+          margin-left: 1rem;
+        }
+
+        #custom-music {
+          color: @mauve;
+          border-radius: 1rem;
+        }
+
+        #custom-lock {
+            border-radius: 1rem 0px 0px 1rem;
+            color: @lavender;
+        }
+
+        #custom-power {
+            margin-right: 1rem;
+            border-radius: 0px 1rem 1rem 0px;
+            color: @red;
+        }
+
+        #tray {
+          margin-right: 1rem;
+          border-radius: 1rem;
+        }
+      '';
       settings = {
         mainBar = {
-          height = 30;
-          spacing = 4;
+          layer = "top";
+          position = "top";
           modules-left = [ "hyprland/workspaces" ];
-          modules-center = [ "hyprland/window" ];
+          modules-center = [ "custom/music" ];
           modules-right = [
-            "mpd"
-            "idle_inhibitor"
             "pulseaudio"
-            "network"
-            "power-profiles-daemon"
-            "cpu"
-            "memory"
-            "temperature"
             "backlight"
-            "keyboard-state"
-            "sway/language"
             "battery"
-            "battery#bat2"
             "clock"
             "tray"
+            "custom/lock"
             "custom/power"
           ];
           "hyprland/workspaces" = {
             disable-scroll = true;
-            all-outputs = true;
-            warp-on-scroll = false;
-            format = "{name}: {icon}";
-            format-icons = {
-              urgent = "";
-              active = "";
-              default = "";
-            };
-          };
-          keyboard-state = {
-            numlock = true;
-            capslock = true;
-            format = "{name} {icon}";
-            format-icons = {
-              "locked" = "";
-              "unlocked" = "";
-            };
-          };
-          "sway/mode" = { format = ''<span style="italic">{}</span>''; };
-          "sway/scratchpad" = {
-            format = "{icon} {count}";
-            show-empty = false;
-            format-icons = [ "" "" ];
-            tooltip = true;
-            tooltip-format = "{app}: {title}";
-          };
-          mpd = {
-            format =
-              "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}% ";
-            format-disconnected = "Disconnected ";
-            format-stopped =
-              "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped ";
-            unknown-tag = "N/A";
-            interval = 5;
-            consume-icons = { on = " "; };
-            random-icons = {
-              off = ''<span color="#f53c3c"></span> '';
-              on = " ";
-            };
-            repeat-icons = { on = " "; };
-            single-icons = { on = "1 "; };
-            state-icons = {
-              paused = "";
-              playing = "";
-            };
-            tooltip-format = "MPD (connected)";
-            tooltip-format-disconnected = "MPD (disconnected)";
-          };
-          idle_inhibitor = {
-            format = "{icon}";
-            format-icons = {
-              activated = "";
-              deactivated = "";
-            };
+            sort-by-name = true;
+            format = " {icon} ";
+            format-icons = { default = ""; };
           };
           tray = {
             icon-size = 21;
             spacing = 10;
           };
+          "custom/music" = {
+            format = "  {}";
+            escape = true;
+            interval = 5;
+            tooltip = false;
+            exec =
+              "${pkgs.playerctl}/bin/playerctl metadata --format='{{ title }}'";
+            on-click = "${pkgs.playerctl}/bin/playerctl play-pause";
+            max-length = 50;
+          };
           clock = {
+            timezone = "Asia/Dubai";
             tooltip-format = ''
               <big>{:%Y %B}</big>
               <tt><small>{calendar}</small></tt>'';
-            format-alt = "{:%Y-%m-%d}";
-          };
-          cpu = {
-            format = "{usage}% ";
-            tooltip = false;
-          };
-          memory = { format = "{}% "; };
-          "temperature" = {
-            critical-threshold = 80;
-            format-critical = "{temperatureC}°C {icon}";
-            format = "{temperatureC}°C {icon}";
-            format-icons = [ "" "" "" ];
+            format-alt = " {:%d/%m/%Y}";
+            format = " {:%H:%M}";
           };
           backlight = {
-            device = "acpi_video1";
-            format = "{percent}% {icon}";
+            device = "intel_backlight";
+            format = "{icon}";
             format-icons = [ "" "" "" "" "" "" "" "" "" ];
           };
           battery = {
             states = {
-              "good" = 95;
-              "warning" = 30;
-              "critical" = 15;
+              warning = 30;
+              critical = 15;
             };
-            format = "{capacity}% {icon}";
-            format-full = "{capacity}% {icon}";
-            format-charging = "{capacity}% ";
-            format-plugged = "{capacity}% ";
-            format-alt = "{time} {icon}";
-            format-good = "";
-            format-icons = [ "" "" "" "" "" ];
-          };
-          "battery#bat2" = { bat = "BAT2"; };
-          power-profiles-daemon = {
             format = "{icon}";
-            tooltip-format = ''
-                                    Power profile: {profile}
-              Driver: {driver}'';
-            tooltip = true;
-            format-icons = {
-              default = "";
-              performance = "";
-              balanced = "";
-              power-saver = "";
-            };
-          };
-          network = {
-            format-wifi = "{essid} ({signalStrength}%) ";
-            format-ethernet = "{ipaddr}/{cidr} ";
-            tooltip-format = "{ifname} via {gwaddr} ";
-            format-linked = "{ifname} (No IP) ";
-            format-disconnected = "Disconnected ⚠";
-            format-alt = "{ifname}: {ipaddr}/{cidr}";
+            format-charging = "";
+            format-plugged = "";
+            format-alt = "{icon}";
+            format-icons = [ "" "" "" "" "" "" "" "" "" "" "" "" ];
           };
           pulseaudio = {
-            format = "{volume}% {icon} {format_source}";
-            format-bluetooth = "{volume}% {icon} {format_source}";
-            format-bluetooth-muted = " {icon} {format_source}";
-            format-muted = " {format_source}";
-            format-source = "{volume}% ";
-            format-source-muted = "";
-            format-icons = {
-              headphone = "";
-              hands-free = "";
-              headset = "";
-              phone = "";
-              portable = "";
-              car = "";
-              default = [ "" "" "" ];
-            };
+            format = "{icon} {volume}%";
+            format-muted = "";
+            format-icons = { default = [ "" "" " " ]; };
             on-click = "${pkgs.pwvucontrol}/bin/pwvucontrol";
           };
-          "custom/media" = {
-            format = "{icon} {text}";
-            return-type = "json";
-            max-length = 40;
-            format-icons = {
-              spotify = "";
-              default = "🎜";
-            };
-            escape = true;
-            exec = "$HOME/.config/waybar/mediaplayer.py 2> /dev/null";
+          "custom/lock" = {
+            tooltip = false;
+            on-click =
+              "sh -c '(sleep 0.5s; ${pkgs.hyprlock}/bin/hyprlock)' & disown";
+            format = "";
           };
           "custom/power" = {
-            format = "⏻ ";
             tooltip = false;
-            menu = "on-click";
-            menu-file = "$HOME/.config/waybar/power_menu.xml";
-            menu-actions = {
-              shutdown = "shutdown";
-              reboot = "reboot";
-              suspend = "systemctl suspend";
-              hibernate = "systemctl hibernate";
-            };
+            on-click = "wlogout &";
+            format = "襤";
           };
         };
       };
@@ -314,6 +348,54 @@ in {
       enable = true;
       defaultEditor = true;
       vimAlias = true;
+      plugins = with pkgs.vimPlugins; [
+        plenary-nvim
+        nvim-web-devicons
+        vim-obsession
+        telescope-nvim
+        harpoon2
+        rose-pine
+        tokyonight-nvim
+        nvim-treesitter.withAllGrammars
+        nvim-treesitter-textobjects
+        nvim-lspconfig
+        SchemaStore-nvim
+        lsp-zero-nvim
+        nvim-cmp
+        cmp-nvim-lsp
+        cmp-buffer
+        cmp-path
+        cmp-cmdline
+        cmp_luasnip
+        friendly-snippets
+        lsp-overloads-nvim
+        lazydev-nvim
+        luvit-meta
+        none-ls-nvim
+        undotree
+        vim-godot
+        netrw-nvim
+        nvim-autopairs
+        nvim-ts-autotag
+        nvim-surround
+        oil-nvim
+        comment-nvim
+        nvim-treesitter-context
+        vim-fugitive
+        telescope-fzf-native-nvim
+        todo-comments-nvim
+        fidget-nvim
+        gitsigns-nvim
+        trouble-nvim
+        zen-mode-nvim
+      ];
+      extraPackages = with pkgs; [
+        nil
+        nixfmt-rfc-style
+        lua-language-server
+        stylua
+        clang-tools
+      ];
     };
 
     zsh = {
@@ -324,7 +406,7 @@ in {
       initExtra = "[ -z $TMUX ] && fastfetch";
       envExtra = ''
         export ZSH=$HOME/.nix-profile/share/oh-my-zsh
-        export PATH=$HOME/go/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+        export PATH=$HOME/go/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:${PATH}
       '';
       oh-my-zsh = {
         enable = true;
@@ -393,6 +475,7 @@ in {
   };
 
   services = {
+    playerctld.enable = true;
     swaync.enable = true;
     hypridle = {
       enable = true;
@@ -484,7 +567,8 @@ in {
       env = [
         "XCURSOR_SIZE,24"
         "HYPRCURSOR_SIZE,24"
-        "QT_QPA_PLATFORMTHEME,${pkgs.kdePackages.qt6ct}/bin/qt6ct"
+        "QT_QPA_PLATFORMTHEME,qt6ct"
+        "XDG_DATA_DIRS,${XDG_DATA_DIRS}"
       ];
 
       general = {
@@ -562,7 +646,7 @@ in {
         "$mainMod, E, exec, $fileManager"
         "$mainMod SHIFT, F, togglefloating,"
         "$mainMod, Space, exec, $menu"
-        "$mainMod, P, pseudo, # dwindle"
+        "$mainMod, P, pseudo,"
         "$mainMod CTRL SHIFT, J, togglesplit,"
         ", PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
         "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
@@ -595,8 +679,8 @@ in {
         "$mainMod SHIFT, 9, movetoworkspace, 9"
         "$mainMod SHIFT, 0, movetoworkspace, 10"
 
-        "$mainMod, S, togglespecialworkspace, magic"
-        "$mainMod SHIFT, S, movetoworkspace, special:magic"
+        "$mainMod, M, togglespecialworkspace, magic"
+        "$mainMod SHIFT, M, movetoworkspace, special:magic"
 
         "$mainMod CTRL SHIFT, L,workspace, e+1"
         "$mainMod CTRL SHIFT, H, workspace, e-1"
@@ -634,9 +718,9 @@ in {
       ];
 
       windowrulev2 = [
-        "opacity 0.8 0.8, class:kitty"
+        "opacity 0.95 0.95, class:kitty"
         "suppressevent maximize, class:.*"
-        "nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
       ];
     };
   };
