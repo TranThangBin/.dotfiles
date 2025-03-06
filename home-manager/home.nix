@@ -1,19 +1,10 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 let
   homeDir = config.home.homeDirectory;
   kittyPkg = config.lib.nixGL.wrap pkgs.kitty;
   PATH = builtins.getEnv "PATH";
   XDG_DATA_DIRS = builtins.getEnv "XDG_DATA_DIRS";
-  fromGitHub = ref: repo:
-    pkgs.vimUtils.buildVimPlugin {
-      pname = "${lib.strings.sanitizeDerivationName repo}";
-      version = ref;
-      src = builtins.fetchGit {
-        url = "https://github.com/${repo}.git";
-        ref = ref;
-      };
-    };
 in {
   nixGL.packages = import <nixgl> { inherit pkgs; };
   nixGL.defaultWrapper = "mesa";
@@ -22,11 +13,12 @@ in {
 
   home = {
     username = "trant";
-    homeDirectory = "/home/trant";
+    homeDirectory = "/home/" + config.home.username;
     stateVersion = "24.11";
 
     packages = with pkgs; [
       gcc
+      glibc
       ripgrep
       fd
       gnumake
@@ -49,6 +41,7 @@ in {
       kdePackages.dolphin
       hyprshot
       kdePackages.qt6ct
+      brightnessctl
     ];
 
     file = { };
@@ -63,8 +56,11 @@ in {
   programs = {
     wofi.enable = true;
     home-manager.enable = true;
+
     hyprlock = {
       enable = true;
+      package =
+        pkgs.emptyDirectory; # Manage hyprlock with your os package manager
       settings = {
         background = {
           monitor = "";
@@ -91,7 +87,7 @@ in {
           outer_color = "rgb(151515)";
           inner_color = "rgb(200, 200, 200)";
           font_color = "rgb(10, 10, 10)";
-          font_family = "FiraMono Nerd Font";
+          font_family = "FiraMono Nerd Font Mono";
           fade_on_empty = true;
           fade_timeout = 1000;
           placeholder_text = "<i>Input Password...</i>";
@@ -149,8 +145,8 @@ in {
         @define-color rosewater #f5e0dc;
 
         * {
-          font-family: FiraMono Nerd Font;
-          font-size: 17px;
+          font-family: FiraMono Nerd Font Mono;
+          font-size: 20px;
           min-height: 0;
         }
 
@@ -268,7 +264,18 @@ in {
             disable-scroll = true;
             sort-by-name = true;
             format = " {icon} ";
-            format-icons = { default = ""; };
+            format-icons = {
+              "1" = "󰲠";
+              "2" = "󰲢";
+              "3" = "󰲤";
+              "4" = "󰲦";
+              "5" = "󰲨";
+              "6" = "󰲪";
+              "7" = "󰲬";
+              "8" = "󰲮";
+              "9" = "󰲰";
+              "10" = "󰿬";
+            };
           };
           tray = {
             icon-size = 21;
@@ -285,12 +292,13 @@ in {
             max-length = 50;
           };
           clock = {
-            timezone = "Asia/Dubai";
+            timezone = "Asia/Ho_Chi_Minh";
             tooltip-format = ''
               <big>{:%Y %B}</big>
-              <tt><small>{calendar}</small></tt>'';
-            format-alt = " {:%d/%m/%Y}";
-            format = " {:%H:%M}";
+              <tt><small>{calendar}</small></tt>
+            '';
+            format-alt = " {:%d/%m/%Y}";
+            format = "󰥔 {:%H:%M}";
           };
           backlight = {
             device = "intel_backlight";
@@ -303,10 +311,10 @@ in {
               critical = 15;
             };
             format = "{icon}";
-            format-charging = "";
-            format-plugged = "";
-            format-alt = "{icon}";
-            format-icons = [ "" "" "" "" "" "" "" "" "" "" "" "" ];
+            format-charging = "󰂄";
+            format-plugged = "";
+            format-alt = "{icon} {capacity}%";
+            format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" "󰂑" "󰂃" ];
           };
           pulseaudio = {
             format = "{icon} {volume}%";
@@ -316,14 +324,13 @@ in {
           };
           "custom/lock" = {
             tooltip = false;
-            on-click =
-              "sh -c '(sleep 0.5s; ${pkgs.hyprlock}/bin/hyprlock)' & disown";
+            on-click = "sh -c '(sleep 0.5s; hyprlock)' & disown";
             format = "";
           };
           "custom/power" = {
             tooltip = false;
             on-click = "wlogout &";
-            format = "襤";
+            format = "";
           };
         };
       };
@@ -333,7 +340,7 @@ in {
       enable = true;
       package = kittyPkg;
       font = {
-        name = "FiraMono Nerd Font";
+        name = "FiraMono Nerd Font Mono";
         size = 16;
       };
       themeFile = "GitHub_Dark_High_Contrast";
@@ -394,7 +401,7 @@ in {
         nixfmt-rfc-style
         lua-language-server
         stylua
-        clang-tools
+        ccls
       ];
     };
 
@@ -477,12 +484,12 @@ in {
   services = {
     playerctld.enable = true;
     swaync.enable = true;
+
     hypridle = {
       enable = true;
       settings = {
         general = {
-          lock_cmd =
-            "pidof ${pkgs.hyprlock}/bin/hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
+          lock_cmd = "pidof hyprlock || hyprlock";
           before_sleep_cmd = "loginctl lock-session";
           after_sleep_cmd = "hyprctl dispatch dpms on";
         };
@@ -490,14 +497,16 @@ in {
         listener = [
           {
             timeout = 150;
-            on-timeout = "brightnessctl -s set 10";
-            on-resume = "brightnessctl -r";
+            on-timeout = "${pkgs.brightnessctl}/bin/brightnessctl -s set 10";
+            on-resume = "${pkgs.brightnessctl}/bin/brightnessctl -r";
           }
 
           {
             timeout = 150;
-            on-timeout = "brightnessctl -sd rgb:kbd_backlight set 0";
-            on-resume = "brightnessctl -rd rgb:kbd_backlight";
+            on-timeout =
+              "${pkgs.brightnessctl}/bin/brightnessctl -sd rgb:kbd_backlight set 0";
+            on-resume =
+              "${pkgs.brightnessctl}/bin/brightnessctl -rd rgb:kbd_backlight";
           }
 
           {
@@ -519,6 +528,7 @@ in {
 
       };
     };
+
     hyprpaper = {
       enable = true;
       package = config.lib.nixGL.wrap pkgs.hyprpaper;
@@ -548,7 +558,7 @@ in {
 
   wayland.windowManager.hyprland = {
     enable = true;
-    package = null;
+    package = null; # Manage hyprland with your os package manager
     systemd.variables = [ "--all" ];
     settings = {
       monitor = ",preferred,auto,1";
@@ -650,7 +660,7 @@ in {
         "$mainMod CTRL SHIFT, J, togglesplit,"
         ", PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
         "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
-        "$mainMod CTRL SHIFT, S, exec, ${pkgs.hyprlock}/bin/hyprlock"
+        "$mainMod CTRL SHIFT, S, exec, hyprlock"
 
         "$mainMod, L, movefocus, r"
         "$mainMod, H, movefocus, l"
@@ -682,7 +692,7 @@ in {
         "$mainMod, M, togglespecialworkspace, magic"
         "$mainMod SHIFT, M, movetoworkspace, special:magic"
 
-        "$mainMod CTRL SHIFT, L,workspace, e+1"
+        "$mainMod CTRL SHIFT, L, workspace, e+1"
         "$mainMod CTRL SHIFT, H, workspace, e-1"
 
         "$mainMod SHIFT, L, movewindow, r"
@@ -702,19 +712,19 @@ in {
       ];
 
       bindel = [
-        ",XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-        ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ",XF86MonBrightnessUp, exec, brightnessctl s 10%+"
-        ",XF86MonBrightnessDown, exec, brightnessctl s 10%-"
+        ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
+        ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
       ];
 
       bindl = [
-        ", XF86AudioNext, exec, playerctl next"
-        ", XF86AudioPause, exec, playerctl play-pause"
-        ", XF86AudioPlay, exec, playerctl play-pause"
-        ", XF86AudioPrev, exec, playerctl previous"
+        ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
+        ", XF86AudioPause, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
+        ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
+        ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
       ];
 
       windowrulev2 = [

@@ -36,6 +36,8 @@ lspconfig.yamlls.setup({
 	},
 })
 
+lspconfig.ccls.setup({})
+
 lspconfig.gdscript.setup(lsp_zero.get_capabilities())
 
 vim.diagnostic.config({
