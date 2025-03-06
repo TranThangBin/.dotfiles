@@ -42,6 +42,7 @@ in {
       hyprshot
       kdePackages.qt6ct
       brightnessctl
+      stylua
     ];
 
     file = { };
@@ -302,7 +303,7 @@ in {
           };
           backlight = {
             device = "intel_backlight";
-            format = "{icon}";
+            format = "{icon} {percent}%";
             format-icons = [ "" "" "" "" "" "" "" "" "" ];
           };
           battery = {
@@ -310,11 +311,24 @@ in {
               warning = 30;
               critical = 15;
             };
-            format = "{icon}";
+            format = "{icon} {capacity}%";
             format-charging = "󰂄";
             format-plugged = "";
-            format-alt = "{icon} {capacity}%";
-            format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" "󰂑" "󰂃" ];
+            format-alt = "{icon}";
+            format-icons = {
+              "10" = "󰁺";
+              "20" = "󰁻";
+              "30" = "󰁼";
+              "40" = "󰁽";
+              "50" = "󰁾";
+              "60" = "󰁿";
+              "70" = "󰂀";
+              "80" = "󰂁";
+              "90" = "󰂂";
+              "100" = "󰁹";
+              warning = "󰂑";
+              critical = "󰂃";
+            };
           };
           pulseaudio = {
             format = "{icon} {volume}%";
@@ -583,7 +597,7 @@ in {
 
       general = {
         gaps_in = 5;
-        gaps_out = 20;
+        gaps_out = 10;
         border_size = 2;
         "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
         "col.inactive_border" = "rgba(595959aa)";
@@ -699,11 +713,6 @@ in {
         "$mainMod SHIFT, H, movewindow, l"
         "$mainMod SHIFT, K, movewindow, u"
         "$mainMod SHIFT, J, movewindow, d"
-
-        "$mainMod CTRL, L, resizeactive, 10 0"
-        "$mainMod CTRL, H, resizeactive, -10 0"
-        "$mainMod CTRL, K, resizeactive, 0 -10"
-        "$mainMod CTRL, J, resizeactive, 0 10"
       ];
 
       bindm = [
@@ -718,6 +727,10 @@ in {
         ", XF86AudioMicMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
         ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
         ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
+        "$mainMod CTRL, L, resizeactive, 10 0"
+        "$mainMod CTRL, H, resizeactive, -10 0"
+        "$mainMod CTRL, K, resizeactive, 0 -10"
+        "$mainMod CTRL, J, resizeactive, 0 10"
       ];
 
       bindl = [

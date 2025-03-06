@@ -8,62 +8,64 @@ require("luasnip.loaders.from_vscode").lazy_load()
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 cmp.setup({
-    preselect = "item",
-    formatting = lsp_zero.cmp_format({ details = true }),
+	preselect = "item",
+	formatting = lsp_zero.cmp_format({ details = true }),
 
-    mapping = cmp.mapping.preset.insert({
-        ["<CR>"] = cmp.mapping.confirm({ select = false }),
-        ["<Tab>"] = cmp.mapping.confirm({ select = false }),
+	mapping = cmp.mapping.preset.insert({
+		["<CR>"] = cmp.mapping.confirm({ select = false }),
+		["<Tab>"] = cmp.mapping.confirm({ select = false }),
 
-        ["<C-n>"] = cmp_action.toggle_completion({}),
+		["<C-n>"] = cmp_action.toggle_completion({}),
 
-        ["<C-j>"] = cmp.mapping.select_next_item(),
-        ["<C-k>"] = cmp.mapping.select_prev_item(),
+		["<C-j>"] = cmp.mapping.select_next_item(),
+		["<C-k>"] = cmp.mapping.select_prev_item(),
 
-        ["<C-w>"] = cmp_action.luasnip_jump_forward(),
-        ["<C-b>"] = cmp_action.luasnip_jump_backward(),
+		["<C-w>"] = cmp_action.luasnip_jump_forward(),
+		["<C-b>"] = cmp_action.luasnip_jump_backward(),
 
-        ["<C-u>"] = cmp.mapping.scroll_docs(-5),
-        ["<C-d>"] = cmp.mapping.scroll_docs(5),
-    }),
+		["<C-u>"] = cmp.mapping.scroll_docs(-5),
+		["<C-d>"] = cmp.mapping.scroll_docs(5),
+	}),
 
-    snippet = {
-        expand = function(args)
-            require("luasnip").lsp_expand(args.body)
-        end,
-    },
+	snippet = {
+		expand = function(args)
+			require("luasnip").lsp_expand(args.body)
+		end,
+	},
 
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
+	window = {
+		completion = cmp.config.window.bordered(),
+		documentation = cmp.config.window.bordered({
+			max_height = 100,
+		}),
+	},
 
-    completion = {
-        completeopt = "menu,menuone,noinsert",
-    },
+	completion = {
+		completeopt = "menu,menuone,noinsert",
+	},
 
-    sources = cmp.config.sources({
-        { name = "path" },
-        { name = "nvim_lsp" },
-        { name = "lazydev" },
-        { name = "luasnip" },
-    }, {
-        { name = "buffer" },
-    }),
+	sources = cmp.config.sources({
+		{ name = "path" },
+		{ name = "nvim_lsp" },
+		{ name = "lazydev" },
+		{ name = "luasnip" },
+	}, {
+		{ name = "buffer" },
+	}),
 })
 
 cmp.setup.cmdline("/", {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-        { name = "buffer" },
-    },
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = "buffer" },
+	},
 })
 
 cmp.setup.cmdline(":", {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-        { name = "path" },
-    }, {
-        { name = "cmdline" },
-    }),
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = "path" },
+	}, {
+		{ name = "cmdline" },
+	}),
 })
