@@ -32,5 +32,5 @@ home-manager switch
 ```
 
 > [!NOTE]
-> `hyprland` and `hyprlock` is managed by your prefered package manager
-> [Rootless mode](https://docs.docker.com/engine/security/rootless) for `docker` service
+> `hyprland` and `hyprlock` is managed by your prefered package manager.
+> [Rootless mode](https://docs.docker.com/engine/security/rootless) for `docker` service.
