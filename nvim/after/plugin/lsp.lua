@@ -3,9 +3,18 @@ require("lspconfig.ui.windows").default_options.border = "rounded"
 local lsp_zero = require("lsp-zero")
 local lspconfig = require("lspconfig")
 local schemastore = require("schemastore")
+local capabilities = lsp_zero.get_capabilities()
 
-local lua_opts = lsp_zero.nvim_lua_ls()
-lspconfig.lua_ls.setup(lua_opts)
+lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
+
+lspconfig.ccls.setup(capabilities)
+lspconfig.html.setup(capabilities)
+lspconfig.htmx.setup(capabilities)
+lspconfig.cssls.setup(capabilities)
+lspconfig.tailwindcss.setup(capabilities)
+lspconfig.ts_ls.setup(capabilities)
+lspconfig.gdscript.setup(capabilities)
+lspconfig.gopls.setup(capabilities)
 
 lspconfig.nil_ls.setup({
 	settings = {
@@ -35,10 +44,6 @@ lspconfig.yamlls.setup({
 		},
 	},
 })
-
-lspconfig.ccls.setup({})
-
-lspconfig.gdscript.setup(lsp_zero.get_capabilities())
 
 vim.diagnostic.config({
 	virtual_text = true,

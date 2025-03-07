@@ -1,0 +1,52 @@
+{ pkgs, ... }: {
+  programs.tmux = {
+    enable = true;
+    baseIndex = 1;
+    clock24 = true;
+    keyMode = "vi";
+    mouse = false;
+    customPaneNavigationAndResize = true;
+    shell = "${pkgs.zsh}/bin/zsh";
+    terminal = "screen-256color";
+    plugins = with pkgs.tmuxPlugins; [
+      cpu
+      battery
+      copycat
+
+      {
+        plugin = resurrect;
+        extraConfig = ''
+          set -g @resurrect-processes '"~nvim->nvim"'
+          set -g @resurrect-strategy-nvim 'session'
+        '';
+      }
+
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '0'
+        '';
+      }
+
+      {
+        plugin = catppuccin;
+        extraConfig = ''
+          set -g @catppuccin_flavor "mocha"
+          set -g @catppuccin_window_status_style "rounded"
+          run ${catppuccin}/share/tmux-plugins/catppuccin/catppuccin.tmux
+          set -g status-right-length 100
+          set -g status-left-length 100
+          set -g status-left ""
+          set -g status-right "#{E:@catppuccin_status_application}"
+          set -agF status-right "#{E:@catppuccin_status_cpu}"
+          set -ag status-right "#{E:@catppuccin_status_session}"
+          set -ag status-right "#{E:@catppuccin_status_uptime}"
+          set -agF status-right "#{E:@catppuccin_status_battery}"
+          run ${cpu}/share/tmux-plugins/cpu/cpu.tmux
+          run ${battery}/share/tmux-plugins/battery/battery.tmux
+        '';
+      }
+    ];
+  };
+}
