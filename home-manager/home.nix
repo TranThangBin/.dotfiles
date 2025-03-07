@@ -6,6 +6,7 @@
 
   imports = [
     ./waybar.nix
+    ./wofi.nix
     ./hyprland.nix
     ./hyprlock.nix
     ./hypridle.nix
@@ -29,7 +30,6 @@
       gnumake
       htop
       bun
-      fzf
       go
       zig
       rustup
@@ -40,20 +40,30 @@
       cmake
       pkg-config
       pipewire
-      pwvucontrol
       wireplumber
+      pwvucontrol
+      helvum
       networkmanagerapplet
       kdePackages.dolphin
       hyprshot
       kdePackages.qt6ct
       brightnessctl
-      stylua
       openjdk
       resources
-      squirreldisk
+      stylua
+      templ
+      alsa-utils
+      alsa-firmware
+      alsa-tools
+      alsa-lib
+      alsa-oss
+      docker
+      lazydocker
+      rootlesskit
     ];
 
-    file = { };
+    file.".docker/daemon.json".text =
+      ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
 
     sessionVariables = { };
   };
@@ -64,12 +74,16 @@
   };
 
   programs = {
-    wofi.enable = true;
     home-manager.enable = true;
     wlogout.enable = true;
     zoxide = {
       enable = true;
       enableZshIntegration = true;
+    };
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+      tmux.enableShellIntegration = true;
     };
   };
 
@@ -108,6 +122,11 @@
     wireplumber = {
       Install = { WantedBy = [ "default.target" ]; };
       Service = { ExecStart = "${pkgs.wireplumber}/bin/wireplumber"; };
+    };
+
+    docker = {
+      Install = { };
+      Service = { ExecStart = "${pkgs.docker}/bin/dockerd-rootless"; };
     };
   };
 }

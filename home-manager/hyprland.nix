@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+let
+  kitty = "${config.programs.kitty.package}/bin/kitty";
+  ghostty = "${config.programs.ghostty.package}/bin/ghostty";
+in {
   wayland.windowManager.hyprland = {
     enable = true;
     package = null; # Manage hyprland with your os package manager
@@ -6,12 +10,9 @@
     settings = {
       monitor = ",preferred,auto,1";
 
-      "$kitty" = "${config.programs.kitty.package}/bin/kitty";
-      "$ghostty" = "${config.programs.ghostty.package}/bin/ghostty";
-
-      "$terminal" = "$ghostty";
+      "$terminal" = ghostty;
       "$fileManager" = "${pkgs.kdePackages.dolphin}/bin/dolphin";
-      "$menu" = "${pkgs.wofi}/bin/wofi --show drun";
+      "$menu" = "${config.home.file.".local/bin/wofi.sh".source}";
 
       exec-once = [
         "${pkgs.networkmanagerapplet}/bin/nm-applet"
@@ -25,6 +26,7 @@
         "HYPRCURSOR_SIZE,24"
         "QT_QPA_PLATFORMTHEME,qt6ct"
         "XDG_DATA_DIRS,${builtins.getEnv "XDG_DATA_DIRS"}"
+        "PATH,${builtins.getEnv "PATH"}"
       ];
 
       general = {
@@ -113,28 +115,6 @@
         "$mainMod, K, movefocus, u"
         "$mainMod, J, movefocus, d"
 
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
-        "$mainMod, 0, workspace, 10"
-
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-        "$mainMod SHIFT, 2, movetoworkspace, 2"
-        "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod SHIFT, 7, movetoworkspace, 7"
-        "$mainMod SHIFT, 8, movetoworkspace, 8"
-        "$mainMod SHIFT, 9, movetoworkspace, 9"
-        "$mainMod SHIFT, 0, movetoworkspace, 10"
-
         "$mainMod, M, togglespecialworkspace, magic"
         "$mainMod SHIFT, M, movetoworkspace, special:magic"
 
@@ -145,7 +125,12 @@
         "$mainMod SHIFT, H, movewindow, l"
         "$mainMod SHIFT, K, movewindow, u"
         "$mainMod SHIFT, J, movewindow, d"
-      ];
+      ] ++ (builtins.concatLists (builtins.genList (i:
+        let ws = i + 1;
+        in [
+          "$mainMod, code:1${toString i}, workspace, ${toString ws}"
+          "$mainMod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+        ]) 9));
 
       bindm = [
         "$mainMod SHIFT, mouse:272, movewindow"

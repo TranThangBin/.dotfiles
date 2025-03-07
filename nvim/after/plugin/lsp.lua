@@ -15,6 +15,8 @@ lspconfig.tailwindcss.setup(capabilities)
 lspconfig.ts_ls.setup(capabilities)
 lspconfig.gdscript.setup(capabilities)
 lspconfig.gopls.setup(capabilities)
+lspconfig.dockerls.setup(capabilities)
+lspconfig.docker_compose_language_service.setup(capabilities)
 
 lspconfig.nil_ls.setup({
 	settings = {

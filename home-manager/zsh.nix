@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -6,6 +6,7 @@
     syntaxHighlighting.enable = true;
     initExtra = "[ -z $TMUX ] && fastfetch";
     envExtra = ''
+      export DOCKER_HOST=unix://${builtins.getEnv "XDG_RUNTIME_DIR"}/docker.sock
       export ZSH=$HOME/.nix-profile/share/oh-my-zsh
       export PATH=$HOME/go/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:${
         builtins.getEnv "PATH"

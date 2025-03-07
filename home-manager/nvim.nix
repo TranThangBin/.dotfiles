@@ -71,6 +71,8 @@ in {
       typescript-language-server
       yaml-language-server
       gopls
+      dockerfile-language-server-nodejs
+      docker-compose-language-service
     ];
   };
 }

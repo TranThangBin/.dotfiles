@@ -30,3 +30,7 @@ rm -rf $HOME/.config/home-manager # if the default home-manager config already t
 ln -sf $HOME/.dotfiles/home-manager $HOME/.config/home-manager
 home-manager switch
 ```
+
+> [!NOTE]
+> `hyprland` and `hyprlock` is managed by the prefered distro package manager
+> [Rootless mode](https://docs.docker.com/engine/security/rootless) for `docker` service
