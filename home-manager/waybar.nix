@@ -11,7 +11,7 @@
         modules-left = [ "hyprland/workspaces" ];
         modules-center = [ "custom/music" ];
         modules-right = [
-          "pulseaudio"
+          "wireplumber"
           "backlight"
           "battery"
           "clock"
@@ -22,7 +22,7 @@
         "hyprland/workspaces" = {
           disable-scroll = true;
           sort-by-name = true;
-          format = " {icon} ";
+          format = " <big>{icon}</big> ";
           format-icons = {
             "1" = "󰲠";
             "2" = "󰲢";
@@ -70,7 +70,6 @@
             critical = 15;
           };
           format = "{icon} {capacity}%";
-          format-alt = "{icon}";
           format-icons = {
             default = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
             warning = "󰂑";
@@ -79,11 +78,14 @@
             plugged = "";
           };
         };
-        pulseaudio = {
+        wireplumber = {
           format = "{icon} {volume}%";
-          format-muted = "󰝟 {volume}%";
+          format-muted = "󰝟 <s>{volume}%</s>";
           format-icons = { default = [ "" "" "" ]; };
-          on-click = "${pkgs.pwvucontrol}/bin/pwvucontrol";
+          on-click =
+            "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+          on-click-middle = "${pkgs.helvum}/bin/helvum";
+          on-click-right = "${pkgs.pwvucontrol}/bin/pwvucontrol";
         };
         "custom/lock" = {
           tooltip = false;

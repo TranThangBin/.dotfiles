@@ -24,42 +24,52 @@
 
     packages = with pkgs; [
       gcc
-      glibc
+      bun
+      go
+      templ
+      zig
+      rustup
+      nodejs_23
+      openjdk
+
       ripgrep
       fd
       gnumake
       htop
-      bun
-      go
-      zig
-      rustup
-      nodejs_23
       fastfetch
-      nixfmt-classic
       powertop
       cmake
       pkg-config
+      stylua
+
+      hyprshot
+      networkmanagerapplet
+      brightnessctl
+      resources
+      kdePackages.dolphin
+      kdePackages.qt6ct
+
       pipewire
       wireplumber
       pwvucontrol
       helvum
-      networkmanagerapplet
-      kdePackages.dolphin
-      hyprshot
-      kdePackages.qt6ct
-      brightnessctl
-      openjdk
-      resources
-      stylua
-      templ
       alsa-utils
       alsa-firmware
       alsa-tools
       alsa-lib
       alsa-oss
+      alsa-ucm-conf
+      alsa-topology-conf
+
+      vulkan-tools
+
       docker
       lazydocker
       rootlesskit
+
+      libdrm
+      libGL
+      glibc
     ];
 
     file.".docker/daemon.json".text =
@@ -98,7 +108,7 @@
 
     hyprpaper = {
       enable = true;
-      package = config.lib.nixGL.wrap pkgs.hyprpaper;
+      package = pkgs.hyprpaper;
       settings = {
         preload =
           "${config.home.homeDirectory}/.dotfiles/images/background.jpg";

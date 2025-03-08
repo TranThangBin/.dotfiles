@@ -26,6 +26,7 @@ in {
         "HYPRCURSOR_SIZE,24"
         "QT_QPA_PLATFORMTHEME,qt6ct"
         "XDG_DATA_DIRS,${builtins.getEnv "XDG_DATA_DIRS"}"
+        "XDG_DATA_HOME,${builtins.getEnv "XDG_DATA_HOME"}"
         "PATH,${builtins.getEnv "PATH"}"
       ];
 
@@ -102,6 +103,7 @@ in {
         "$mainMod SHIFT, Q, killactive,"
         "$mainMod SHIFT, E, exit,"
         "$mainMod, E, exec, $fileManager"
+        "$mainMod, F, fullscreen,"
         "$mainMod SHIFT, F, togglefloating,"
         "$mainMod, Space, exec, $menu"
         "$mainMod, P, pseudo,"
@@ -158,7 +160,7 @@ in {
       ];
 
       windowrulev2 = [
-        "opacity 0.95 0.95, class:kitty"
+        "opacity 0.95 0.95, class:kitty|class:ghostty"
         "suppressevent maximize, class:.*"
         "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
       ];
