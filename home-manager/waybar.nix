@@ -5,6 +5,7 @@
 
   programs.waybar = {
     enable = true;
+    systemd.enable = true;
     settings = {
       mainBar = {
         layer = "top";
@@ -52,10 +53,7 @@
         };
         clock = {
           timezone = "Asia/Ho_Chi_Minh";
-          tooltip-format = ''
-            <big>{:%Y %B}</big>
-            <tt><small>{calendar}</small></tt>
-          '';
+          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
           format-alt = " {:%d/%m/%Y}";
           format = "󰥔 {:%H:%M}";
         };

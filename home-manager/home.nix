@@ -48,7 +48,6 @@
       openssh
 
       hyprshot
-      networkmanagerapplet
       brightnessctl
       resources
       kdePackages.dolphin
@@ -76,7 +75,11 @@
       ".docker/daemon.json".text = ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
       ".profile".text = ''
         if [[ "$(tty)" = "/dev/tty1" ]]; then
-            pgrep Hyprland || Hyprland
+        	echo "Do you want to start Hyprland? (Y/n): "
+        	read -n 1 answer
+        	if [[ "$answer" = "Y" ]]; then
+        		pgrep Hyprland || Hyprland
+        	fi
         fi
       '';
     };
@@ -119,6 +122,7 @@
   services = {
     playerctld.enable = true;
     swaync.enable = true;
+    network-manager-applet.enable = true;
 
     hyprpaper = {
       enable = true;

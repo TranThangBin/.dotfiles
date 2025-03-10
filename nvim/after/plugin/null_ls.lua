@@ -7,6 +7,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.stylua,
 		null_ls.builtins.formatting.gdformat,
 		null_ls.builtins.formatting.prettierd,
+		null_ls.builtins.formatting.shfmt,
 		{
 			method = null_ls.methods.FORMATTING,
 			name = "templfmt",

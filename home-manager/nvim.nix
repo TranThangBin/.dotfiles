@@ -82,6 +82,7 @@ in
         p.gdscript
         p.json
         p.yaml
+        p.gitcommit
       ]))
     ];
     extraPackages = with pkgs; [
@@ -100,6 +101,7 @@ in
       dockerfile-language-server-nodejs
       docker-compose-language-service
       bash-language-server
+      shfmt
       svelte-language-server
       rust-analyzer
       python312Packages.python-lsp-server
