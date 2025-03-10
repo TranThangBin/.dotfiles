@@ -80,12 +80,24 @@ lsp_zero.set_sign_icons({
 })
 
 local keys = {
-	["gd"] = builtin.lsp_definitions,
-	["gr"] = builtin.lsp_references,
-	["<leader>ws"] = builtin.lsp_workspace_symbols,
-	["<leader>ds"] = builtin.lsp_document_symbols,
-	["<leader>ca"] = vim.lsp.buf.code_action,
-	["<leader>rn"] = vim.lsp.buf.rename,
+	["gd"] = function()
+		builtin.lsp_definitions()
+	end,
+	["gr"] = function()
+		builtin.lsp_references()
+	end,
+	["<leader>ws"] = function()
+		builtin.lsp_workspace_symbols()
+	end,
+	["<leader>ds"] = function()
+		builtin.lsp_document_symbols()
+	end,
+	["<leader>ca"] = function()
+		vim.lsp.buf.code_action()
+	end,
+	["<leader>rn"] = function()
+		vim.lsp.buf.rename()
+	end,
 	["K"] = function()
 		-- vim.lsp.buf.hover({ border = "rounded" })
 		vim.lsp.buf.hover()

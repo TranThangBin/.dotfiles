@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
   HOME = builtins.getEnv "HOME";
 in
@@ -14,6 +14,7 @@ in
       export DOCKER_HOST=unix://${builtins.getEnv "XDG_RUNTIME_DIR"}/docker.sock
       export ZSH=${HOME}/.nix-profile/share/oh-my-zsh
       export PATH=${HOME}/go/bin:${HOME}/bin:${HOME}/.local/bin:/usr/local/bin:${builtins.getEnv "PATH"}
+      export LD_LIBRARY_PATH=${pkgs.alsa-lib}/lib:${builtins.getEnv "LD_LIBRARY_PATH"}
     '';
     oh-my-zsh = {
       enable = true;

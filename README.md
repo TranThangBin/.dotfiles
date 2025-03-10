@@ -10,7 +10,6 @@ git clone git@github:TranThangBin/.dotfiles $HOME/.dotfiles
 ### Install nix (if you don't already have)
 ```bash
 curl -L https://nixos.org/nix/install | sh -s -- --daemon
-pacman -S nix # archlinux
 ```
 
 ### Also home-manager
@@ -34,5 +33,5 @@ home-manager switch
 ```
 
 > [!NOTE]
-> `hyprland` and `hyprlock` is managed by your prefered package manager.
+> `hyprland` and `hyprlock` should be managed by your prefered package manager.
 > [Rootless mode](https://docs.docker.com/engine/security/rootless) for `docker` service.

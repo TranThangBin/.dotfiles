@@ -45,6 +45,7 @@
       gnumake
       cmake
       pkg-config
+      openssh
 
       hyprshot
       networkmanagerapplet
