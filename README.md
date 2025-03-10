@@ -10,12 +10,14 @@ git clone git@github:TranThangBin/.dotfiles $HOME/.dotfiles
 ### Install nix (if you don't already have)
 ```bash
 curl -L https://nixos.org/nix/install | sh -s -- --daemon
+pacman -S nix # archlinux
 ```
 
 ### Also home-manager
 ```bash
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 nix-channel --update
+nix-shell '<home-manager>' -A install
 ```
 
 ### And nixGL

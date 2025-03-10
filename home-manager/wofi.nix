@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   home.file.".local/bin/wofi.sh" = {
     executable = true;
     text = ''
@@ -12,8 +13,7 @@
     '';
   };
 
-  xdg.configFile."wofi/style.css".source =
-    "${config.home.homeDirectory}/.dotfiles/wofi/style.css";
+  xdg.configFile."wofi/style.css".source = "${config.home.homeDirectory}/.dotfiles/wofi/style.css";
 
   programs.wofi = {
     enable = true;

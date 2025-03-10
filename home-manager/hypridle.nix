@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services.hypridle = {
     enable = true;
     settings = {
@@ -17,10 +18,8 @@
 
         {
           timeout = 150;
-          on-timeout =
-            "${brightnessctl}/bin/brightnessctl -sd rgb:kbd_backlight set 0";
-          on-resume =
-            "${brightnessctl}/bin/brightnessctl -rd rgb:kbd_backlight";
+          on-timeout = "${brightnessctl}/bin/brightnessctl -sd rgb:kbd_backlight set 0";
+          on-resume = "${brightnessctl}/bin/brightnessctl -rd rgb:kbd_backlight";
         }
 
         {

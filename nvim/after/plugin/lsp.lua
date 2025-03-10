@@ -1,51 +1,64 @@
 require("lspconfig.ui.windows").default_options.border = "rounded"
 
+local builtin = require("telescope.builtin")
 local lsp_zero = require("lsp-zero")
 local lspconfig = require("lspconfig")
 local schemastore = require("schemastore")
-local capabilities = lsp_zero.get_capabilities()
 
-lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
-
-lspconfig.ccls.setup(capabilities)
-lspconfig.html.setup(capabilities)
-lspconfig.htmx.setup(capabilities)
-lspconfig.cssls.setup(capabilities)
-lspconfig.tailwindcss.setup(capabilities)
-lspconfig.ts_ls.setup(capabilities)
-lspconfig.gdscript.setup(capabilities)
-lspconfig.gopls.setup(capabilities)
-lspconfig.dockerls.setup(capabilities)
-lspconfig.docker_compose_language_service.setup(capabilities)
-
-lspconfig.nil_ls.setup({
-	settings = {
-		["nil"] = {
-			formatting = {
-				command = { "nixfmt" },
+local servers = {
+	"ccls",
+	"html",
+	"htmx",
+	"cssls",
+	"tailwindcss",
+	"ts_ls",
+	"gdscript",
+	"gopls",
+	"dockerls",
+	"docker_compose_language_service",
+	"bashls",
+	"templ",
+	"rust_analyzer",
+	"pylsp",
+	lua_ls = lsp_zero.nvim_lua_ls(),
+	nil_ls = {
+		settings = {
+			["nil"] = {
+				formatting = {
+					command = { "nixfmt" },
+				},
 			},
 		},
 	},
-})
-
-lspconfig.jsonls.setup({
-	settings = {
-		json = {
-			schemas = schemastore.json.schemas(),
-			validate = { enable = true },
+	jsonls = {
+		settings = {
+			json = {
+				schemas = schemastore.json.schemas(),
+				validate = { enable = true },
+			},
 		},
 	},
-})
-
-lspconfig.yamlls.setup({
-	yaml = {
-		schemas = schemastore.yaml.schemas(),
-		schemaStore = {
-			enable = false,
-			url = "",
+	yamlls = {
+		yaml = {
+			schemas = schemastore.yaml.schemas(),
+			schemaStore = {
+				enable = false,
+				url = "",
+			},
 		},
 	},
-})
+}
+
+for k, v in pairs(servers) do
+	if type(k) == "number" then
+		local server = v
+		lspconfig[server].setup({})
+	else
+		local server = k
+		local opts = v
+		lspconfig[server].setup(opts)
+	end
+end
 
 vim.diagnostic.config({
 	virtual_text = true,
@@ -66,49 +79,29 @@ lsp_zero.set_sign_icons({
 	info = "»",
 })
 
-require("lsp-zero").on_attach(function(client, bufnr)
-	local builtin = require("telescope.builtin")
-
-	vim.keymap.set("n", "gd", builtin.lsp_definitions, { buffer = bufnr })
-	vim.keymap.set("n", "gr", builtin.lsp_references, { buffer = bufnr })
-
-	vim.keymap.set(
-		"n",
-		"<leader>ws",
-		builtin.lsp_workspace_symbols,
-		{ buffer = bufnr }
-	)
-	vim.keymap.set(
-		"n",
-		"<leader>ds",
-		builtin.lsp_document_symbols,
-		{ buffer = bufnr }
-	)
-	vim.keymap.set(
-		"n",
-		"<leader>ca",
-		vim.lsp.buf.code_action,
-		{ buffer = bufnr }
-	)
-	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = bufnr })
-
-	vim.keymap.set("n", "K", function()
+local keys = {
+	["gd"] = builtin.lsp_definitions,
+	["gr"] = builtin.lsp_references,
+	["<leader>ws"] = builtin.lsp_workspace_symbols,
+	["<leader>ds"] = builtin.lsp_document_symbols,
+	["<leader>ca"] = vim.lsp.buf.code_action,
+	["<leader>rn"] = vim.lsp.buf.rename,
+	["K"] = function()
 		-- vim.lsp.buf.hover({ border = "rounded" })
 		vim.lsp.buf.hover()
-	end, { buffer = bufnr })
-	vim.keymap.set("n", "<leader>vd", function()
+	end,
+	["<leader>vd"] = function()
 		vim.diagnostic.open_float({ border = "rounded" })
-	end, { buffer = bufnr })
-	vim.keymap.set("n", "]d", function()
+	end,
+	["]d"] = function()
 		-- vim.diagnostic.jump({ count = 1, float = true })
 		vim.diagnostic.goto_next()
-	end, { buffer = bufnr })
-	vim.keymap.set("n", "[d", function()
+	end,
+	["[d"] = function()
 		-- vim.diagnostic.jump({ count = -1, float = true })
 		vim.diagnostic.goto_prev()
-	end, { buffer = bufnr })
-
-	vim.keymap.set("n", "<leader>f", function()
+	end,
+	["<leader>f"] = function(bufnr)
 		vim.lsp.buf.format({
 			bufnr = bufnr,
 			async = true,
@@ -123,8 +116,15 @@ require("lsp-zero").on_attach(function(client, bufnr)
 				) or cl.name == "null-ls"
 			end,
 		})
-	end, { buffer = bufnr })
+	end,
+}
 
+require("lsp-zero").on_attach(function(client, bufnr)
+	for key, exec in pairs(keys) do
+		vim.keymap.set("n", key, function()
+			exec(bufnr)
+		end, { buffer = bufnr })
+	end
 	if client.supports_method("signatureHelpProvider") then
 		require("lsp-overloads").setup(client, {
 			silent = true,

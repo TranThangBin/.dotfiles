@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   programs.ghostty = {
     enable = true;
     enableZshIntegration = true;
@@ -6,8 +7,7 @@
     package = (config.lib.nixGL.wrap pkgs.ghostty);
     settings = {
       theme = "GitHub-Dark-High-Contrast";
-      font-family = "FiraMono Nerd Font Mono";
-      font-family-bold = "FiraMono Nerd Font Mono Bold";
+      command = "${config.programs.zsh.package}/bin/zsh";
       font-size = 16;
     };
   };

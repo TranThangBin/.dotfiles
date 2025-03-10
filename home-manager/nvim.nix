@@ -1,7 +1,13 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
-  fromGitHub = ref: repo:
+  fromGitHub =
+    ref: repo:
     pkgs.vimUtils.buildVimPlugin {
       pname = "${lib.strings.sanitizeDerivationName repo}";
       version = ref;
@@ -10,7 +16,8 @@ let
         ref = ref;
       };
     };
-in {
+in
+{
   xdg.configFile.nvim.source = "${config.home.homeDirectory}/.dotfiles/nvim";
 
   programs.neovim = {
@@ -25,8 +32,6 @@ in {
       harpoon2
       rose-pine
       tokyonight-nvim
-      nvim-treesitter.withAllGrammars
-      nvim-treesitter-textobjects
       nvim-lspconfig
       SchemaStore-nvim
       lsp-zero-nvim
@@ -48,7 +53,6 @@ in {
       nvim-surround
       oil-nvim
       comment-nvim
-      nvim-treesitter-context
       vim-fugitive
       telescope-fzf-native-nvim
       todo-comments-nvim
@@ -57,6 +61,28 @@ in {
       trouble-nvim
       zen-mode-nvim
       none-ls-nvim
+      nvim-treesitter-textobjects
+      nvim-treesitter-context
+      (nvim-treesitter.withPlugins (p: [
+        p.c
+        p.cpp
+        p.go
+        p.rust
+        p.zig
+        p.lua
+        p.nix
+        p.bash
+        p.html
+        p.css
+        p.javascript
+        p.typescript
+        p.python
+        p.svelte
+        p.templ
+        p.gdscript
+        p.json
+        p.yaml
+      ]))
     ];
     extraPackages = with pkgs; [
       nil
@@ -73,6 +99,10 @@ in {
       gopls
       dockerfile-language-server-nodejs
       docker-compose-language-service
+      bash-language-server
+      svelte-language-server
+      rust-analyzer
+      python312Packages.python-lsp-server
     ];
   };
 }

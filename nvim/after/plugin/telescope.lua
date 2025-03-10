@@ -19,15 +19,15 @@ require("telescope").load_extension("fzf")
 local builtin = require("telescope.builtin")
 
 local keys = {
-	{ "<leader>tf", builtin.find_files },
-	{ "<leader>tg", builtin.git_files },
-	{ "<leader>tk", builtin.keymaps },
-	{ "<leader>bf", builtin.buffers },
-	{ "<leader>lg", builtin.live_grep },
-	{ "<leader>of", builtin.oldfiles },
-	{ "<leader>rs", builtin.resume },
+	["<leader>tf"] = builtin.find_files,
+	["<leader>tg"] = builtin.git_files,
+	["<leader>tk"] = builtin.keymaps,
+	["<leader>bf"] = builtin.buffers,
+	["<leader>lg"] = builtin.live_grep,
+	["<leader>of"] = builtin.oldfiles,
+	["<leader>rs"] = builtin.resume,
 }
 
-for _, key in pairs(keys) do
-	vim.keymap.set("n", key[1], key[2])
+for key, exec in pairs(keys) do
+	vim.keymap.set("n", key, exec)
 end

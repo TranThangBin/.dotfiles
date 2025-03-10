@@ -63,29 +63,26 @@ zen_mode.setup({
 })
 
 local keys = {
-	{ "<leader>zz", zen_mode.toggle },
-	{
-		"<leader>zZ",
-		function()
-			zen_mode.toggle({
-				window = {
-					width = 85,
-					options = {
-						signcolumn = "no",
-						number = false,
-						relativenumber = false,
-						cursorline = false,
-						cursorcolumn = false,
-						foldcolumn = "0",
-						colorcolumn = "0",
-						list = false,
-					},
+	["<leader>zz"] = zen_mode.toggle,
+	["<leader>zZ"] = function()
+		zen_mode.toggle({
+			window = {
+				width = 85,
+				options = {
+					signcolumn = "no",
+					number = false,
+					relativenumber = false,
+					cursorline = false,
+					cursorcolumn = false,
+					foldcolumn = "0",
+					colorcolumn = "0",
+					list = false,
 				},
-			})
-		end,
-	},
+			},
+		})
+	end,
 }
 
-for _, key in pairs(keys) do
-	vim.keymap.set("n", key[1], key[2])
+for key, exec in pairs(keys) do
+	vim.keymap.set("n", key, exec)
 end

@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   xdg.configFile."waybar/style.css".source =
     "${config.home.homeDirectory}/.dotfiles/waybar/style.css";
 
@@ -45,8 +46,7 @@
           escape = true;
           interval = 5;
           tooltip = false;
-          exec =
-            "${pkgs.playerctl}/bin/playerctl metadata --format='{{ title }}'";
+          exec = "${pkgs.playerctl}/bin/playerctl metadata --format='{{ title }}'";
           on-click = "${pkgs.playerctl}/bin/playerctl play-pause";
           max-length = 50;
         };
@@ -62,7 +62,17 @@
         backlight = {
           device = "intel_backlight";
           format = "{icon} {percent}%";
-          format-icons = [ "" "" "" "" "" "" "" "" "" ];
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
         };
         battery = {
           states = {
@@ -71,7 +81,18 @@
           };
           format = "{icon} {capacity}%";
           format-icons = {
-            default = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
+            default = [
+              "󰁺"
+              "󰁻"
+              "󰁼"
+              "󰁽"
+              "󰁾"
+              "󰁿"
+              "󰂀"
+              "󰂁"
+              "󰂂"
+              "󰁹"
+            ];
             warning = "󰂑";
             critical = "󰂃";
             charging = "󰂄";
@@ -81,9 +102,14 @@
         wireplumber = {
           format = "{icon} {volume}%";
           format-muted = "󰝟 <s>{volume}%</s>";
-          format-icons = { default = [ "" "" "" ]; };
-          on-click =
-            "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+          format-icons = {
+            default = [
+              ""
+              ""
+              ""
+            ];
+          };
+          on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           on-click-middle = "${pkgs.helvum}/bin/helvum";
           on-click-right = "${pkgs.pwvucontrol}/bin/pwvucontrol";
         };

@@ -1,6 +1,7 @@
 local trouble = require("trouble")
 
 trouble.setup({
+	debug = false,
 	auto_close = false,
 	auto_open = false,
 	auto_preview = true,
@@ -151,60 +152,42 @@ trouble.setup({
 })
 
 local keys = {
-	{
-		"<leader>xx",
-		function()
-			trouble.toggle("diagnostics")
-		end,
-	},
-
-	{
-		"<leader>xX",
-		function()
-			trouble.toggle({
-				mode = "diagnostics",
-				filter = {
-					buf = 0,
-				},
-			})
-		end,
-	},
-
-	{
-		"<leader>cs",
-		function()
-			trouble.toggle({ mode = "symbols", focus = false })
-		end,
-	},
-
-	{
-		"<leader>cl",
-		function()
-			trouble.toggle({
-				mode = "lsp",
-				focus = false,
-				win = {
-					position = "right",
-				},
-			})
-		end,
-	},
-
-	{
-		"<leader>xL",
-		function()
-			trouble.toggle({ mode = "loclist" })
-		end,
-	},
-
-	{
-		"<leader>xQ",
-		function()
-			trouble.toggle({ mode = "qflist" })
-		end,
-	},
+	["<leader>xx"] = function()
+		trouble.toggle("diagnostics")
+	end,
+	["<leader>xX"] = function()
+		--- @diagnostic disable-next-line
+		trouble.toggle({
+			mode = "diagnostics",
+			filter = {
+				buf = 0,
+			},
+		})
+	end,
+	["<leader>cs"] = function()
+		--- @diagnostic disable-next-line
+		trouble.toggle({ mode = "symbols", focus = false })
+	end,
+	["<leader>cl"] = function()
+		--- @diagnostic disable-next-line
+		trouble.toggle({
+			mode = "lsp",
+			focus = false,
+			win = {
+				position = "right",
+			},
+		})
+	end,
+	["<leader>xL"] = function()
+		--- @diagnostic disable-next-line
+		trouble.toggle({ mode = "loclist" })
+	end,
+	["<leader>xQ"] = function()
+		--- @diagnostic disable-next-line
+		trouble.toggle({ mode = "qflist" })
+	end,
 }
 
-for _, key in pairs(keys) do
-	vim.keymap.set("n", key[1], key[2])
+for key, exec in pairs(keys) do
+	vim.keymap.set("n", key, exec)
 end

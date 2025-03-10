@@ -2,7 +2,8 @@
 let
   kitty = "${config.programs.kitty.package}/bin/kitty";
   ghostty = "${config.programs.ghostty.package}/bin/ghostty";
-in {
+in
+{
   wayland.windowManager.hyprland = {
     enable = true;
     package = null; # Manage hyprland with your os package manager
@@ -71,7 +72,9 @@ in {
         preserve_split = true;
       };
 
-      master = { new_status = "master"; };
+      master = {
+        new_status = "master";
+      };
 
       misc = {
         force_default_wallpaper = -1;
@@ -86,10 +89,14 @@ in {
         kb_rules = "";
         follow_mouse = 1;
         sensitivity = 0;
-        touchpad = { natural_scroll = false; };
+        touchpad = {
+          natural_scroll = false;
+        };
       };
 
-      gestures = { workspace_swipe = false; };
+      gestures = {
+        workspace_swipe = false;
+      };
 
       device = {
         name = "epic-mouse-v1";
@@ -98,41 +105,49 @@ in {
 
       "$mainMod" = "ALT";
 
-      bind = [
-        "$mainMod, Return, exec, $terminal"
-        "$mainMod SHIFT, Q, killactive,"
-        "$mainMod SHIFT, E, exit,"
-        "$mainMod, E, exec, $fileManager"
-        "$mainMod, F, fullscreen,"
-        "$mainMod SHIFT, F, togglefloating,"
-        "$mainMod, Space, exec, $menu"
-        "$mainMod, P, pseudo,"
-        "$mainMod CTRL SHIFT, J, togglesplit,"
-        ", PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
-        "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
-        "$mainMod CTRL SHIFT, S, exec, hyprlock"
+      bind =
+        [
+          "$mainMod, Return, exec, $terminal"
+          "$mainMod SHIFT, Q, killactive,"
+          "$mainMod SHIFT, E, exit,"
+          "$mainMod, E, exec, $fileManager"
+          "$mainMod, F, fullscreen,"
+          "$mainMod SHIFT, F, togglefloating,"
+          "$mainMod, Space, exec, $menu"
+          "$mainMod, P, pseudo,"
+          "$mainMod CTRL SHIFT, J, togglesplit,"
+          ", PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
+          "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
+          "$mainMod CTRL SHIFT, S, exec, hyprlock"
 
-        "$mainMod, L, movefocus, r"
-        "$mainMod, H, movefocus, l"
-        "$mainMod, K, movefocus, u"
-        "$mainMod, J, movefocus, d"
+          "$mainMod, L, movefocus, r"
+          "$mainMod, H, movefocus, l"
+          "$mainMod, K, movefocus, u"
+          "$mainMod, J, movefocus, d"
 
-        "$mainMod, M, togglespecialworkspace, magic"
-        "$mainMod SHIFT, M, movetoworkspace, special:magic"
+          "$mainMod, M, togglespecialworkspace, magic"
+          "$mainMod SHIFT, M, movetoworkspace, special:magic"
 
-        "$mainMod CTRL SHIFT, L, workspace, e+1"
-        "$mainMod CTRL SHIFT, H, workspace, e-1"
+          "$mainMod CTRL SHIFT, L, workspace, e+1"
+          "$mainMod CTRL SHIFT, H, workspace, e-1"
 
-        "$mainMod SHIFT, L, movewindow, r"
-        "$mainMod SHIFT, H, movewindow, l"
-        "$mainMod SHIFT, K, movewindow, u"
-        "$mainMod SHIFT, J, movewindow, d"
-      ] ++ (builtins.concatLists (builtins.genList (i:
-        let ws = i + 1;
-        in [
-          "$mainMod, code:1${toString i}, workspace, ${toString ws}"
-          "$mainMod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-        ]) 9));
+          "$mainMod SHIFT, L, movewindow, r"
+          "$mainMod SHIFT, H, movewindow, l"
+          "$mainMod SHIFT, K, movewindow, u"
+          "$mainMod SHIFT, J, movewindow, d"
+        ]
+        ++ (builtins.concatLists (
+          builtins.genList (
+            i:
+            let
+              ws = i + 1;
+            in
+            [
+              "$mainMod, code:1${toString i}, workspace, ${toString ws}"
+              "$mainMod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
+            ]
+          ) 9
+        ));
 
       bindm = [
         "$mainMod SHIFT, mouse:272, movewindow"
