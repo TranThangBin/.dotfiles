@@ -15,16 +15,10 @@ in
       "$fileManager" = "${pkgs.kdePackages.dolphin}/bin/dolphin";
       "$menu" = "${config.home.file.".local/bin/wofi.sh".source}";
 
-      exec-once = [
-        ''gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"''
-        ''gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"''
-      ];
-
       env = [
         "XCURSOR_SIZE,12"
         "HYPRCURSOR_SIZE,12"
         "QT_QPA_PLATFORMTHEME,qt6ct"
-        "GDK_BACKEND,x11"
         "MOZ_ENABLE_WAYLAND,1"
         "XDG_DATA_DIRS,${builtins.getEnv "XDG_DATA_DIRS"}"
         "XDG_DATA_HOME,${builtins.getEnv "XDG_DATA_HOME"}"

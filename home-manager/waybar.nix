@@ -13,7 +13,7 @@
         modules-left = [ "hyprland/workspaces" ];
         modules-center = [ "custom/music" ];
         modules-right = [
-          "wireplumber"
+          "pulseaudio"
           "backlight"
           "battery"
           "clock"
@@ -97,14 +97,14 @@
             plugged = "";
           };
         };
-        wireplumber = {
+        pulseaudio = {
           format = "{icon} {volume}%";
-          format-muted = "󰝟 <s>{volume}%</s>";
+          format-muted = "󰎊 <s>{volume}%</s>";
           format-icons = {
             default = [
-              ""
-              ""
-              ""
+              "󰎉"
+              "󰎋"
+              "󰎇"
             ];
           };
           on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";

@@ -6,7 +6,8 @@
     shellIntegration.enableZshIntegration = true;
     themeFile = "GitHub_Dark_High_Contrast";
     font = {
-      name = "FiraMono Nerd Font Mono";
+      name = "FiraCode Nerd Font Mono";
+      package = pkgs.nerd-fonts.fira-code;
       size = 16;
     };
     settings = {

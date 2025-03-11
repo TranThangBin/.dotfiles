@@ -69,14 +69,17 @@
 
       nixfmt-rfc-style
       stylua
+
+      fira
     ];
 
     file = {
       ".docker/daemon.json".text = ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
       ".profile".text = ''
         if [[ "$(tty)" = "/dev/tty1" ]]; then
-        	echo "Do you want to start Hyprland? (Y/n): "
+        	printf "Do you want to start Hyprland? (Y/n): "
         	read -n 1 answer
+            echo
         	if [[ "$answer" = "Y" ]]; then
         		pgrep Hyprland || Hyprland
         	fi
@@ -90,6 +93,35 @@
   xdg = {
     enable = true;
     portal.config.common.default = "*";
+  };
+
+  qt = {
+    enable = true;
+    style = {
+      name = "Dracula";
+      package = pkgs.dracula-qt5-theme;
+    };
+  };
+
+  gtk = {
+    enable = true;
+    font = {
+      name = "FiraCode Nerd Font";
+      package = pkgs.nerd-fonts.fira-code;
+      size = 12;
+    };
+    theme = {
+      name = "Dracula";
+      package = pkgs.dracula-theme;
+    };
+    iconTheme = {
+      name = "Dracula";
+      package = pkgs.dracula-icon-theme;
+    };
+    cursorTheme = {
+      name = "Dracula";
+      package = pkgs.dracula-theme;
+    };
   };
 
   programs = {
