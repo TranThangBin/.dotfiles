@@ -131,7 +131,7 @@ local keys = {
 	end,
 }
 
-require("lsp-zero").on_attach(function(client, bufnr)
+lsp_zero.on_attach(function(client, bufnr)
 	for key, exec in pairs(keys) do
 		vim.keymap.set("n", key, function()
 			exec(bufnr)
