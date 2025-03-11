@@ -22,8 +22,8 @@
   ];
 
   home = {
-    username = "trant";
-    homeDirectory = "/home/" + config.home.username;
+    username = builtins.getEnv "USER";
+    homeDirectory = builtins.getEnv "HOME";
     stateVersion = "24.11";
 
     packages = with pkgs; [
@@ -41,11 +41,15 @@
       fd
       htop
       fastfetch
-      powertop
       gnumake
       cmake
       pkg-config
       openssh
+      powertop
+      docker
+      lazydocker
+      rootlesskit
+      mongosh
 
       hyprshot
       brightnessctl
@@ -62,10 +66,6 @@
       alsa-firmware
       alsa-tools
       alsa-lib
-
-      docker
-      lazydocker
-      rootlesskit
 
       nixfmt-rfc-style
       stylua

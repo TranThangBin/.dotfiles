@@ -25,6 +25,10 @@ in
         "PATH,${builtins.getEnv "PATH"}"
       ];
 
+      exec-once = [
+        "systemctl start --user dconf"
+      ];
+
       general = {
         gaps_in = 5;
         gaps_out = 10;

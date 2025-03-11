@@ -99,7 +99,7 @@
         };
         pulseaudio = {
           format = "{icon} {volume}%";
-          format-muted = "󰎊 <s>{volume}%</s>";
+          format-muted = "<s>{icon} {volume}%</s>";
           format-icons = {
             default = [
               "󰎉"
