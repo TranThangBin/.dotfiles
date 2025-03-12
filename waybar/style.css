@@ -30,7 +30,7 @@
 @define-color rosewater #f5e0dc;
 
 * {
-	font-family: FiraCode Nerd Font;
+	font-family: FiraCode Nerd Font Mono;
 	font-size: 20px;
 	min-height: 0;
 }

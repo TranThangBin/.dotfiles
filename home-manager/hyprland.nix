@@ -2,6 +2,27 @@
 let
   kitty = "${config.programs.kitty.package}/bin/kitty";
   ghostty = "${config.programs.ghostty.package}/bin/ghostty";
+  workspaceBinds = builtins.concatLists (
+    builtins.genList (i: [
+      "$mainMod, code:1${toString i}, workspace, ${toString (i + 1)}"
+      "$mainMod SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
+    ]) 9
+  );
+  navigationBinds = builtins.concatLists (
+    builtins.attrValues (
+      builtins.mapAttrs
+        (key: dir: [
+          "$mainMod, ${key}, movefocus, ${dir}"
+          "$mainMod SHIFT, ${key}, movewindow, ${dir}"
+        ])
+        {
+          L = "r";
+          H = "l";
+          K = "u";
+          J = "d";
+        }
+    )
+  );
 in
 {
   wayland.windowManager.hyprland = {
@@ -11,22 +32,13 @@ in
     settings = {
       monitor = ",preferred,auto,1";
 
-      "$terminal" = ghostty;
-      "$fileManager" = "${pkgs.kdePackages.dolphin}/bin/dolphin";
-      "$menu" = "${config.home.file.".local/bin/wofi.sh".source}";
-
       env = [
-        "XCURSOR_SIZE,12"
-        "HYPRCURSOR_SIZE,12"
         "QT_QPA_PLATFORMTHEME,qt6ct"
-        "MOZ_ENABLE_WAYLAND,1"
-        "XDG_DATA_DIRS,${builtins.getEnv "XDG_DATA_DIRS"}"
-        "XDG_DATA_HOME,${builtins.getEnv "XDG_DATA_HOME"}"
-        "PATH,${builtins.getEnv "PATH"}"
       ];
 
       exec-once = [
         "systemctl start --user dconf"
+        ". ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh"
       ];
 
       general = {
@@ -102,6 +114,9 @@ in
       };
 
       "$mainMod" = "ALT";
+      "$terminal" = ghostty;
+      "$fileManager" = "${pkgs.kdePackages.dolphin}/bin/dolphin";
+      "$menu" = "${config.home.file.".local/bin/wofi.sh".source}";
 
       bind =
         [
@@ -115,50 +130,20 @@ in
           "$mainMod, P, pseudo,"
           "$mainMod CTRL SHIFT, J, togglesplit,"
           ", PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
+
           "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
           "$mainMod CTRL SHIFT, S, exec, hyprlock"
-
-          "$mainMod, L, movefocus, r"
-          "$mainMod, H, movefocus, l"
-          "$mainMod, K, movefocus, u"
-          "$mainMod, J, movefocus, d"
 
           "$mainMod, M, togglespecialworkspace, magic"
           "$mainMod SHIFT, M, movetoworkspace, special:magic"
 
           "$mainMod CTRL SHIFT, L, workspace, e+1"
           "$mainMod CTRL SHIFT, H, workspace, e-1"
-
-          "$mainMod SHIFT, L, movewindow, r"
-          "$mainMod SHIFT, H, movewindow, l"
-          "$mainMod SHIFT, K, movewindow, u"
-          "$mainMod SHIFT, J, movewindow, d"
         ]
-        ++ (builtins.concatLists (
-          builtins.genList (
-            i:
-            let
-              ws = i + 1;
-            in
-            [
-              "$mainMod, code:1${toString i}, workspace, ${toString ws}"
-              "$mainMod SHIFT, code:1${toString i}, movetoworkspace, ${toString ws}"
-            ]
-          ) 9
-        ));
+        ++ workspaceBinds
+        ++ navigationBinds;
 
-      bindm = [
-        "$mainMod SHIFT, mouse:272, movewindow"
-        "$mainMod SHIFT, mouse:273, resizewindow"
-      ];
-
-      bindel = [
-        ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86AudioMicMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
-        ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
+      binde = [
         "$mainMod CTRL, L, resizeactive, 10 0"
         "$mainMod CTRL, H, resizeactive, -10 0"
         "$mainMod CTRL, K, resizeactive, 0 -10"
@@ -170,6 +155,20 @@ in
         ", XF86AudioPause, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
         ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
         ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
+      ];
+
+      bindel = [
+        ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
+        ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
+      ];
+
+      bindm = [
+        "$mainMod SHIFT, mouse:272, movewindow"
+        "$mainMod SHIFT, mouse:273, resizewindow"
       ];
 
       windowrulev2 = [

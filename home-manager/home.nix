@@ -1,4 +1,8 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 {
   nixGL.packages = import <nixgl> { inherit pkgs; };
   nixGL.defaultWrapper = "mesa";
@@ -19,6 +23,7 @@
     ./zsh.nix
     ./tmux.nix
     ./nvim.nix
+    ./firefox.nix
   ];
 
   home = {
@@ -39,6 +44,7 @@
 
       ripgrep
       fd
+      mlocate
       htop
       fastfetch
       gnumake
@@ -56,7 +62,7 @@
       resources
       kdePackages.dolphin
       kdePackages.qt6ct
-      firefox
+      gimp
 
       pipewire
       wireplumber
@@ -66,11 +72,10 @@
       alsa-firmware
       alsa-tools
       alsa-lib
+      libcamera
 
       nixfmt-rfc-style
       stylua
-
-      fira
     ];
 
     file = {
@@ -86,8 +91,6 @@
         fi
       '';
     };
-
-    sessionVariables = { };
   };
 
   xdg = {
@@ -127,6 +130,7 @@
   programs = {
     home-manager.enable = true;
     wlogout.enable = true;
+    command-not-found.enable = true;
     git = {
       enable = true;
       userName = "TranThangBin";
