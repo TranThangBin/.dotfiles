@@ -9,6 +9,10 @@
     customPaneNavigationAndResize = true;
     shell = "${pkgs.zsh}/bin/zsh";
     terminal = "screen-256color";
+    extraConfig = ''
+      set-option -sg escape-time 10
+      set-option -g focus-events on
+    '';
     plugins = with pkgs.tmuxPlugins; [
       cpu
       battery

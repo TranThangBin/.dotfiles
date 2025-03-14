@@ -9,7 +9,9 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     initExtra = "[ -z $TMUX ] && fastfetch";
-    shellAliases.home-manager = "home-manager -f ${config.home.homeDirectory}/.dotfiles/home-manager/home.nix";
+    shellAliases.home-manager = ''
+      ${pkgs.home-manager}/bin/home-manager -f ${config.home.homeDirectory}/.dotfiles/home-manager/home.nix
+    '';
     envExtra = ''
       export DOCKER_HOST=unix://${builtins.getEnv "XDG_RUNTIME_DIR"}/docker.sock
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh

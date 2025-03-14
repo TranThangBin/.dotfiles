@@ -60,6 +60,7 @@ in
       gitsigns-nvim
       trouble-nvim
       zen-mode-nvim
+      vim-be-good
       none-ls-nvim
       nvim-treesitter-textobjects
       nvim-treesitter-context
@@ -105,6 +106,8 @@ in
       svelte-language-server
       rust-analyzer
       python312Packages.python-lsp-server
+      tree-sitter
+      gdtoolkit_4
     ];
   };
 }

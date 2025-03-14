@@ -34,6 +34,7 @@ in
 
       env = [
         "QT_QPA_PLATFORMTHEME,qt6ct"
+        "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
       ];
 
       exec-once = [
@@ -129,9 +130,6 @@ in
           "$mainMod, Space, exec, $menu"
           "$mainMod, P, pseudo,"
           "$mainMod CTRL SHIFT, J, togglesplit,"
-          ", PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
-
-          "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
           "$mainMod CTRL SHIFT, S, exec, hyprlock"
 
           "$mainMod, M, togglespecialworkspace, magic"
@@ -139,6 +137,14 @@ in
 
           "$mainMod CTRL SHIFT, L, workspace, e+1"
           "$mainMod CTRL SHIFT, H, workspace, e-1"
+
+          "$mainMod, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
+          "$mainMod SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
+          "$mainMod CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output"
+
+          ",PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region --clipboard-only"
+          "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window --clipboard-only"
+          "CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output --clipboard-only"
         ]
         ++ workspaceBinds
         ++ navigationBinds;

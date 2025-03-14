@@ -4,13 +4,15 @@
   ...
 }:
 {
-  nixGL.packages = import <nixgl> { inherit pkgs; };
-  nixGL.defaultWrapper = "mesa";
-  nixGL.offloadWrapper = "nvidiaPrime";
-  nixGL.installScripts = [
-    "mesa"
-    "nvidiaPrime"
-  ];
+  nixGL = {
+    packages = import <nixgl> { inherit pkgs; };
+    defaultWrapper = "mesa";
+    offloadWrapper = "nvidiaPrime";
+    installScripts = [
+      "mesa"
+      "nvidiaPrime"
+    ];
+  };
 
   imports = [
     ./waybar.nix
@@ -56,6 +58,7 @@
       lazydocker
       rootlesskit
       mongosh
+      tldr
 
       hyprshot
       brightnessctl
@@ -81,6 +84,7 @@
       ".docker/daemon.json".text = ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
       ".profile".text = ''
         if [[ "$(tty)" = "/dev/tty1" ]]; then
+            fastfetch
         	printf "Do you want to start Hyprland? (Y/n): "
         	read -n 1 answer
             echo
