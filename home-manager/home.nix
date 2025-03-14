@@ -72,7 +72,6 @@
       alsa-firmware
       alsa-tools
       alsa-lib
-      libcamera
 
       nixfmt-rfc-style
       stylua
@@ -130,7 +129,6 @@
   programs = {
     home-manager.enable = true;
     wlogout.enable = true;
-    command-not-found.enable = true;
     git = {
       enable = true;
       userName = "TranThangBin";

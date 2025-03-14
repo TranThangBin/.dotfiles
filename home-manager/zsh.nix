@@ -21,7 +21,6 @@ in
       plugins = [
         "tmux"
         "vi-mode"
-        "command-not-found"
       ];
       extraConfig = ''
         bindkey '^ ' autosuggest-accept
