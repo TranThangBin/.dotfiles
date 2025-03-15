@@ -1,6 +1,6 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
-  utils = import ./utils.nix;
+  utils = import ../utils.nix;
 in
 {
   home.file.".local/bin/wofi.sh" = {
@@ -19,7 +19,7 @@ in
 
   xdg.configFile."wofi/style.css" = {
     enable = utils.HYPRLAND_AVAILABLE;
-    source = "${config.home.homeDirectory}/.dotfiles/wofi/style.css";
+    source = "${./style.css}";
   };
 
   programs.wofi = {

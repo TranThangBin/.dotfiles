@@ -1,11 +1,11 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
-  utils = import ./utils.nix;
+  utils = import ../utils.nix;
 in
 {
   xdg.configFile."waybar/style.css" = {
     enable = utils.HYPRLAND_AVAILABLE;
-    source = "${config.home.homeDirectory}/.dotfiles/waybar/style.css";
+    source = "${./style.css}";
   };
 
   programs.waybar = {

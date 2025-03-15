@@ -18,8 +18,9 @@ in
   };
 
   imports = [
-    ./waybar.nix
-    ./wofi.nix
+    ./waybar
+    ./wofi
+    ./nvim
     ./hyprland.nix
     ./hyprlock.nix
     ./hypridle.nix
@@ -27,7 +28,6 @@ in
     ./ghostty.nix
     ./zsh.nix
     ./tmux.nix
-    ./nvim.nix
     ./firefox.nix
   ];
 

@@ -18,7 +18,7 @@ let
     };
 in
 {
-  xdg.configFile.nvim.source = "${config.home.homeDirectory}/.dotfiles/nvim";
+  xdg.configFile.nvim.source = "${./.}";
 
   programs.neovim = {
     enable = true;
