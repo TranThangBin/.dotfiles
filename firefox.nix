@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
   USERNAME = config.home.username;
   nur-no-pkgs =
@@ -6,6 +6,11 @@ let
       { };
 in
 {
+  xdg.desktopEntries.FirefoxSocials = {
+    type = "Application";
+    name = "Firefox (Socials)";
+    exec = "${pkgs.firefox}/bin/firefox messenger.com chat.zalo.me";
+  };
   programs.firefox = {
     enable = true;
     policies = {
