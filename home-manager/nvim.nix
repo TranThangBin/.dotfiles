@@ -83,6 +83,7 @@ in
         p.gdscript
         p.json
         p.yaml
+        p.toml
         p.gitcommit
       ]))
     ];
@@ -98,6 +99,7 @@ in
       tailwindcss-language-server
       typescript-language-server
       yaml-language-server
+      taplo
       gopls
       dockerfile-language-server-nodejs
       docker-compose-language-service

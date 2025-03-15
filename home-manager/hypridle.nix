@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   services.hypridle = {
-    enable = true;
+    enable = (import ./utils.nix).HYPRLAND_AVAILABLE;
     settings = {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";

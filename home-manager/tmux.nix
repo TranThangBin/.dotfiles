@@ -9,9 +9,10 @@
     customPaneNavigationAndResize = true;
     shell = "${pkgs.zsh}/bin/zsh";
     terminal = "screen-256color";
+    escapeTime = 10;
     extraConfig = ''
-      set-option -sg escape-time 10
       set-option -g focus-events on
+      bind -N "Create a new session" C-c new-session
     '';
     plugins = with pkgs.tmuxPlugins; [
       cpu

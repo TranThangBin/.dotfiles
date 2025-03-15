@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
+let
+  utils = import ./utils.nix;
+in
 {
   home.file.".local/bin/wofi.sh" = {
+    enable = utils.HYPRLAND_AVAILABLE;
     executable = true;
     text = ''
       #! /usr/bin/bash
@@ -13,10 +17,13 @@
     '';
   };
 
-  xdg.configFile."wofi/style.css".source = "${config.home.homeDirectory}/.dotfiles/wofi/style.css";
+  xdg.configFile."wofi/style.css" = {
+    enable = utils.HYPRLAND_AVAILABLE;
+    source = "${config.home.homeDirectory}/.dotfiles/wofi/style.css";
+  };
 
   programs.wofi = {
-    enable = true;
+    enable = utils.HYPRLAND_AVAILABLE;
     settings = {
       show = "drun";
       width = 750;

@@ -1,5 +1,6 @@
+{ config, ... }:
 let
-  USERNAME = builtins.getEnv "USER";
+  USERNAME = config.home.username;
   nur-no-pkgs =
     import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz")
       { };
@@ -15,11 +16,13 @@ in
           ublock-origin
           vimium
           darkreader
+          tab-session-manager
         ];
       };
       settings = {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         "sidebar.verticalTabs" = true;
+        "sidebar.visibility" = "hide-sidebar";
         "sidebar.main.tools" = "";
         "font.name.serif.x-western" = "FiraCode  Nerd Font Propo";
         "font.name.sans-serif.x-western" = "FiraCode  Nerd Font Propo";

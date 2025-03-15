@@ -3,6 +3,9 @@
   pkgs,
   ...
 }:
+let
+  utils = import ./utils.nix;
+in
 {
   nixGL = {
     packages = import <nixgl> { inherit pkgs; };
@@ -44,6 +47,9 @@
       openjdk
       python311
 
+      nixfmt-rfc-style
+      stylua
+
       ripgrep
       fd
       mlocate
@@ -75,18 +81,14 @@
       alsa-firmware
       alsa-tools
       alsa-lib
-
-      nixfmt-rfc-style
-      stylua
     ];
 
     file = {
-      ".docker/daemon.json".text = ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
       ".profile".text = ''
-        if [[ "$(tty)" = "/dev/tty1" ]]; then
+        if ${toString utils.HYPRLAND_AVAILABLE} && [[ "$(tty)" = "/dev/tty1" ]]; then
             fastfetch
         	printf "Do you want to start Hyprland? (Y/n): "
-        	read -n 1 answer
+        	read -rn 1 answer
             echo
         	if [[ "$answer" = "Y" ]]; then
         		pgrep Hyprland || Hyprland
@@ -99,6 +101,7 @@
   xdg = {
     enable = true;
     portal.config.common.default = "*";
+    configFile."docker/daemon.json".text = ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
   };
 
   qt = {
@@ -132,7 +135,7 @@
 
   programs = {
     home-manager.enable = true;
-    wlogout.enable = true;
+    wlogout.enable = utils.HYPRLAND_AVAILABLE;
     git = {
       enable = true;
       userName = "TranThangBin";
@@ -147,6 +150,9 @@
       enableZshIntegration = true;
       tmux.enableShellIntegration = true;
     };
+    yazi = {
+      enable = true;
+    };
   };
 
   i18n.inputMethod = {
@@ -159,11 +165,11 @@
 
   services = {
     playerctld.enable = true;
-    swaync.enable = true;
     network-manager-applet.enable = true;
+    swaync.enable = utils.HYPRLAND_AVAILABLE;
 
     hyprpaper = {
-      enable = true;
+      enable = utils.HYPRLAND_AVAILABLE;
       package = pkgs.hyprpaper;
       settings = {
         preload = "${config.home.homeDirectory}/.dotfiles/images/background.jpg";

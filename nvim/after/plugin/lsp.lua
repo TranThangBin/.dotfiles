@@ -20,6 +20,7 @@ local servers = {
 	"templ",
 	"rust_analyzer",
 	"pylsp",
+	"taplo",
 	lua_ls = lsp_zero.nvim_lua_ls(),
 	nil_ls = {
 		settings = {

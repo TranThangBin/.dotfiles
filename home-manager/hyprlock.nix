@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   programs.hyprlock = {
-    enable = true;
+    enable = (import ./utils.nix).HYPRLAND_AVAILABLE;
     package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
     settings = {
       background = {

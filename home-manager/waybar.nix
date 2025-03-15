@@ -1,10 +1,15 @@
 { config, pkgs, ... }:
+let
+  utils = import ./utils.nix;
+in
 {
-  xdg.configFile."waybar/style.css".source =
-    "${config.home.homeDirectory}/.dotfiles/waybar/style.css";
+  xdg.configFile."waybar/style.css" = {
+    enable = utils.HYPRLAND_AVAILABLE;
+    source = "${config.home.homeDirectory}/.dotfiles/waybar/style.css";
+  };
 
   programs.waybar = {
-    enable = true;
+    enable = utils.HYPRLAND_AVAILABLE;
     systemd.enable = true;
     settings = {
       mainBar = {

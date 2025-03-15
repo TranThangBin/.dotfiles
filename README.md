@@ -27,10 +27,12 @@ nix-env -iA nixgl.auto.nixGLDefault
 ### You are ready
 
 ```bash
-rm -rf ~/.config/home-manager # if the default home-manager config already there
-ln -sf ~/.dotfiles/home-manager ~/.config/home-manager
-home-manager switch
+home-manager switch -f $HOME/.dotfiles/home-manager/home.nix
 ```
 
-> [!NOTE] > `hyprland` and `hyprlock` should be managed by your prefered package manager.
+For follow up rebuild you only need to use `home-manager switch` since I have alias the target file part
+
+> [!NOTE]
+>
+> `hyprland` and `hyprlock` should be managed by your prefered package manager.
 > [Rootless mode](https://docs.docker.com/engine/security/rootless) for `docker` service.

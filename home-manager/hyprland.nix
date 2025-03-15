@@ -178,7 +178,8 @@ in
       ];
 
       windowrulev2 = [
-        "opacity 0.95 0.95, class:kitty|class:ghostty"
+        "opacity 0.95 0.95, class:kitty"
+        "opacity ${toString config.programs.ghostty.settings.background-opacity}, class:ghostty"
         "suppressevent maximize, class:.*"
         "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
       ];
