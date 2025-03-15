@@ -10,7 +10,7 @@ in
     syntaxHighlighting.enable = true;
     initExtra = "[ -z $TMUX ] && fastfetch";
     shellAliases = {
-      home-manager = "${pkgs.home-manager}/bin/home-manager -f ${config.home.homeDirectory}/.dotfiles/home-manager/home.nix";
+      home-manager = "${pkgs.home-manager}/bin/home-manager -f ${config.home.homeDirectory}/.dotfiles/home.nix";
     };
     envExtra = ''
       export DOCKER_HOST=unix://${builtins.getEnv "XDG_RUNTIME_DIR"}/docker.sock

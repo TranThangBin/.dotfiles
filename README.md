@@ -27,7 +27,7 @@ nix-env -iA nixgl.auto.nixGLDefault
 ### You are ready
 
 ```bash
-home-manager switch -f $HOME/.dotfiles/home-manager/home.nix
+home-manager switch -f $HOME/.dotfiles/home.nix
 ```
 
 For follow up rebuild you only need to use `home-manager switch` since I have alias the target file part
