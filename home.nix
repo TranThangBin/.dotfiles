@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 let
   utils = import ./utils.nix;
 in
@@ -21,6 +17,7 @@ in
     ./waybar
     ./wofi
     ./nvim
+    ./hyprpaper
     ./hyprland.nix
     ./hyprlock.nix
     ./hypridle.nix
@@ -167,15 +164,6 @@ in
     playerctld.enable = true;
     network-manager-applet.enable = true;
     swaync.enable = utils.HYPRLAND_AVAILABLE;
-
-    hyprpaper = {
-      enable = utils.HYPRLAND_AVAILABLE;
-      package = pkgs.hyprpaper;
-      settings = {
-        preload = "${config.home.homeDirectory}/.dotfiles/images/background.jpg";
-        wallpaper = ", ${config.home.homeDirectory}/.dotfiles/images/background.jpg";
-      };
-    };
   };
 
   systemd.user.services = {
