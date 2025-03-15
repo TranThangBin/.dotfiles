@@ -49,7 +49,6 @@ in
 
       ripgrep
       fd
-      mlocate
       htop
       fastfetch
       gnumake
@@ -82,7 +81,7 @@ in
 
     file = {
       ".profile".text = ''
-        if ${toString utils.HYPRLAND_AVAILABLE} && [[ "$(tty)" = "/dev/tty1" ]]; then
+        if ${if utils.HYPRLAND_AVAILABLE then "true" else "false"} && [[ "$(tty)" = "/dev/tty1" ]]; then
             fastfetch
         	printf "Do you want to start Hyprland? (Y/n): "
         	read -rn 1 answer
