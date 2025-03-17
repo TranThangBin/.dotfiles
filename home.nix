@@ -58,16 +58,16 @@ in
       powertop
       docker
       lazydocker
-      rootlesskit
       mongosh
       tldr
+      ncdu
 
       hyprshot
       brightnessctl
       resources
+      gimp
       kdePackages.dolphin
       kdePackages.qt6ct
-      gimp
 
       pipewire
       wireplumber
@@ -97,7 +97,8 @@ in
   xdg = {
     enable = true;
     portal.config.common.default = "*";
-    configFile."docker/daemon.json".text = ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
+    configFile."docker/daemon.json".text =
+      ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"], "dns-search": ["local"] }'';
   };
 
   qt = {
