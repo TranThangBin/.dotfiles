@@ -1,15 +1,15 @@
 { pkgs, ... }:
 let
-  utils = import ../utils.nix;
+  HYPRLAND_AVAILABLE = builtins.pathExists "/usr/bin/Hyprland";
 in
 {
   xdg.configFile."waybar/style.css" = {
-    enable = utils.HYPRLAND_AVAILABLE;
+    enable = HYPRLAND_AVAILABLE;
     source = "${./style.css}";
   };
 
   programs.waybar = {
-    enable = utils.HYPRLAND_AVAILABLE;
+    enable = HYPRLAND_AVAILABLE;
     systemd.enable = true;
     settings = {
       mainBar = {

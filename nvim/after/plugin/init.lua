@@ -16,6 +16,7 @@ for key, exec in pairs(fugitive_keys) do
 	vim.keymap.set("n", key, exec)
 end
 
+require("todo-comments").setup()
 local jump = require("todo-comments.jump")
 local todo_keys = {
 	["<leader>ttf"] = "<cmd>TodoTelescope<CR>",

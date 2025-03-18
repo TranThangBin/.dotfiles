@@ -1,10 +1,10 @@
 { pkgs, ... }:
 let
-  utils = import ../utils.nix;
+  HYPRLAND_AVAILABLE = builtins.pathExists "/usr/bin/Hyprland";
 in
 {
   home.file.".local/bin/wofi.sh" = {
-    enable = utils.HYPRLAND_AVAILABLE;
+    enable = HYPRLAND_AVAILABLE;
     executable = true;
     text = ''
       #! /usr/bin/bash
@@ -18,12 +18,12 @@ in
   };
 
   xdg.configFile."wofi/style.css" = {
-    enable = utils.HYPRLAND_AVAILABLE;
+    enable = HYPRLAND_AVAILABLE;
     source = "${./style.css}";
   };
 
   programs.wofi = {
-    enable = utils.HYPRLAND_AVAILABLE;
+    enable = HYPRLAND_AVAILABLE;
     settings = {
       show = "drun";
       width = 750;

@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  utils = import ./utils.nix;
+  HYPRLAND_AVAILABLE = builtins.pathExists "/usr/bin/Hyprland";
 in
 {
   nixGL = {
@@ -35,7 +35,6 @@ in
 
     packages = with pkgs; [
       gcc
-      bun
       go
       templ
       zig
@@ -49,17 +48,16 @@ in
 
       ripgrep
       fd
-      htop
       fastfetch
       gnumake
       cmake
       pkg-config
-      openssh
       powertop
       docker
       lazydocker
       mongosh
       tldr
+      htop
       ncdu
 
       hyprshot
@@ -80,17 +78,20 @@ in
     ];
 
     file = {
-      ".profile".text = ''
-        if ${if utils.HYPRLAND_AVAILABLE then "true" else "false"} && [[ "$(tty)" = "/dev/tty1" ]]; then
-            fastfetch
-        	printf "Do you want to start Hyprland? (Y/n): "
-        	read -rn 1 answer
-            echo
-        	if [[ "$answer" = "Y" ]]; then
-        		pgrep Hyprland || Hyprland
-        	fi
-        fi
-      '';
+      ".profile" = {
+        enable = HYPRLAND_AVAILABLE;
+        text = ''
+          if [[ "$(tty)" = "/dev/tty1" ]]; then
+              ${pkgs.fastfetch}/bin/fastfetch
+          	printf "Do you want to start Hyprland? (Y/n): "
+          	read -rn 1 answer
+              echo
+          	if [[ "$answer" = "Y" ]]; then
+          		pgrep Hyprland || Hyprland
+          	fi
+          fi
+        '';
+      };
     };
   };
 
@@ -132,7 +133,14 @@ in
 
   programs = {
     home-manager.enable = true;
-    wlogout.enable = utils.HYPRLAND_AVAILABLE;
+    wlogout.enable = HYPRLAND_AVAILABLE;
+    bat.enable = true;
+    bun.enable = true;
+    go.enable = true;
+    ssh = {
+      enable = true;
+      package = pkgs.openssh;
+    };
     git = {
       enable = true;
       userName = "TranThangBin";
@@ -163,7 +171,7 @@ in
   services = {
     playerctld.enable = true;
     network-manager-applet.enable = true;
-    swaync.enable = utils.HYPRLAND_AVAILABLE;
+    swaync.enable = HYPRLAND_AVAILABLE;
   };
 
   systemd.user.services = {
