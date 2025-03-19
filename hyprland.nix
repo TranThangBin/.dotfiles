@@ -23,6 +23,11 @@ let
         }
     )
   );
+  gpuEnv = [
+    "AQ_DRM_DEVICES,/dev/dri/card1:/dev/dri/card0"
+    "LIBVA_DRIVER_NAME,nvidia"
+    "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+  ];
 in
 {
   wayland.windowManager.hyprland = {
@@ -35,7 +40,7 @@ in
       env = [
         "QT_QPA_PLATFORMTHEME,qt6ct"
         "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
-      ];
+      ] ++ gpuEnv;
 
       exec-once = [
         "systemctl start --user dconf"

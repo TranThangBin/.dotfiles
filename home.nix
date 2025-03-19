@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  HYPRLAND_AVAILABLE = builtins.pathExists "/usr/bin/Hyprland";
+  hyprlandAvailable = builtins.pathExists "/usr/bin/Hyprland";
 in
 {
   nixGL = {
@@ -75,11 +75,12 @@ in
       alsa-firmware
       alsa-tools
       alsa-lib
+      fuse-overlayfs
     ];
 
     file = {
       ".profile" = {
-        enable = HYPRLAND_AVAILABLE;
+        enable = hyprlandAvailable;
         text = ''
           if [[ "$(tty)" = "/dev/tty1" ]]; then
               ${pkgs.fastfetch}/bin/fastfetch
@@ -133,7 +134,7 @@ in
 
   programs = {
     home-manager.enable = true;
-    wlogout.enable = HYPRLAND_AVAILABLE;
+    wlogout.enable = hyprlandAvailable;
     bat.enable = true;
     bun.enable = true;
     go.enable = true;
@@ -171,7 +172,7 @@ in
   services = {
     playerctld.enable = true;
     network-manager-applet.enable = true;
-    swaync.enable = HYPRLAND_AVAILABLE;
+    swaync.enable = hyprlandAvailable;
   };
 
   systemd.user.services = {

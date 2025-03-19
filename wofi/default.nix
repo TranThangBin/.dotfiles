@@ -1,10 +1,10 @@
 { pkgs, ... }:
 let
-  HYPRLAND_AVAILABLE = builtins.pathExists "/usr/bin/Hyprland";
+  hyprlandAvailable = builtins.pathExists "/usr/bin/Hyprland";
 in
 {
   home.file.".local/bin/wofi.sh" = {
-    enable = HYPRLAND_AVAILABLE;
+    enable = hyprlandAvailable;
     executable = true;
     text = ''
       #! /usr/bin/bash
@@ -18,12 +18,12 @@ in
   };
 
   xdg.configFile."wofi/style.css" = {
-    enable = HYPRLAND_AVAILABLE;
+    enable = hyprlandAvailable;
     source = "${./style.css}";
   };
 
   programs.wofi = {
-    enable = HYPRLAND_AVAILABLE;
+    enable = hyprlandAvailable;
     settings = {
       show = "drun";
       width = 750;
