@@ -1,15 +1,9 @@
 { pkgs, ... }:
-let
-  hyprlandAvailable = builtins.pathExists "/usr/bin/Hyprland";
-in
 {
-  xdg.configFile."waybar/style.css" = {
-    enable = hyprlandAvailable;
-    source = "${./style.css}";
-  };
+  xdg.configFile."waybar/style.css".source = "${./style.css}";
 
   programs.waybar = {
-    enable = hyprlandAvailable;
+    enable = true;
     systemd.enable = true;
     settings = {
       mainBar = {

@@ -15,13 +15,8 @@
   };
 
   imports = [
-    ./waybar
-    ./wofi
     ./nvim
-    ./hyprpaper
     ./hyprland.nix
-    ./hyprlock.nix
-    ./hypridle.nix
     ./kitty.nix
     ./ghostty.nix
     ./zsh.nix
@@ -61,8 +56,8 @@
       ncdu
 
       resources
-      gimp
       drawio
+      gimp
 
       pipewire
       wireplumber

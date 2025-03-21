@@ -1,7 +1,5 @@
 { config, pkgs, ... }:
 let
-  hyprlandAvailable = builtins.pathExists "/usr/bin/Hyprland";
-
   mainMod = "ALT";
 
   kitty = "${config.programs.kitty.package}/bin/kitty";
@@ -42,21 +40,25 @@ let
     "__GLX_VENDOR_LIBRARY_NAME,nvidia"
   ];
 in
-{
-  home = {
-    packages =
-      if hyprlandAvailable then
-        with pkgs;
-        [
-          hyprshot
-          kdePackages.dolphin
-          kdePackages.qt6ct
-        ]
-      else
-        [ ];
-    file.".profile" = {
-      enable = hyprlandAvailable;
-      text = ''
+if !builtins.pathExists "/usr/bin/Hyprland" then
+  { }
+else
+  {
+    imports = [
+      ./hyprpaper
+      ./hyprlock.nix
+      ./hypridle.nix
+      ./waybar
+      ./wofi
+    ];
+
+    home = {
+      packages = with pkgs; [
+        hyprshot
+        kdePackages.dolphin
+        kdePackages.qt6ct
+      ];
+      file.".profile".text = ''
         if [[ "$(tty)" = "/dev/tty1" ]]; then
             ${pkgs.fastfetch}/bin/fastfetch
         	printf "Do you want to start Hyprland? (Y/n): "
@@ -68,173 +70,174 @@ in
         fi
       '';
     };
-  };
-  programs.wlogout.enable = hyprlandAvailable;
-  services.swaync.enable = hyprlandAvailable;
-  wayland.windowManager.hyprland = {
-    enable = hyprlandAvailable;
-    package = null; # Manage hyprland with your os package manager
-    systemd = {
-      variables = [ "--all" ];
-      extraCommands = [
-        "systemctl --user stop hyprland-session.target"
-        "systemctl --user start hyprland-session.target"
-        "systemctl --user stop dconf"
-        "systemctl --user start dconf"
-      ];
-    };
-    settings = {
-      monitor = ",preferred,auto,1";
 
-      env = [
-        "QT_QPA_PLATFORMTHEME,qt6ct"
-        "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
-      ] ++ gpuEnv;
+    programs.wlogout.enable = true;
+    services.swaync.enable = true;
 
-      exec-once = [ ". ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh" ];
-
-      general = {
-        gaps_in = 5;
-        gaps_out = 10;
-        border_size = 2;
-        "col.active_border" = pink;
-        "col.inactive_border" = surface0;
-        "col.nogroup_border_active" = flamingo;
-        "col.nogroup_border" = surface0;
-        resize_on_border = false;
-        allow_tearing = false;
-        layout = "dwindle";
-      };
-
-      decoration = {
-        rounding = 10;
-        active_opacity = 1.0;
-        inactive_opacity = 1.0;
-        blur = {
-          enabled = true;
-          size = 3;
-          passes = 1;
-          vibrancy = 0.1696;
-        };
-        shadow = {
-          color = surface0;
-          color_inactive = surface0;
-        };
-      };
-
-      animations = {
-        enabled = true;
-        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
-        animation = [
-          "windows, 1, 7, myBezier"
-          "windowsOut, 1, 7, default, popin 80%"
-          "border, 1, 10, default"
-          "borderangle, 1, 8, default"
-          "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
+    wayland.windowManager.hyprland = {
+      enable = true;
+      package = null; # Manage hyprland with your os package manager
+      systemd = {
+        variables = [ "--all" ];
+        extraCommands = [
+          "systemctl --user stop hyprland-session.target"
+          "systemctl --user start hyprland-session.target"
+          "systemctl --user stop dconf"
+          "systemctl --user start dconf"
         ];
       };
+      settings = {
+        monitor = ",preferred,auto,1";
 
-      dwindle = {
-        pseudotile = true;
-        preserve_split = true;
-      };
+        env = [
+          "QT_QPA_PLATFORMTHEME,qt6ct"
+          "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
+        ] ++ gpuEnv;
 
-      master = {
-        new_status = "master";
-      };
+        exec-once = [ ". ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh" ];
 
-      misc = {
-        force_default_wallpaper = -1;
-        disable_hyprland_logo = true;
-      };
-
-      input = {
-        kb_layout = "us";
-        kb_variant = "";
-        kb_model = "";
-        kb_options = "";
-        kb_rules = "";
-        follow_mouse = 1;
-        sensitivity = 1;
-        touchpad = {
-          natural_scroll = false;
+        general = {
+          gaps_in = 5;
+          gaps_out = 10;
+          border_size = 2;
+          "col.active_border" = pink;
+          "col.inactive_border" = surface0;
+          "col.nogroup_border_active" = flamingo;
+          "col.nogroup_border" = surface0;
+          resize_on_border = false;
+          allow_tearing = false;
+          layout = "dwindle";
         };
+
+        decoration = {
+          rounding = 10;
+          active_opacity = 1.0;
+          inactive_opacity = 1.0;
+          blur = {
+            enabled = true;
+            size = 3;
+            passes = 1;
+            vibrancy = 0.1696;
+          };
+          shadow = {
+            color = surface0;
+            color_inactive = surface0;
+          };
+        };
+
+        animations = {
+          enabled = true;
+          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+          animation = [
+            "windows, 1, 7, myBezier"
+            "windowsOut, 1, 7, default, popin 80%"
+            "border, 1, 10, default"
+            "borderangle, 1, 8, default"
+            "fade, 1, 7, default"
+            "workspaces, 1, 6, default"
+          ];
+        };
+
+        dwindle = {
+          pseudotile = true;
+          preserve_split = true;
+        };
+
+        master = {
+          new_status = "master";
+        };
+
+        misc = {
+          force_default_wallpaper = -1;
+          disable_hyprland_logo = true;
+        };
+
+        input = {
+          kb_layout = "us";
+          kb_variant = "";
+          kb_model = "";
+          kb_options = "";
+          kb_rules = "";
+          follow_mouse = 1;
+          sensitivity = 1;
+          touchpad = {
+            natural_scroll = false;
+          };
+        };
+
+        gestures = {
+          workspace_swipe = false;
+        };
+
+        device = {
+          name = "epic-mouse-v1";
+          sensitivity = -0.5;
+        };
+
+        bind =
+          [
+            "${mainMod}, Return, exec, ${terminal}"
+            "${mainMod} SHIFT, Q, killactive,"
+            "${mainMod} SHIFT, E, exec, ${pkgs.wlogout}/bin/wlogout"
+            "${mainMod}, E, exec, ${fileManager}"
+            "${mainMod}, F, fullscreen,"
+            "${mainMod} SHIFT, F, togglefloating,"
+            "${mainMod}, Space, exec, ${menu}"
+            "${mainMod}, P, pseudo,"
+            "${mainMod} CTRL SHIFT, J, togglesplit,"
+            "${mainMod} CTRL SHIFT, S, exec, hyprlock"
+
+            "${mainMod}, M, togglespecialworkspace, magic"
+            "${mainMod} SHIFT, M, movetoworkspace, special:magic"
+
+            "${mainMod} CTRL SHIFT, L, workspace, e+1"
+            "${mainMod} CTRL SHIFT, H, workspace, e-1"
+
+            "${mainMod}, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
+            "${mainMod} SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
+            "${mainMod} CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output"
+
+            ",PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region --clipboard-only"
+            "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window --clipboard-only"
+            "CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output --clipboard-only"
+          ]
+          ++ workspaceBinds
+          ++ navigationBinds;
+
+        binde = [
+          "${mainMod} CTRL, L, resizeactive, 10 0"
+          "${mainMod} CTRL, H, resizeactive, -10 0"
+          "${mainMod} CTRL, K, resizeactive, 0 -10"
+          "${mainMod} CTRL, J, resizeactive, 0 10"
+        ];
+
+        bindl = [
+          ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
+          ", XF86AudioPause, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
+          ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
+          ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
+        ];
+
+        bindel = [
+          ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          ", XF86AudioMicMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+          ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
+          ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
+        ];
+
+        bindm = [
+          "${mainMod} SHIFT, mouse:272, movewindow"
+          "${mainMod} SHIFT, mouse:273, resizewindow"
+        ];
+
+        windowrulev2 = [
+          "opacity 0.95 0.95, class:kitty"
+          "opacity ${toString config.programs.ghostty.settings.background-opacity}, class:ghostty"
+          "suppressevent maximize, class:.*"
+          "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        ];
       };
-
-      gestures = {
-        workspace_swipe = false;
-      };
-
-      device = {
-        name = "epic-mouse-v1";
-        sensitivity = -0.5;
-      };
-
-      bind =
-        [
-          "${mainMod}, Return, exec, ${terminal}"
-          "${mainMod} SHIFT, Q, killactive,"
-          "${mainMod} SHIFT, E, exec, ${pkgs.wlogout}/bin/wlogout"
-          "${mainMod}, E, exec, ${fileManager}"
-          "${mainMod}, F, fullscreen,"
-          "${mainMod} SHIFT, F, togglefloating,"
-          "${mainMod}, Space, exec, ${menu}"
-          "${mainMod}, P, pseudo,"
-          "${mainMod} CTRL SHIFT, J, togglesplit,"
-          "${mainMod} CTRL SHIFT, S, exec, hyprlock"
-
-          "${mainMod}, M, togglespecialworkspace, magic"
-          "${mainMod} SHIFT, M, movetoworkspace, special:magic"
-
-          "${mainMod} CTRL SHIFT, L, workspace, e+1"
-          "${mainMod} CTRL SHIFT, H, workspace, e-1"
-
-          "${mainMod}, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
-          "${mainMod} SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
-          "${mainMod} CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output"
-
-          ",PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region --clipboard-only"
-          "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window --clipboard-only"
-          "CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output --clipboard-only"
-        ]
-        ++ workspaceBinds
-        ++ navigationBinds;
-
-      binde = [
-        "${mainMod} CTRL, L, resizeactive, 10 0"
-        "${mainMod} CTRL, H, resizeactive, -10 0"
-        "${mainMod} CTRL, K, resizeactive, 0 -10"
-        "${mainMod} CTRL, J, resizeactive, 0 10"
-      ];
-
-      bindl = [
-        ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
-        ", XF86AudioPause, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
-        ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
-        ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
-      ];
-
-      bindel = [
-        ", XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86AudioMicMute, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
-        ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
-      ];
-
-      bindm = [
-        "${mainMod} SHIFT, mouse:272, movewindow"
-        "${mainMod} SHIFT, mouse:273, resizewindow"
-      ];
-
-      windowrulev2 = [
-        "opacity 0.95 0.95, class:kitty"
-        "opacity ${toString config.programs.ghostty.settings.background-opacity}, class:ghostty"
-        "suppressevent maximize, class:.*"
-        "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-      ];
     };
-  };
-}
+  }

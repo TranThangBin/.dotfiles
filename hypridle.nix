@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   services.hypridle = {
-    enable = builtins.pathExists "/usr/bin/Hyprland";
+    enable = true;
     settings = {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";
