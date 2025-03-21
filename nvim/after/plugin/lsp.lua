@@ -5,6 +5,8 @@ local lsp_zero = require("lsp-zero")
 local lspconfig = require("lspconfig")
 local schemastore = require("schemastore")
 
+local capabilities = lsp_zero.get_capabilities()
+
 local servers = {
 	"ccls",
 	"html",
@@ -21,6 +23,7 @@ local servers = {
 	"rust_analyzer",
 	"pylsp",
 	"taplo",
+	"zls",
 	lua_ls = lsp_zero.nvim_lua_ls(),
 	nil_ls = {
 		settings = {
@@ -53,10 +56,11 @@ local servers = {
 for k, v in pairs(servers) do
 	if type(k) == "number" then
 		local server = v
-		lspconfig[server].setup({})
+		lspconfig[server].setup({ capabilities = capabilities })
 	else
 		local server = k
 		local opts = v
+		opts.capabilities = opts.capabilities or capabilities
 		lspconfig[server].setup(opts)
 	end
 end

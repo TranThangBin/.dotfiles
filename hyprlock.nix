@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   programs.hyprlock = {
-    enable = builtins.pathExists "/usr/bin/Hyprland";
+    enable = builtins.pathExists "/usr/bin/Hyprland" && builtins.pathExists "/usr/bin/hyprlock";
     package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
     settings = {
       background = {

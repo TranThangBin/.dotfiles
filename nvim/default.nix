@@ -27,6 +27,7 @@ in
       harpoon2
       rose-pine
       tokyonight-nvim
+      catppuccin-nvim
       nvim-lspconfig
       SchemaStore-nvim
       lsp-zero-nvim
@@ -81,6 +82,7 @@ in
         p.toml
         p.gitcommit
       ]))
+      (fromGitHub "main" "eduardo-antunes/plainline")
     ];
     extraPackages = with pkgs; [
       nil
@@ -102,6 +104,7 @@ in
       shfmt
       svelte-language-server
       rust-analyzer
+      zls
       python312Packages.python-lsp-server
       tree-sitter
       gdtoolkit_4

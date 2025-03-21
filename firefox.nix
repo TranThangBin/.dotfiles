@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 let
   USERNAME = config.home.username;
+  firefoxPkg = config.lib.nixGL.wrap pkgs.firefox;
   nur-no-pkgs =
     import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz")
       { };
@@ -9,10 +10,11 @@ in
   xdg.desktopEntries.FirefoxSocials = {
     type = "Application";
     name = "Firefox (Socials)";
-    exec = "${pkgs.firefox}/bin/firefox messenger.com chat.zalo.me";
+    exec = "${firefoxPkg}/bin/firefox messenger.com chat.zalo.me";
   };
   programs.firefox = {
     enable = true;
+    package = firefoxPkg;
     policies = {
       BlockAboutAddons = false;
       BlockAboutConfig = false;

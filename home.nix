@@ -1,8 +1,9 @@
-{ pkgs, ... }:
-let
-  hyprlandAvailable = builtins.pathExists "/usr/bin/Hyprland";
-in
+{ pkgs, lib, ... }:
 {
+  nix.package = pkgs.nix;
+
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "drawio" ];
+
   nixGL = {
     packages = import <nixgl> { inherit pkgs; };
     defaultWrapper = "mesa";
@@ -31,7 +32,7 @@ in
   home = {
     username = builtins.getEnv "USER";
     homeDirectory = builtins.getEnv "HOME";
-    stateVersion = "24.11";
+    stateVersion = "25.05";
 
     packages = with pkgs; [
       gcc
@@ -40,7 +41,6 @@ in
       zig
       rustup
       nodejs_23
-      openjdk
       python311
 
       nixfmt-rfc-style
@@ -60,40 +60,21 @@ in
       htop
       ncdu
 
-      hyprshot
-      brightnessctl
       resources
       gimp
-      kdePackages.dolphin
-      kdePackages.qt6ct
+      drawio
 
       pipewire
       wireplumber
       pwvucontrol
       helvum
+      brightnessctl
       alsa-utils
       alsa-firmware
       alsa-tools
       alsa-lib
       fuse-overlayfs
     ];
-
-    file = {
-      ".profile" = {
-        enable = hyprlandAvailable;
-        text = ''
-          if [[ "$(tty)" = "/dev/tty1" ]]; then
-              ${pkgs.fastfetch}/bin/fastfetch
-          	printf "Do you want to start Hyprland? (Y/n): "
-          	read -rn 1 answer
-              echo
-          	if [[ "$answer" = "Y" ]]; then
-          		pgrep Hyprland || Hyprland
-          	fi
-          fi
-        '';
-      };
-    };
   };
 
   xdg = {
@@ -101,6 +82,18 @@ in
     portal.config.common.default = "*";
     configFile."docker/daemon.json".text =
       ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"], "dns-search": ["local"] }'';
+    desktopEntries.LegacyLauncher = {
+      type = "Application";
+      name = "Legacy Launcher";
+      genericName = "Minecraft";
+      prefersNonDefaultGPU = true;
+      exec = "${pkgs.jdk}/bin/java -jar ${
+        pkgs.fetchurl {
+          url = "https://llaun.ch/jar";
+          hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
+        }
+      }";
+    };
   };
 
   qt = {
@@ -134,10 +127,10 @@ in
 
   programs = {
     home-manager.enable = true;
-    wlogout.enable = hyprlandAvailable;
     bat.enable = true;
     bun.enable = true;
     go.enable = true;
+    java.enable = true;
     ssh = {
       enable = true;
       package = pkgs.openssh;
@@ -172,7 +165,6 @@ in
   services = {
     playerctld.enable = true;
     network-manager-applet.enable = true;
-    swaync.enable = hyprlandAvailable;
   };
 
   systemd.user.services = {

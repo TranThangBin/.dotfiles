@@ -11,9 +11,9 @@ in
     initExtra = "[ -z $TMUX ] && ${pkgs.fastfetch}/bin/fastfetch";
     shellAliases = {
       home-manager = "${pkgs.home-manager}/bin/home-manager -f ${config.home.homeDirectory}/.dotfiles/home.nix";
-      Docker-start = "systemctl start --user docker";
-      Docker-stop = "systemctl stop --user docker";
-      Docker-restart = "systemctl restart --user docker";
+      ds = "systemctl start --user docker";
+      dss = "systemctl stop --user docker";
+      drs = "systemctl restart --user docker";
     };
     envExtra = ''
       export DOCKER_HOST=unix://${builtins.getEnv "XDG_RUNTIME_DIR"}/docker.sock

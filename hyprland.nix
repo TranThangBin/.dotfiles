@@ -1,19 +1,32 @@
 { config, pkgs, ... }:
 let
+  hyprlandAvailable = builtins.pathExists "/usr/bin/Hyprland";
+
+  mainMod = "ALT";
+
   kitty = "${config.programs.kitty.package}/bin/kitty";
   ghostty = "${config.programs.ghostty.package}/bin/ghostty";
+
+  terminal = ghostty;
+  fileManager = "${pkgs.kdePackages.dolphin}/bin/dolphin";
+  menu = "${config.home.file.".local/bin/wofi.sh".source}";
+
+  flamingo = "rgb(f2cdcd)";
+  pink = "rgb(f5c2e7)";
+  surface0 = "rgb(313244)";
+
   workspaceBinds = builtins.concatLists (
     builtins.genList (i: [
-      "$mainMod, code:1${toString i}, workspace, ${toString (i + 1)}"
-      "$mainMod SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
+      "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
+      "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
     ]) 9
   );
   navigationBinds = builtins.concatLists (
     builtins.attrValues (
       builtins.mapAttrs
         (key: dir: [
-          "$mainMod, ${key}, movefocus, ${dir}"
-          "$mainMod SHIFT, ${key}, movewindow, ${dir}"
+          "${mainMod}, ${key}, movefocus, ${dir}"
+          "${mainMod} SHIFT, ${key}, movewindow, ${dir}"
         ])
         {
           L = "r";
@@ -30,10 +43,46 @@ let
   ];
 in
 {
+  home = {
+    packages =
+      if hyprlandAvailable then
+        with pkgs;
+        [
+          hyprshot
+          kdePackages.dolphin
+          kdePackages.qt6ct
+        ]
+      else
+        [ ];
+    file.".profile" = {
+      enable = hyprlandAvailable;
+      text = ''
+        if [[ "$(tty)" = "/dev/tty1" ]]; then
+            ${pkgs.fastfetch}/bin/fastfetch
+        	printf "Do you want to start Hyprland? (Y/n): "
+        	read -rn 1 answer
+            echo
+        	if [[ "$answer" = "Y" ]]; then
+        		pgrep Hyprland || Hyprland
+        	fi
+        fi
+      '';
+    };
+  };
+  programs.wlogout.enable = hyprlandAvailable;
+  services.swaync.enable = hyprlandAvailable;
   wayland.windowManager.hyprland = {
-    enable = true;
+    enable = hyprlandAvailable;
     package = null; # Manage hyprland with your os package manager
-    systemd.variables = [ "--all" ];
+    systemd = {
+      variables = [ "--all" ];
+      extraCommands = [
+        "systemctl --user stop hyprland-session.target"
+        "systemctl --user start hyprland-session.target"
+        "systemctl --user stop dconf"
+        "systemctl --user start dconf"
+      ];
+    };
     settings = {
       monitor = ",preferred,auto,1";
 
@@ -42,17 +91,16 @@ in
         "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
       ] ++ gpuEnv;
 
-      exec-once = [
-        "systemctl start --user dconf"
-        ". ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh"
-      ];
+      exec-once = [ ". ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh" ];
 
       general = {
         gaps_in = 5;
         gaps_out = 10;
         border_size = 2;
-        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
+        "col.active_border" = pink;
+        "col.inactive_border" = surface0;
+        "col.nogroup_border_active" = flamingo;
+        "col.nogroup_border" = surface0;
         resize_on_border = false;
         allow_tearing = false;
         layout = "dwindle";
@@ -67,6 +115,10 @@ in
           size = 3;
           passes = 1;
           vibrancy = 0.1696;
+        };
+        shadow = {
+          color = surface0;
+          color_inactive = surface0;
         };
       };
 
@@ -104,7 +156,7 @@ in
         kb_options = "";
         kb_rules = "";
         follow_mouse = 1;
-        sensitivity = 0;
+        sensitivity = 1;
         touchpad = {
           natural_scroll = false;
         };
@@ -119,33 +171,28 @@ in
         sensitivity = -0.5;
       };
 
-      "$mainMod" = "ALT";
-      "$terminal" = ghostty;
-      "$fileManager" = "${pkgs.kdePackages.dolphin}/bin/dolphin";
-      "$menu" = "${config.home.file.".local/bin/wofi.sh".source}";
-
       bind =
         [
-          "$mainMod, Return, exec, $terminal"
-          "$mainMod SHIFT, Q, killactive,"
-          "$mainMod SHIFT, E, exit,"
-          "$mainMod, E, exec, $fileManager"
-          "$mainMod, F, fullscreen,"
-          "$mainMod SHIFT, F, togglefloating,"
-          "$mainMod, Space, exec, $menu"
-          "$mainMod, P, pseudo,"
-          "$mainMod CTRL SHIFT, J, togglesplit,"
-          "$mainMod CTRL SHIFT, S, exec, hyprlock"
+          "${mainMod}, Return, exec, ${terminal}"
+          "${mainMod} SHIFT, Q, killactive,"
+          "${mainMod} SHIFT, E, exec, ${pkgs.wlogout}/bin/wlogout"
+          "${mainMod}, E, exec, ${fileManager}"
+          "${mainMod}, F, fullscreen,"
+          "${mainMod} SHIFT, F, togglefloating,"
+          "${mainMod}, Space, exec, ${menu}"
+          "${mainMod}, P, pseudo,"
+          "${mainMod} CTRL SHIFT, J, togglesplit,"
+          "${mainMod} CTRL SHIFT, S, exec, hyprlock"
 
-          "$mainMod, M, togglespecialworkspace, magic"
-          "$mainMod SHIFT, M, movetoworkspace, special:magic"
+          "${mainMod}, M, togglespecialworkspace, magic"
+          "${mainMod} SHIFT, M, movetoworkspace, special:magic"
 
-          "$mainMod CTRL SHIFT, L, workspace, e+1"
-          "$mainMod CTRL SHIFT, H, workspace, e-1"
+          "${mainMod} CTRL SHIFT, L, workspace, e+1"
+          "${mainMod} CTRL SHIFT, H, workspace, e-1"
 
-          "$mainMod, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
-          "$mainMod SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
-          "$mainMod CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output"
+          "${mainMod}, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region"
+          "${mainMod} SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window"
+          "${mainMod} CTRL SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m output"
 
           ",PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m region --clipboard-only"
           "SHIFT, PRINT, exec, ${pkgs.hyprshot}/bin/hyprshot -m window --clipboard-only"
@@ -155,10 +202,10 @@ in
         ++ navigationBinds;
 
       binde = [
-        "$mainMod CTRL, L, resizeactive, 10 0"
-        "$mainMod CTRL, H, resizeactive, -10 0"
-        "$mainMod CTRL, K, resizeactive, 0 -10"
-        "$mainMod CTRL, J, resizeactive, 0 10"
+        "${mainMod} CTRL, L, resizeactive, 10 0"
+        "${mainMod} CTRL, H, resizeactive, -10 0"
+        "${mainMod} CTRL, K, resizeactive, 0 -10"
+        "${mainMod} CTRL, J, resizeactive, 0 10"
       ];
 
       bindl = [
@@ -178,8 +225,8 @@ in
       ];
 
       bindm = [
-        "$mainMod SHIFT, mouse:272, movewindow"
-        "$mainMod SHIFT, mouse:273, resizewindow"
+        "${mainMod} SHIFT, mouse:272, movewindow"
+        "${mainMod} SHIFT, mouse:273, resizewindow"
       ];
 
       windowrulev2 = [
