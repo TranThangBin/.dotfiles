@@ -189,6 +189,7 @@
       };
       Service = {
         ExecStart = "${pkgs.wireplumber}/bin/wireplumber";
+        Restat = "always";
       };
     };
   };
