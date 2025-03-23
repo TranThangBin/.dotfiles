@@ -1,4 +1,47 @@
 { pkgs, lib, ... }:
+let
+  languages = with pkgs; [
+    gcc
+    templ
+    zig
+    rustup
+    nodejs_23
+    python311
+  ];
+  controlTools = with pkgs; [
+    pipewire
+    wireplumber
+    pwvucontrol
+    helvum
+    brightnessctl
+    alsa-utils
+    alsa-firmware
+    alsa-tools
+    alsa-lib
+    fuse-overlayfs
+  ];
+  buildTools = with pkgs; [
+    gnumake
+    cmake
+    pkg-config
+  ];
+  cliTools = with pkgs; [
+    ripgrep
+    fd
+    powertop
+    docker
+    lazydocker
+    mongosh
+    tldr
+    htop
+    ncdu
+  ];
+  guiTools = with pkgs; [
+    resources
+    drawio
+    gimp
+  ];
+in
 {
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "drawio" ];
 
@@ -26,47 +69,7 @@
     username = builtins.getEnv "USER";
     homeDirectory = builtins.getEnv "HOME";
     stateVersion = "25.05";
-
-    packages = with pkgs; [
-      gcc
-      go
-      templ
-      zig
-      rustup
-      nodejs_23
-      python311
-
-      nixfmt-rfc-style
-      stylua
-
-      ripgrep
-      fd
-      gnumake
-      cmake
-      pkg-config
-      powertop
-      docker
-      lazydocker
-      mongosh
-      tldr
-      htop
-      ncdu
-
-      resources
-      drawio
-      gimp
-
-      pipewire
-      wireplumber
-      pwvucontrol
-      helvum
-      brightnessctl
-      alsa-utils
-      alsa-firmware
-      alsa-tools
-      alsa-lib
-      fuse-overlayfs
-    ];
+    packages = languages ++ controlTools ++ buildTools ++ cliTools ++ guiTools;
   };
 
   xdg = {

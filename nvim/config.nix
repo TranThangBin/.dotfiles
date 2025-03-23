@@ -57,28 +57,30 @@ in
       none-ls-nvim
       nvim-treesitter-textobjects
       nvim-treesitter-context
-      (nvim-treesitter.withPlugins (p: [
-        p.c
-        p.cpp
-        p.go
-        p.rust
-        p.zig
-        p.lua
-        p.nix
-        p.bash
-        p.html
-        p.css
-        p.javascript
-        p.typescript
-        p.python
-        p.svelte
-        p.templ
-        p.gdscript
-        p.json
-        p.yaml
-        p.toml
-        p.gitcommit
-      ]))
+      (nvim-treesitter.withPlugins (
+        p: with p; [
+          c
+          cpp
+          go
+          rust
+          zig
+          lua
+          nix
+          bash
+          html
+          css
+          javascript
+          typescript
+          python
+          svelte
+          templ
+          gdscript
+          json
+          yaml
+          toml
+          gitcommit
+        ]
+      ))
       (fromGitHub "main" "eduardo-antunes/plainline")
     ];
     extraPackages = with pkgs; [
