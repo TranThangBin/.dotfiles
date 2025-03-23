@@ -43,7 +43,6 @@
 
       ripgrep
       fd
-      fastfetch
       gnumake
       cmake
       pkg-config
@@ -74,7 +73,6 @@
 
   xdg = {
     enable = true;
-    portal.config.common.default = "*";
     configFile."docker/daemon.json".text =
       ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"], "dns-search": ["local"] }'';
     desktopEntries.LegacyLauncher = {
@@ -126,6 +124,7 @@
     bun.enable = true;
     go.enable = true;
     java.enable = true;
+    fastfetch.enable = true;
     ssh = {
       enable = true;
       package = pkgs.openssh;
@@ -189,7 +188,7 @@
       };
       Service = {
         ExecStart = "${pkgs.wireplumber}/bin/wireplumber";
-        Restat = "always";
+        Restart = "always";
       };
     };
   };

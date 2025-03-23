@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 let
   mainMod = "ALT";
-  uwsmCmd = if builtins.pathExists "/usr/bin/uwsm" then "uwsm app --" else "";
 
   kitty = "${config.programs.kitty.package}/bin/kitty";
   ghostty = "${config.programs.ghostty.package}/bin/ghostty";
@@ -36,9 +35,9 @@ let
     )
   );
   gpuEnv = [
-    "AQ_DRM_DEVICES,/dev/dri/card1:/dev/dri/card0"
-    "LIBVA_DRIVER_NAME,nvidia"
+    "GBM_BACKEND,nvidia-drm"
     "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+    "LIBVA_DRIVER_NAME,nvidia"
   ];
 in
 if !builtins.pathExists "/usr/bin/Hyprland" then
@@ -58,6 +57,7 @@ else
         hyprshot
         kdePackages.dolphin
         kdePackages.qt6ct
+        uwsm
       ];
       file.".profile".text = ''
         if [[ "$(tty)" = "/dev/tty1" ]]; then
@@ -65,15 +65,16 @@ else
         	printf "Do you want to start Hyprland? (Y/n): "
         	read -rn 1 answer
             echo
-            if [[ "$answer" = "Y" ]]; then
-                if uwsm check may-start; then
-                    exec uwsm start /usr/share/wayland-sessions/hyprland.desktop
-                else
-                    pgrep Hyprland || Hyprland
-                fi
+            if [[ "$answer" = "Y" ]] && ${pkgs.uwsm}/bin/uwsm check may-start; then
+                exec ${pkgs.uwsm}/bin/uwsm start /usr/share/wayland-sessions/hyprland.desktop
             fi
         fi
       '';
+    };
+
+    xdg = {
+      portal.config.common.default = "*";
+      configFile."uwsm/env-hyprland".text = ''export AQ_DRM_DEVICES="/dev/dri/card2:/dev/dri/card1"'';
     };
 
     programs.wlogout.enable = true;
@@ -82,26 +83,18 @@ else
     wayland.windowManager.hyprland = {
       enable = true;
       package = null; # Manage hyprland with your os package manager
-      systemd = {
-        enable = uwsmCmd == "";
-        variables = [ "--all" ];
-        extraCommands = [
-          "systemctl --user stop hyprland-session.target"
-          "systemctl --user start hyprland-session.target"
-          "systemctl --user stop dconf"
-          "systemctl --user start dconf"
-        ];
-      };
+      systemd.enable = false;
       settings = {
         monitor = ",preferred,auto,1";
 
         env = [
           "QT_QPA_PLATFORMTHEME,qt6ct"
           "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
-        ] # ++ gpuEnv
-        ;
+        ] ++ gpuEnv;
 
-        # exec-once = [ ". ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh" ];
+        exec-once = [
+          "${pkgs.uwsm}/bin/uwsm app -- . ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        ];
 
         general = {
           gaps_in = 5;
@@ -183,16 +176,16 @@ else
 
         bind =
           [
-            "${mainMod}, Return, exec, ${uwsmCmd} ${terminal}"
+            "${mainMod}, Return, exec, ${pkgs.uwsm}/bin/uwsm app -- ${terminal}"
             "${mainMod} SHIFT, Q, killactive,"
-            "${mainMod} SHIFT, E, exec, ${uwsmCmd} ${pkgs.wlogout}/bin/wlogout"
-            "${mainMod}, E, exec, ${uwsmCmd} ${fileManager}"
+            "${mainMod} SHIFT, E, exec, ${pkgs.uwsm}/bin/uwsm app -- ${pkgs.wlogout}/bin/wlogout"
+            "${mainMod}, E, exec, ${pkgs.uwsm}/bin/uwsm app -- ${fileManager}"
             "${mainMod}, F, fullscreen,"
             "${mainMod} SHIFT, F, togglefloating,"
-            "${mainMod}, Space, exec, ${uwsmCmd} ${menu}"
+            "${mainMod}, Space, exec, ${pkgs.uwsm}/bin/uwsm app -- ${menu}"
             "${mainMod}, P, pseudo,"
             "${mainMod} CTRL SHIFT, J, togglesplit,"
-            "${mainMod} CTRL SHIFT, S, exec, ${uwsmCmd} hyprlock"
+            "${mainMod} CTRL SHIFT, S, exec, ${pkgs.uwsm}/bin/uwsm app -- hyprlock"
 
             "${mainMod}, M, togglespecialworkspace, magic"
             "${mainMod} SHIFT, M, movetoworkspace, special:magic"
@@ -200,13 +193,13 @@ else
             "${mainMod} CTRL SHIFT, L, workspace, e+1"
             "${mainMod} CTRL SHIFT, H, workspace, e-1"
 
-            "${mainMod}, PRINT, exec, ${uwsmCmd} ${pkgs.hyprshot}/bin/hyprshot -m region"
-            "${mainMod} SHIFT, PRINT, exec, ${uwsmCmd}  ${pkgs.hyprshot}/bin/hyprshot -m window"
-            "${mainMod} CTRL SHIFT, PRINT, exec, ${uwsmCmd}  ${pkgs.hyprshot}/bin/hyprshot -m output"
+            "${mainMod}, PRINT, exec, ${pkgs.uwsm}/bin/uwsm app -- ${pkgs.hyprshot}/bin/hyprshot -m region"
+            "${mainMod} SHIFT, PRINT, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.hyprshot}/bin/hyprshot -m window"
+            "${mainMod} CTRL SHIFT, PRINT, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.hyprshot}/bin/hyprshot -m output"
 
-            ",PRINT, exec, ${uwsmCmd}  ${pkgs.hyprshot}/bin/hyprshot -m region --clipboard-only"
-            "SHIFT, PRINT, exec, ${uwsmCmd}  ${pkgs.hyprshot}/bin/hyprshot -m window --clipboard-only"
-            "CTRL SHIFT, PRINT, exec, ${uwsmCmd}  ${pkgs.hyprshot}/bin/hyprshot -m output --clipboard-only"
+            ",PRINT, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.hyprshot}/bin/hyprshot -m region --clipboard-only"
+            "SHIFT, PRINT, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.hyprshot}/bin/hyprshot -m window --clipboard-only"
+            "CTRL SHIFT, PRINT, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.hyprshot}/bin/hyprshot -m output --clipboard-only"
           ]
           ++ workspaceBinds
           ++ navigationBinds;
@@ -219,19 +212,19 @@ else
         ];
 
         bindl = [
-          ", XF86AudioNext, exec, ${uwsmCmd}  ${pkgs.playerctl}/bin/playerctl next"
-          ", XF86AudioPause, exec, ${uwsmCmd}  ${pkgs.playerctl}/bin/playerctl play-pause"
-          ", XF86AudioPlay, exec, ${uwsmCmd}  ${pkgs.playerctl}/bin/playerctl play-pause"
-          ", XF86AudioPrev, exec, ${uwsmCmd}  ${pkgs.playerctl}/bin/playerctl previous"
+          ", XF86AudioNext, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.playerctl}/bin/playerctl next"
+          ", XF86AudioPause, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.playerctl}/bin/playerctl play-pause"
+          ", XF86AudioPlay, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.playerctl}/bin/playerctl play-pause"
+          ", XF86AudioPrev, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.playerctl}/bin/playerctl previous"
         ];
 
         bindel = [
-          ", XF86AudioRaiseVolume, exec, ${uwsmCmd}  ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
-          ", XF86AudioLowerVolume, exec, ${uwsmCmd}  ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ", XF86AudioMute, exec, ${uwsmCmd}  ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-          ", XF86AudioMicMute, exec, ${uwsmCmd}  ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-          ", XF86MonBrightnessUp, exec, ${uwsmCmd}  ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
-          ", XF86MonBrightnessDown, exec, ${uwsmCmd}  ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
+          ", XF86AudioRaiseVolume, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioLowerVolume, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86AudioMute, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+          ", XF86AudioMicMute, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+          ", XF86MonBrightnessUp, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.brightnessctl}/bin/brightnessctl s 10%+"
+          ", XF86MonBrightnessDown, exec, ${pkgs.uwsm}/bin/uwsm app --  ${pkgs.brightnessctl}/bin/brightnessctl s 10%-"
         ];
 
         bindm = [
