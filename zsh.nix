@@ -1,7 +1,4 @@
 { config, pkgs, ... }:
-let
-  HOME = config.home.homeDirectory;
-in
 {
   programs.zsh = {
     enable = true;
@@ -15,10 +12,10 @@ in
       dss = "systemctl stop --user docker";
       drs = "systemctl restart --user docker";
     };
-    envExtra = ''
+    envExtra = with config.home; ''
       export DOCKER_HOST=unix://${builtins.getEnv "XDG_RUNTIME_DIR"}/docker.sock
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
-      export PATH=${HOME}/go/bin:${HOME}/bin:${HOME}/.local/bin:/usr/local/bin:${builtins.getEnv "PATH"}
+      export PATH=${homeDirectory}/go/bin:${homeDirectory}/bin:${homeDirectory}/.local/bin:/usr/local/bin:${builtins.getEnv "PATH"}
     '';
     oh-my-zsh = {
       enable = true;

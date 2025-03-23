@@ -38,7 +38,6 @@
           on-timeout = "systemctl suspend";
         }
       ];
-
     };
   };
 

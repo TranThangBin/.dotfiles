@@ -1,7 +1,5 @@
 { pkgs, lib, ... }:
 {
-  nix.package = pkgs.nix;
-
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "drawio" ];
 
   nixGL = {
@@ -15,13 +13,13 @@
   };
 
   imports = [
+    ./firefox
     ./nvim
-    ./hyprland.nix
+    ./hyprland
     ./kitty.nix
     ./ghostty.nix
     ./zsh.nix
     ./tmux.nix
-    ./firefox.nix
   ];
 
   home = {
@@ -80,12 +78,14 @@
       name = "Legacy Launcher";
       genericName = "Minecraft";
       prefersNonDefaultGPU = true;
-      exec = "${pkgs.jdk}/bin/java -jar ${
-        pkgs.fetchurl {
-          url = "https://llaun.ch/jar";
-          hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
-        }
-      }";
+      exec =
+        with pkgs;
+        "${jdk}/bin/java -jar ${
+          fetchurl {
+            url = "https://llaun.ch/jar";
+            hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
+          }
+        }";
     };
   };
 
@@ -97,24 +97,24 @@
     };
   };
 
-  gtk = {
+  gtk = with pkgs; {
     enable = true;
     font = {
       name = "FiraCode Nerd Font";
-      package = pkgs.nerd-fonts.fira-code;
+      package = nerd-fonts.fira-code;
       size = 12;
     };
     theme = {
       name = "Dracula";
-      package = pkgs.dracula-theme;
+      package = dracula-theme;
     };
     iconTheme = {
       name = "Dracula";
-      package = pkgs.dracula-icon-theme;
+      package = dracula-icon-theme;
     };
     cursorTheme = {
       name = "Dracula";
-      package = pkgs.dracula-theme;
+      package = dracula-theme;
     };
   };
 
@@ -161,15 +161,15 @@
     network-manager-applet.enable = true;
   };
 
-  systemd.user.services = {
-    docker.Service.ExecStart = "${pkgs.docker}/bin/dockerd-rootless";
+  systemd.user.services = with pkgs; {
+    docker.Service.ExecStart = "${docker}/bin/dockerd-rootless";
 
     pipewire = {
       Install = {
         WantedBy = [ "default.target" ];
       };
       Service = {
-        ExecStart = "${pkgs.pipewire}/bin/pipewire";
+        ExecStart = "${pipewire}/bin/pipewire";
       };
     };
 
@@ -178,7 +178,7 @@
         WantedBy = [ "default.target" ];
       };
       Service = {
-        ExecStart = "${pkgs.pipewire}/bin/pipewire-pulse";
+        ExecStart = "${pipewire}/bin/pipewire-pulse";
       };
     };
 
@@ -187,7 +187,7 @@
         WantedBy = [ "default.target" ];
       };
       Service = {
-        ExecStart = "${pkgs.wireplumber}/bin/wireplumber";
+        ExecStart = "${wireplumber}/bin/wireplumber";
         Restart = "always";
       };
     };

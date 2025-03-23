@@ -1,20 +1,13 @@
 { config, pkgs, ... }:
 let
-  USERNAME = config.home.username;
-  firefoxPkg = config.lib.nixGL.wrap pkgs.firefox;
   nur-no-pkgs =
     import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/main.tar.gz")
       { };
 in
 {
-  xdg.desktopEntries.FirefoxSocials = {
-    type = "Application";
-    name = "Firefox (Socials)";
-    exec = "${firefoxPkg}/bin/firefox messenger.com chat.zalo.me";
-  };
   programs.firefox = {
     enable = true;
-    package = firefoxPkg;
+    package = config.lib.nixGL.wrap pkgs.firefox;
     policies = {
       BlockAboutAddons = false;
       BlockAboutConfig = false;
@@ -95,8 +88,8 @@ in
       NoDefaultBookmarks = true;
       PromptForDownloadLocation = true;
     };
-    profiles."${USERNAME}" = {
-      name = USERNAME;
+    profiles."${config.home.username}" = {
+      name = config.home.username;
       isDefault = true;
       extensions = {
         packages = with nur-no-pkgs.repos.rycee.firefox-addons; [

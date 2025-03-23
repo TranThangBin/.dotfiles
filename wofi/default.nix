@@ -2,13 +2,13 @@
 {
   home.file.".local/bin/wofi.sh" = {
     executable = true;
-    text = ''
+    text = with pkgs; ''
       #! /usr/bin/bash
 
-      if [[ ! $(pidof ${pkgs.wofi}/bin/wofi) ]]; then
-        ${pkgs.wofi}/bin/wofi
+      if [[ ! $(pidof ${wofi}/bin/wofi) ]]; then
+        ${wofi}/bin/wofi
       else
-        pkill ${pkgs.wofi}/bin/wofi
+        pkill ${wofi}/bin/wofi
       fi
     '';
   };
