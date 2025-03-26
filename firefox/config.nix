@@ -6,7 +6,6 @@ let
 in
 {
   programs.firefox = {
-    enable = true;
     package = config.lib.nixGL.wrap pkgs.firefox;
     policies = {
       BlockAboutAddons = false;

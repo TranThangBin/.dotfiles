@@ -2,40 +2,26 @@
 let
   mainMod = "ALT";
 
-  kitty = "${config.programs.kitty.package}/bin/kitty";
-  ghostty = "${config.programs.ghostty.package}/bin/ghostty";
-
-  terminal = ghostty;
+  terminal = with config.programs; {
+    kitty = "${kitty.package}/bin/kitty";
+    ghostty = "${ghostty.package}/bin/ghostty";
+  };
   fileManager = "${pkgs.kdePackages.dolphin}/bin/dolphin";
-  menu = "${config.home.file.".local/bin/wofi.sh".source}";
+  menu = pkgs.writeShellScript "wofi.sh" ''
+    #! /usr/bin/bash
+
+    if [[ ! $(pidof ${pkgs.wofi}/bin/wofi) ]]; then
+      ${pkgs.wofi}/bin/wofi
+    else
+      pkill ${pkgs.wofi}/bin/wofi
+    fi
+  '';
 
   flamingo = "rgb(f2cdcd)";
   pink = "rgb(f5c2e7)";
   surface0 = "rgb(313244)";
 
-  workspaceBinds = builtins.concatLists (
-    builtins.genList (i: [
-      "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
-      "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
-    ]) 9
-  );
-  navigationBinds = builtins.concatLists (
-    builtins.attrValues (
-      builtins.mapAttrs
-        (key: dir: [
-          "${mainMod}, ${key}, movefocus, ${dir}"
-          "${mainMod} SHIFT, ${key}, movewindow, ${dir}"
-        ])
-        {
-          L = "r";
-          H = "l";
-          K = "u";
-          J = "d";
-        }
-    )
-  );
-
-  gpuEnv = [
+  nvidiaEnv = [
     "GBM_BACKEND,nvidia-drm"
     "__GLX_VENDOR_LIBRARY_NAME,nvidia"
     "LIBVA_DRIVER_NAME,nvidia"
@@ -43,7 +29,6 @@ let
 in
 {
   wayland.windowManager.hyprland = {
-    enable = true;
     package = null; # Manage hyprland with your os package manager
     systemd.enable = false;
     settings = {
@@ -52,10 +37,14 @@ in
       env = [
         "QT_QPA_PLATFORMTHEME,qt6ct"
         "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
-      ] ++ gpuEnv;
+      ] ++ nvidiaEnv;
 
       exec-once = [
         "${pkgs.uwsm}/bin/uwsm app -- . ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        "systemctl stop --user dconf"
+        "systemctl start --user dconf"
+        "systemctl stop --user network-manager-applet.service"
+        "systemctl start --user network-manager-applet.service"
       ];
 
       general = {
@@ -139,7 +128,7 @@ in
       bind =
         with pkgs;
         [
-          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm app -- ${terminal}"
+          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm app -- ${terminal.ghostty}"
           "${mainMod} SHIFT, Q, killactive,"
           "${mainMod} SHIFT, E, exec, ${uwsm}/bin/uwsm app -- ${wlogout}/bin/wlogout"
           "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManager}"
@@ -150,12 +139,6 @@ in
           "${mainMod} CTRL SHIFT, J, togglesplit,"
           "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm app -- hyprlock"
 
-          "${mainMod}, M, togglespecialworkspace, magic"
-          "${mainMod} SHIFT, M, movetoworkspace, special:magic"
-
-          "${mainMod} CTRL SHIFT, L, workspace, e+1"
-          "${mainMod} CTRL SHIFT, H, workspace, e-1"
-
           "${mainMod}, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m region"
           "${mainMod} SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m window"
           "${mainMod} CTRL SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m output"
@@ -164,8 +147,31 @@ in
           "SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m window --clipboard-only"
           "CTRL SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m output --clipboard-only"
         ]
-        ++ workspaceBinds
-        ++ navigationBinds;
+        ++ [
+          "${mainMod}, M, togglespecialworkspace, magic"
+          "${mainMod} SHIFT, M, movetoworkspace, special:magic"
+
+          "${mainMod} CTRL SHIFT, L, workspace, e+1"
+          "${mainMod} CTRL SHIFT, H, workspace, e-1"
+
+          "${mainMod}, L, movefocus, r"
+          "${mainMod} SHIFT, L, movewindow, r"
+
+          "${mainMod}, H, movefocus, l"
+          "${mainMod} SHIFT, H, movewindow, l"
+
+          "${mainMod}, K, movefocus, u"
+          "${mainMod} SHIFT, K, movewindow, u"
+
+          "${mainMod}, J, movefocus, d"
+          "${mainMod} SHIFT, J, movewindow, d"
+        ]
+        ++ builtins.concatLists (
+          builtins.genList (i: [
+            "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
+            "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
+          ]) 9
+        );
 
       binde = [
         "${mainMod} CTRL, L, resizeactive, 10 0"

@@ -1,29 +1,14 @@
 { pkgs, ... }:
 {
-  home.file.".local/bin/wofi.sh" = {
-    executable = true;
-    text = with pkgs; ''
-      #! /usr/bin/bash
-
-      if [[ ! $(pidof ${wofi}/bin/wofi) ]]; then
-        ${wofi}/bin/wofi
-      else
-        pkill ${wofi}/bin/wofi
-      fi
-    '';
-  };
-
-  xdg.configFile."wofi/style.css".source = "${./style.css}";
-
   programs.wofi = {
-    enable = true;
+    style = builtins.readFile ./style.css;
     settings = {
       show = "drun";
       width = 750;
       height = 400;
       always_parse_args = true;
       show_all = false;
-      term = "ghostty";
+      term = "${pkgs.ghostty}/bin/ghostty";
       hide_scroll = true;
       print_command = true;
       insensitive = true;

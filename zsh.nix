@@ -1,7 +1,8 @@
 { config, pkgs, ... }:
 {
   programs.zsh = {
-    enable = true;
+    oh-my-zsh.enable = true;
+
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
@@ -12,13 +13,14 @@
       dss = "systemctl stop --user docker";
       drs = "systemctl restart --user docker";
     };
-    envExtra = with config.home; ''
-      export DOCKER_HOST=unix://${builtins.getEnv "XDG_RUNTIME_DIR"}/docker.sock
+
+    envExtra = ''
+      export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
       export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh
-      export PATH=${homeDirectory}/go/bin:${homeDirectory}/bin:${homeDirectory}/.local/bin:/usr/local/bin:${builtins.getEnv "PATH"}
+      export PATH=$PATH:${config.home.homeDirectory}/go/bin
     '';
+
     oh-my-zsh = {
-      enable = true;
       theme = "robbyrussell";
       plugins = [
         "tmux"

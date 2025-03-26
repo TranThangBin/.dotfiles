@@ -1,48 +1,108 @@
 { pkgs, lib, ... }:
-let
-  languages = with pkgs; [
+{
+  home.username = "trant";
+  home.homeDirectory = "/home/trant";
+
+  programs.git.userName = "TranThangBin";
+  programs.git.userEmail = "thangdev04@gmail.com";
+
+  home.stateVersion = "25.05";
+  home.packages = with pkgs; [
     gcc
     templ
     zig
     rustup
     nodejs_23
     python311
-  ];
-  controlTools = with pkgs; [
-    pipewire
-    wireplumber
-    pwvucontrol
-    helvum
-    brightnessctl
-    alsa-utils
-    alsa-firmware
-    alsa-tools
-    alsa-lib
-    fuse-overlayfs
-  ];
-  buildTools = with pkgs; [
+
+    unzip
     gnumake
     cmake
     pkg-config
-  ];
-  cliTools = with pkgs; [
+
     ripgrep
     fd
+    brightnessctl
     powertop
-    docker
-    lazydocker
     mongosh
     tldr
     htop
     ncdu
-  ];
-  guiTools = with pkgs; [
+
     resources
     drawio
     gimp
+    vlc
   ];
-in
-{
+
+  wayland.windowManager.hyprland.enable = true;
+
+  programs.home-manager.enable = true;
+  programs.firefox.enable = true;
+  programs.neovim.enable = true;
+  programs.kitty.enable = true;
+  programs.ghostty.enable = true;
+  programs.zsh.enable = true;
+  programs.tmux.enable = true;
+  programs.bat.enable = true;
+  programs.bun.enable = true;
+  programs.go.enable = true;
+  programs.java.enable = true;
+  programs.fastfetch.enable = true;
+  programs.ssh.enable = true;
+  programs.git.enable = true;
+  programs.yazi.enable = true;
+  programs.zoxide.enable = true;
+  programs.fzf.enable = true;
+  programs.less.enable = true;
+
+  xdg.enable = true;
+
+  services.playerctld.enable = true;
+  services.network-manager-applet.enable = true;
+
+  i18n.inputMethod.enabled = "fcitx5";
+
+  qt.enable = true;
+  gtk.enable = true;
+
+  programs.ssh.package = pkgs.openssh;
+  programs.zoxide.enableZshIntegration = true;
+  programs.fzf = {
+    enableZshIntegration = true;
+    tmux.enableShellIntegration = true;
+  };
+
+  i18n.inputMethod.fcitx5.addons = with pkgs; [
+    kdePackages.fcitx5-unikey
+    fcitx5-tokyonight
+  ];
+
+  qt.style = {
+    name = "Dracula";
+    package = pkgs.dracula-qt5-theme;
+  };
+
+  gtk = {
+    font = {
+      name = "FiraCode Nerd Font";
+      package = pkgs.nerd-fonts.fira-code;
+      size = 12;
+    };
+    theme = {
+      name = "Dracula";
+      package = pkgs.dracula-theme;
+    };
+    iconTheme = {
+      name = "Dracula";
+      package = pkgs.dracula-icon-theme;
+    };
+    cursorTheme = {
+      name = "Dracula";
+      package = pkgs.dracula-theme;
+    };
+  };
+
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "drawio" ];
 
   nixGL = {
@@ -63,136 +123,7 @@ in
     ./ghostty.nix
     ./zsh.nix
     ./tmux.nix
+    ./docker.nix
+    ./pipewire.nix
   ];
-
-  home = {
-    username = builtins.getEnv "USER";
-    homeDirectory = builtins.getEnv "HOME";
-    stateVersion = "25.05";
-    packages = languages ++ controlTools ++ buildTools ++ cliTools ++ guiTools;
-  };
-
-  xdg = {
-    enable = true;
-    configFile."docker/daemon.json".text =
-      ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"], "dns-search": ["local"] }'';
-    desktopEntries.LegacyLauncher = {
-      type = "Application";
-      name = "Legacy Launcher";
-      genericName = "Minecraft";
-      prefersNonDefaultGPU = true;
-      exec =
-        with pkgs;
-        "${jdk}/bin/java -jar ${
-          fetchurl {
-            url = "https://llaun.ch/jar";
-            hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
-          }
-        }";
-    };
-  };
-
-  qt = {
-    enable = true;
-    style = {
-      name = "Dracula";
-      package = pkgs.dracula-qt5-theme;
-    };
-  };
-
-  gtk = with pkgs; {
-    enable = true;
-    font = {
-      name = "FiraCode Nerd Font";
-      package = nerd-fonts.fira-code;
-      size = 12;
-    };
-    theme = {
-      name = "Dracula";
-      package = dracula-theme;
-    };
-    iconTheme = {
-      name = "Dracula";
-      package = dracula-icon-theme;
-    };
-    cursorTheme = {
-      name = "Dracula";
-      package = dracula-theme;
-    };
-  };
-
-  programs = {
-    home-manager.enable = true;
-    bat.enable = true;
-    bun.enable = true;
-    go.enable = true;
-    java.enable = true;
-    fastfetch.enable = true;
-    ssh = {
-      enable = true;
-      package = pkgs.openssh;
-    };
-    git = {
-      enable = true;
-      userName = "TranThangBin";
-      userEmail = "thangdev04@gmail.com";
-    };
-    zoxide = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-    fzf = {
-      enable = true;
-      enableZshIntegration = true;
-      tmux.enableShellIntegration = true;
-    };
-    yazi = {
-      enable = true;
-    };
-  };
-
-  i18n.inputMethod = {
-    enabled = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      kdePackages.fcitx5-unikey
-      fcitx5-tokyonight
-    ];
-  };
-
-  services = {
-    playerctld.enable = true;
-    network-manager-applet.enable = true;
-  };
-
-  systemd.user.services = with pkgs; {
-    docker.Service.ExecStart = "${docker}/bin/dockerd-rootless";
-
-    pipewire = {
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-      Service = {
-        ExecStart = "${pipewire}/bin/pipewire";
-      };
-    };
-
-    pipewire-pulse = {
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-      Service = {
-        ExecStart = "${pipewire}/bin/pipewire-pulse";
-      };
-    };
-
-    wireplumber = {
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-      Service = {
-        ExecStart = "${wireplumber}/bin/wireplumber";
-        Restart = "always";
-      };
-    };
-  };
 }

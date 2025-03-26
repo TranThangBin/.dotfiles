@@ -13,7 +13,6 @@ let
 in
 {
   programs.neovim = {
-    enable = true;
     defaultEditor = true;
     vimAlias = true;
     plugins = with pkgs.vimPlugins; [
@@ -84,7 +83,7 @@ in
       (fromGitHub "main" "eduardo-antunes/plainline")
     ];
     extraPackages = with pkgs; [
-      nil
+      nixd
       nixfmt-rfc-style
       lua-language-server
       stylua

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
+  home.packages = [ pkgs.imagemagick ];
   programs.kitty = {
-    enable = true;
     package = config.lib.nixGL.wrap pkgs.kitty;
     shellIntegration.enableZshIntegration = true;
     themeFile = "GitHub_Dark_High_Contrast";
@@ -11,7 +11,7 @@
       size = 16;
     };
     settings = {
-      shell = "${config.programs.zsh.package}/bin/zsh";
+      shell = "${pkgs.zsh}/bin/zsh";
     };
   };
 }

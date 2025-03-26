@@ -1,7 +1,6 @@
 { pkgs, ... }:
 {
   programs.tmux = {
-    enable = true;
     baseIndex = 1;
     clock24 = true;
     keyMode = "vi";
@@ -18,7 +17,6 @@
       cpu
       battery
       copycat
-
       {
         plugin = resurrect;
         extraConfig = ''
@@ -26,7 +24,6 @@
           set -g @resurrect-strategy-nvim 'session'
         '';
       }
-
       {
         plugin = continuum;
         extraConfig = ''
@@ -34,7 +31,6 @@
           set -g @continuum-save-interval '0'
         '';
       }
-
       {
         plugin = catppuccin;
         extraConfig = ''

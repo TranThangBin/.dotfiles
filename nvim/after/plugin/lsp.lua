@@ -25,15 +25,6 @@ local servers = {
 	"taplo",
 	"zls",
 	lua_ls = lsp_zero.nvim_lua_ls(),
-	nil_ls = {
-		settings = {
-			["nil"] = {
-				formatting = {
-					command = { "nixfmt" },
-				},
-			},
-		},
-	},
 	jsonls = {
 		settings = {
 			json = {
@@ -48,6 +39,21 @@ local servers = {
 			schemaStore = {
 				enable = false,
 				url = "",
+			},
+		},
+	},
+	nixd = {
+		cmd = { "nixd" },
+		settings = {
+			nixd = {
+				nixpkgs = {
+					expr = "import <nixpkgs> { }",
+				},
+				options = {
+					home_manager = {
+						expr = "(import <home-manager> { pkgs = import <nixpkgs> {}; }).options",
+					},
+				},
 			},
 		},
 	},

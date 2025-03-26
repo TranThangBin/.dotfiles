@@ -8,6 +8,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.gdformat,
 		null_ls.builtins.formatting.prettierd,
 		null_ls.builtins.formatting.shfmt,
+		null_ls.builtins.formatting.nixfmt,
 		{
 			method = null_ls.methods.FORMATTING,
 			name = "templfmt",
