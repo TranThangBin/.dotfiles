@@ -5,34 +5,35 @@
   ...
 }:
 let
-  hyprlandEnabled = config.wayland.windowManager.hyprland.enable;
   gpuEnv = "/dev/dri/card2:/dev/dri/card1";
 in
+with config.wayland.windowManager;
 {
-  programs.hyprlock.enable = hyprlandEnabled;
-  programs.waybar.enable = hyprlandEnabled;
-  programs.wofi.enable = hyprlandEnabled;
-  programs.wlogout.enable = hyprlandEnabled;
-  services.swaync.enable = hyprlandEnabled;
+  programs.hyprlock.enable = hyprland.enable;
+  programs.waybar.enable = hyprland.enable;
+  programs.wofi.enable = hyprland.enable;
+  programs.wlogout.enable = hyprland.enable;
+  services.swaync.enable = hyprland.enable;
 
-  services.hyprpaper.enable = hyprlandEnabled;
-  services.hypridle.enable = hyprlandEnabled;
+  services.hyprpaper.enable = hyprland.enable;
+  services.hypridle.enable = hyprland.enable;
 
-  xdg.configFile."uwsm/env-hyprland".enable = hyprlandEnabled;
+  xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
 
-  home.file.".profile".enable = hyprlandEnabled;
+  home.file.".profile".enable = hyprland.enable;
 
-  xdg.portal.configPackages = lib.optionals hyprlandEnabled [
+  xdg.portal.configPackages = lib.optionals hyprland.enable [
     pkgs.xdg-desktop-portal-hyprland
   ];
-  xdg.configFile."uwsm/env-hyprland".text = "export AQ_DRM_DEVICES=${gpuEnv}";
 
-  home.packages = lib.optionals hyprlandEnabled [
+  home.packages = lib.optionals hyprland.enable [
     pkgs.uwsm
     pkgs.hyprshot
     pkgs.kdePackages.dolphin
     pkgs.kdePackages.qt6ct
   ];
+
+  xdg.configFile."uwsm/env-hyprland".text = "export AQ_DRM_DEVICES=${gpuEnv}";
 
   home.file.".profile".text = with pkgs; ''
     if [[ "$(tty)" = "/dev/tty1" ]]; then
