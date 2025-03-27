@@ -2,6 +2,7 @@
 {
   home.packages = with pkgs; [
     docker
+    docker-buildx
     lazydocker
     fuse-overlayfs
   ];

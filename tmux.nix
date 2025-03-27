@@ -25,13 +25,6 @@
         '';
       }
       {
-        plugin = continuum;
-        extraConfig = ''
-          set -g @continuum-restore 'on'
-          set -g @continuum-save-interval '0'
-        '';
-      }
-      {
         plugin = catppuccin;
         extraConfig = ''
           set -g @catppuccin_flavor "mocha"

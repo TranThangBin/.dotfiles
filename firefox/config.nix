@@ -153,9 +153,6 @@ in
           currentVersion = 21;
           newElementCount = 2;
         };
-        "font.name.serif.x-western" = "FiraCode Nerd Font Propo";
-        "font.name.sans-serif.x-western" = "FiraCode Nerd Font Propo";
-        "font.name.monospace.x-western" = "FiraCode Nerd Font Mono";
       };
     };
   };

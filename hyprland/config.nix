@@ -37,6 +37,7 @@ in
       env = [
         "QT_QPA_PLATFORMTHEME,qt6ct"
         "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
+        "XDG_DATA_DIRS,/usr/share:$XDG_DATA_DIRS"
       ] ++ nvidiaEnv;
 
       exec-once = [

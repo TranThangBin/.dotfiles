@@ -12,6 +12,7 @@ local servers = {
 	"html",
 	"htmx",
 	"cssls",
+	"emmet_language_server",
 	"tailwindcss",
 	"ts_ls",
 	"gdscript",

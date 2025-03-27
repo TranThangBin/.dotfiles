@@ -27,6 +27,7 @@
     mongosh
     tldr
     htop
+    btop
     ncdu
 
     resources
@@ -36,6 +37,8 @@
   ];
 
   wayland.windowManager.hyprland.enable = true;
+
+  fonts.fontconfig.enable = true;
 
   programs.home-manager.enable = true;
   programs.firefox.enable = true;
@@ -84,11 +87,6 @@
   };
 
   gtk = {
-    font = {
-      name = "FiraCode Nerd Font";
-      package = pkgs.nerd-fonts.fira-code;
-      size = 12;
-    };
     theme = {
       name = "Dracula";
       package = pkgs.dracula-theme;
@@ -125,5 +123,6 @@
     ./tmux.nix
     ./docker.nix
     ./pipewire.nix
+    ./fonts.nix
   ];
 }

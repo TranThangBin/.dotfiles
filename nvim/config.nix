@@ -90,6 +90,7 @@ in
       ccls
       prettierd
       vscode-langservers-extracted
+      emmet-language-server
       htmx-lsp
       tailwindcss-language-server
       typescript-language-server
