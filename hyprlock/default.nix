@@ -1,4 +1,3 @@
-{ pkgs, ... }:
 let
   red = "rgb(f38ba8)";
   yellow = "rgb(f9e2af)";
@@ -13,7 +12,6 @@ let
 in
 {
   programs.hyprlock = {
-    package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
     settings = {
       general = {
         disable_loading_bar = true;

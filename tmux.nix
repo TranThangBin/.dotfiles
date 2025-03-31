@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ config, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
   programs.tmux = {
     baseIndex = 1;
@@ -6,14 +9,14 @@
     keyMode = "vi";
     mouse = false;
     customPaneNavigationAndResize = true;
-    shell = "${pkgs.zsh}/bin/zsh";
+    shell = with config.programs; "${zsh.package}/bin/zsh";
     terminal = "screen-256color";
     escapeTime = 10;
     extraConfig = ''
       set-option -g focus-events on
       bind -N "Create a new session" C-c new-session
     '';
-    plugins = with pkgs.tmuxPlugins; [
+    plugins = with pkgsUnstable.tmuxPlugins; [
       cpu
       battery
       copycat

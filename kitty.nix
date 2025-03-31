@@ -1,8 +1,9 @@
-{ config, pkgs, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
-  home.packages = [ pkgs.imagemagick ];
+  home.packages = [ pkgsUnstable.imagemagick ];
   programs.kitty = {
-    package = config.lib.nixGL.wrap pkgs.kitty;
     shellIntegration.enableZshIntegration = true;
     themeFile = "GitHub_Dark_High_Contrast";
     font = {
@@ -10,7 +11,7 @@
       size = 16;
     };
     settings = {
-      shell = "${pkgs.zsh}/bin/zsh";
+      shell = "${pkgsUnstable.zsh}/bin/zsh";
     };
   };
 }

@@ -1,8 +1,10 @@
-{ pkgs, lib, ... }:
+{ lib, ... }:
 let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+
   fromGitHub =
     ref: repo:
-    pkgs.vimUtils.buildVimPlugin {
+    pkgsUnstable.vimUtils.buildVimPlugin {
       pname = "${lib.strings.sanitizeDerivationName repo}";
       version = ref;
       src = builtins.fetchGit {
@@ -15,7 +17,7 @@ in
   programs.neovim = {
     defaultEditor = true;
     vimAlias = true;
-    plugins = with pkgs.vimPlugins; [
+    plugins = with pkgsUnstable.vimPlugins; [
       plenary-nvim
       nvim-web-devicons
       vim-obsession
@@ -56,33 +58,34 @@ in
       none-ls-nvim
       nvim-treesitter-textobjects
       nvim-treesitter-context
-      (nvim-treesitter.withPlugins (
-        p: with p; [
-          c
-          cpp
-          go
-          rust
-          zig
-          lua
-          nix
-          bash
-          html
-          css
-          javascript
-          typescript
-          python
-          svelte
-          templ
-          gdscript
-          json
-          yaml
-          toml
-          gitcommit
-        ]
-      ))
+      (nvim-treesitter.withPlugins (p: [
+        p.c
+        p.cpp
+        p.go
+        p.rust
+        p.zig
+        p.lua
+        p.nix
+        p.bash
+        p.html
+        p.css
+        p.javascript
+        p.typescript
+        p.python
+        p.svelte
+        p.templ
+        p.gdscript
+        p.json
+        p.yaml
+        p.toml
+        p.gitcommit
+        p.prolog
+      ]))
       (fromGitHub "main" "eduardo-antunes/plainline")
     ];
-    extraPackages = with pkgs; [
+    extraPackages = with pkgsUnstable; [
+      pyright
+      ruff
       nixd
       nixfmt-rfc-style
       lua-language-server
@@ -104,7 +107,6 @@ in
       svelte-language-server
       rust-analyzer
       zls
-      python312Packages.python-lsp-server
       tree-sitter
       gdtoolkit_4
     ];

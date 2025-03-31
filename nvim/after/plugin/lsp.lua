@@ -22,10 +22,16 @@ local servers = {
 	"bashls",
 	"templ",
 	"rust_analyzer",
-	"pylsp",
 	"taplo",
 	"zls",
 	lua_ls = lsp_zero.nvim_lua_ls(),
+	ruff = { init_options = { settings = { logLevel = "debug" } } },
+	pyright = {
+		settings = {
+			pyright = { disableOrganizeImports = true },
+			python = { analysis = { ignore = { "*" } } },
+		},
+	},
 	jsonls = {
 		settings = {
 			json = {
@@ -111,19 +117,16 @@ local keys = {
 		vim.lsp.buf.rename()
 	end,
 	["K"] = function()
-		-- vim.lsp.buf.hover({ border = "rounded" })
-		vim.lsp.buf.hover()
+		vim.lsp.buf.hover({ border = "rounded" })
 	end,
 	["<leader>vd"] = function()
 		vim.diagnostic.open_float({ border = "rounded" })
 	end,
 	["]d"] = function()
-		-- vim.diagnostic.jump({ count = 1, float = true })
-		vim.diagnostic.goto_next()
+		vim.diagnostic.jump({ count = 1, float = true })
 	end,
 	["[d"] = function()
-		-- vim.diagnostic.jump({ count = -1, float = true })
-		vim.diagnostic.goto_prev()
+		vim.diagnostic.jump({ count = -1, float = true })
 	end,
 	["<leader>f"] = function(bufnr)
 		vim.lsp.buf.format({

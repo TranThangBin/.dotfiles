@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
   programs.waybar = {
     systemd.enable = true;
@@ -39,7 +41,7 @@
           icon-size = 21;
           spacing = 10;
         };
-        "custom/music" = with pkgs; {
+        "custom/music" = with pkgsUnstable; {
           format = "  {}";
           escape = true;
           interval = 5;
@@ -94,7 +96,7 @@
             plugged = "";
           };
         };
-        pulseaudio = with pkgs; {
+        pulseaudio = with pkgsUnstable; {
           format = "{icon} {volume}%";
           format-muted = "<s>{icon} {volume}%</s>";
           format-icons = {
@@ -115,7 +117,7 @@
         };
         "custom/power" = {
           tooltip = false;
-          on-click = "${pkgs.wlogout}/bin/wlogout &";
+          on-click = "${pkgsUnstable.wlogout}/bin/wlogout &";
           format = "";
         };
       };

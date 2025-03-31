@@ -1,6 +1,7 @@
 require("netrw").setup()
 require("nvim-autopairs").setup()
 require("nvim-surround").setup()
+require("plainline").setup()
 
 vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<CR>")
 
@@ -27,5 +28,3 @@ local todo_keys = {
 for key, exec in pairs(todo_keys) do
 	vim.keymap.set("n", key, exec)
 end
-
-require("plainline").setup()

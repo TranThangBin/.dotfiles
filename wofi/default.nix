@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
   programs.wofi = {
     style = builtins.readFile ./style.css;
@@ -8,7 +10,7 @@
       height = 400;
       always_parse_args = true;
       show_all = false;
-      term = "${pkgs.ghostty}/bin/ghostty";
+      term = "${pkgsUnstable.ghostty}/bin/ghostty";
       hide_scroll = true;
       print_command = true;
       insensitive = true;

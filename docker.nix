@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
-  home.packages = with pkgs; [
+  home.packages = with pkgsUnstable; [
     docker
     docker-buildx
     lazydocker
@@ -14,5 +16,5 @@
     }
   '';
 
-  systemd.user.services.docker.Service.ExecStart = "${pkgs.docker}/bin/dockerd-rootless";
+  systemd.user.services.docker.Service.ExecStart = "${pkgsUnstable.docker}/bin/dockerd-rootless";
 }

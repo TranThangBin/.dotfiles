@@ -1,19 +1,21 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+
   mainMod = "ALT";
 
   terminal = with config.programs; {
     kitty = "${kitty.package}/bin/kitty";
     ghostty = "${ghostty.package}/bin/ghostty";
   };
-  fileManager = "${pkgs.kdePackages.dolphin}/bin/dolphin";
-  menu = pkgs.writeShellScript "wofi.sh" ''
+  fileManager = "${pkgsUnstable.kdePackages.dolphin}/bin/dolphin";
+  menu = pkgsUnstable.writeShellScript "wofi.sh" ''
     #! /usr/bin/bash
 
-    if [[ ! $(pidof ${pkgs.wofi}/bin/wofi) ]]; then
-      ${pkgs.wofi}/bin/wofi
+    if [[ ! $(pidof ${pkgsUnstable.wofi}/bin/wofi) ]]; then
+      ${pkgsUnstable.wofi}/bin/wofi
     else
-      pkill ${pkgs.wofi}/bin/wofi
+      pkill ${pkgsUnstable.wofi}/bin/wofi
     fi
   '';
 
@@ -35,17 +37,17 @@ in
       monitor = ",preferred,auto,1";
 
       env = [
-        "QT_QPA_PLATFORMTHEME,qt6ct"
         "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
-        "XDG_DATA_DIRS,/usr/share:$XDG_DATA_DIRS"
+        "XDG_DATA_DIRS,/usr/share:$HOME/.local/share:$XDG_DATA_DIRS"
+        "QT_QPA_PLATFORM,wayland"
       ] ++ nvidiaEnv;
 
       exec-once = [
-        "${pkgs.uwsm}/bin/uwsm app -- . ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh"
-        "systemctl stop --user dconf"
-        "systemctl start --user dconf"
-        "systemctl stop --user network-manager-applet.service"
-        "systemctl start --user network-manager-applet.service"
+        "${pkgsUnstable.uwsm}/bin/uwsm app -- . ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        "systemctl --user stop dconf"
+        "systemctl --user start dconf"
+        "systemctl --user stop network-manager-applet.service"
+        "systemctl --user start network-manager-applet.service"
       ];
 
       general = {
@@ -127,7 +129,7 @@ in
       };
 
       bind =
-        with pkgs;
+        with pkgsUnstable;
         [
           "${mainMod}, Return, exec, ${uwsm}/bin/uwsm app -- ${terminal.ghostty}"
           "${mainMod} SHIFT, Q, killactive,"
@@ -181,14 +183,14 @@ in
         "${mainMod} CTRL, J, resizeactive, 0 10"
       ];
 
-      bindl = with pkgs; [
+      bindl = with pkgsUnstable; [
         ", XF86AudioNext, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl next"
         ", XF86AudioPause, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl play-pause"
         ", XF86AudioPlay, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl play-pause"
         ", XF86AudioPrev, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl previous"
       ];
 
-      bindel = with pkgs; [
+      bindel = with pkgsUnstable; [
         ", XF86AudioRaiseVolume, exec, ${uwsm}/bin/uwsm app --  ${wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, ${uwsm}/bin/uwsm app --  ${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
         ", XF86AudioMute, exec, ${uwsm}/bin/uwsm app --  ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"

@@ -1,2 +1,4 @@
 https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl
+https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
+https://github.com/nix-community/NUR/archive/main.tar.gz nur
