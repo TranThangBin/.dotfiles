@@ -8,6 +8,37 @@ let
   pkgsUnstable = import <nixpkgs-unstable> { };
 in
 {
+  nix.package = pkgsUnstable.nix;
+
+  nix.settings = {
+    experimental-features = [ ];
+  };
+
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (lib.getName pkg) [
+      "drawio"
+      "nvidia"
+      "discord"
+    ];
+
+  nixpkgs.overlays = [
+    (self: super: {
+      less = pkgsUnstable.less;
+      networkmanagerapplet = pkgsUnstable.networkmanagerapplet;
+    })
+  ];
+
+  nixGL = {
+    packages = import <nixgl> { inherit pkgs; };
+    defaultWrapper = "mesa";
+    offloadWrapper = "nvidiaPrime";
+    installScripts = [
+      "mesa"
+      "nvidiaPrime"
+    ];
+  };
+
   home.username = "trant";
   home.homeDirectory = "/home/trant";
 
@@ -16,25 +47,12 @@ in
 
   home.stateVersion = "25.05";
 
-  nixpkgs.config.allowUnfreePredicate =
-    pkg:
-    builtins.elem (lib.getName pkg) [
-      "drawio"
-      "nvidia"
-    ];
-
-  nixpkgs.overlays = [
-    (self: super: {
-      less = pkgsUnstable.less;
-      network-manager-applet = pkgsUnstable.networkmanagerapplet;
-    })
-  ];
-
   home.packages = with pkgsUnstable; [
     gcc
     templ
     zig
     rustup
+    python311
     nodejs_23
     swi-prolog
 
@@ -43,6 +61,7 @@ in
     gnumake
     cmake
     pkg-config
+    jq
 
     ripgrep
     fd
@@ -53,7 +72,7 @@ in
     brightnessctl
     powertop
     mongosh
-    tldr
+    tlrc
     htop
     btop
     ncdu
@@ -62,8 +81,15 @@ in
     resources
     gimp
     vlc
+    umu-launcher-unwrapped
+
+    (config.lib.nixGL.wrapOffload godot_4)
+    (config.lib.nixGL.wrapOffload pkgs.discord)
+
     pkgs.drawio
   ];
+
+  systemd.user.systemctlPath = "${pkgsUnstable.systemd}/bin/systemctl";
 
   wayland.windowManager.hyprland.enable = true;
 
@@ -88,6 +114,7 @@ in
   programs.fzf.enable = true;
   programs.less.enable = true;
 
+  programs.man.package = pkgsUnstable.man;
   programs.firefox.package = config.lib.nixGL.wrapOffload pkgsUnstable.firefox;
   programs.neovim.package = pkgsUnstable.neovim-unwrapped;
   programs.kitty.package = config.lib.nixGL.wrap pkgsUnstable.kitty;
@@ -104,8 +131,6 @@ in
   programs.yazi.package = pkgsUnstable.yazi;
   programs.zoxide.package = pkgsUnstable.zoxide;
   programs.fzf.package = pkgsUnstable.fzf;
-
-  xdg.enable = true;
 
   services.playerctld.enable = true;
   services.network-manager-applet.enable = true;
@@ -152,16 +177,6 @@ in
       name = "Dracula";
       package = pkgsUnstable.dracula-theme;
     };
-  };
-
-  nixGL = {
-    packages = import <nixgl> { inherit pkgs; };
-    defaultWrapper = "mesa";
-    offloadWrapper = "nvidiaPrime";
-    installScripts = [
-      "mesa"
-      "nvidiaPrime"
-    ];
   };
 
   imports = [

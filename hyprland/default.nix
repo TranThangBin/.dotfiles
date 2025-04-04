@@ -2,13 +2,8 @@
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 in
-let
-  gpuEnv = "/dev/dri/card2:/dev/dri/card1";
-in
 with config.wayland.windowManager;
 {
-  wayland.windowManager.hyprland.portalPackage = pkgsUnstable.xdg-desktop-portal-hyprland;
-
   programs.hyprlock.enable = hyprland.enable;
   programs.waybar.enable = hyprland.enable;
   programs.wofi.enable = hyprland.enable;
@@ -31,10 +26,7 @@ with config.wayland.windowManager;
 
   home.file.".profile".enable = hyprland.enable;
 
-  xdg.portal.configPackages = lib.optionals hyprland.enable [
-    pkgsUnstable.xdg-desktop-portal-hyprland
-    pkgsUnstable.xdg-desktop-portal-wlr
-  ];
+  xdg.portal.configPackages = lib.optionals hyprland.enable [ hyprland.portalPackage ];
 
   home.packages = lib.optionals hyprland.enable [
     pkgsUnstable.uwsm
@@ -42,16 +34,18 @@ with config.wayland.windowManager;
     pkgsUnstable.kdePackages.dolphin
   ];
 
-  xdg.configFile."uwsm/env-hyprland".text = "export AQ_DRM_DEVICES=${gpuEnv}";
+  xdg.configFile."uwsm/env-hyprland".text = ''
+    export AQ_DRM_DEVICES=${(import ./gpu-env.nix).AQ_DRM_DEVICES}
+  '';
 
-  home.file.".profile".text = with pkgsUnstable; ''
+  home.file.".profile".source = pkgsUnstable.writeShellScript ".profile" ''
     if [[ "$(tty)" = "/dev/tty1" ]]; then
-        ${fastfetch}/bin/fastfetch
+        ${pkgsUnstable.fastfetch}/bin/fastfetch
     	printf "Do you want to start Hyprland? (Y/n): "
     	read -rn 1 answer
         echo
-        if [[ "$answer" = "Y" ]] && ${uwsm}/bin/uwsm check may-start; then
-            exec ${uwsm}/bin/uwsm start /usr/share/wayland-sessions/hyprland.desktop
+        if [[ "$answer" = "Y" ]] && ${pkgsUnstable.uwsm}/bin/uwsm check may-start; then
+            exec ${pkgsUnstable.uwsm}/bin/uwsm start /usr/share/wayland-sessions/hyprland.desktop
         fi
     fi
   '';

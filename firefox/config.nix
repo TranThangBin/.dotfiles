@@ -5,11 +5,16 @@ in
 {
   programs.firefox = {
     policies = {
+      AppAutoUpdate = false;
+      BackgroundAppAutoUpdate = false;
       BlockAboutAddons = false;
       BlockAboutConfig = false;
       BlockAboutProfiles = true;
       BlockAboutSupport = true;
       DisableTelemetry = true;
+      DisableAppUpdate = true;
+      DisableSystemAddonUpdate = true;
+      ExtensionUpdate = false;
       Extensions = {
         Install = with NUR.repos.rycee.firefox-addons; [
           "${ublock-origin}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net.xpi"

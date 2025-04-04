@@ -13,9 +13,9 @@ let
     #! /usr/bin/bash
 
     if [[ ! $(pidof ${pkgsUnstable.wofi}/bin/wofi) ]]; then
-      ${pkgsUnstable.wofi}/bin/wofi
+        ${pkgsUnstable.uwsm}/bin/uwsm app -- $(${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true)
     else
-      pkill ${pkgsUnstable.wofi}/bin/wofi
+        ${pkgsUnstable.uwsm}/bin/uwsm app -- pkill ${pkgsUnstable.wofi}/bin/wofi
     fi
   '';
 
@@ -23,31 +23,27 @@ let
   pink = "rgb(f5c2e7)";
   surface0 = "rgb(313244)";
 
-  nvidiaEnv = [
-    "GBM_BACKEND,nvidia-drm"
-    "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-    "LIBVA_DRIVER_NAME,nvidia"
-  ];
 in
 {
   wayland.windowManager.hyprland = {
     package = null; # Manage hyprland with your os package manager
+    portalPackage = pkgsUnstable.xdg-desktop-portal-hyprland;
     systemd.enable = false;
     settings = {
       monitor = ",preferred,auto,1";
 
-      env = [
+      env = with import ./gpu-env.nix; [
         "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
         "XDG_DATA_DIRS,/usr/share:$HOME/.local/share:$XDG_DATA_DIRS"
         "QT_QPA_PLATFORM,wayland"
-      ] ++ nvidiaEnv;
+        "GBM_BACKEND,${GBM_BACKEND}"
+        "__GLX_VENDOR_LIBRARY_NAME,${__GLX_VENDOR_LIBRARY_NAME}"
+        "LIBVA_DRIVER_NAME,${LIBVA_DRIVER_NAME}"
+      ];
 
       exec-once = [
-        "${pkgsUnstable.uwsm}/bin/uwsm app -- . ${config.home.homeDirectory}/.nix-profile/etc/profile.d/hm-session-vars.sh"
-        "systemctl --user stop dconf"
-        "systemctl --user start dconf"
-        "systemctl --user stop network-manager-applet.service"
-        "systemctl --user start network-manager-applet.service"
+        "${pkgsUnstable.systemd}/bin/systemctl --user restart dconf.service"
+        "${pkgsUnstable.systemd}/bin/systemctl --user restart network-manager-applet.service"
       ];
 
       general = {

@@ -10,7 +10,6 @@ local capabilities = lsp_zero.get_capabilities()
 local servers = {
 	"ccls",
 	"html",
-	"htmx",
 	"cssls",
 	"emmet_language_server",
 	"tailwindcss",
@@ -134,10 +133,7 @@ local keys = {
 			async = true,
 			filter = function(cl)
 				return (
-					vim.lsp.get_clients({
-							bufnr = bufnr,
-							name = "null-ls",
-						})[1]
+					vim.lsp.get_clients({ bufnr = bufnr, name = "null-ls" })[1]
 						== nil
 					and cl.name ~= "null-ls"
 				) or cl.name == "null-ls"
@@ -152,7 +148,7 @@ lsp_zero.on_attach(function(client, bufnr)
 			exec(bufnr)
 		end, { buffer = bufnr })
 	end
-	if client.supports_method("signatureHelpProvider") then
+	if client:supports_method("signatureHelpProvider") then
 		require("lsp-overloads").setup(client, {
 			silent = true,
 			display_automatically = false,

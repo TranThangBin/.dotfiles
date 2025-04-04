@@ -21,7 +21,6 @@ curl -L https://nixos.org/nix/install | sh -s -- --daemon
 cp .nix-channels ~/.nix-channels
 nix-channel --update
 nix-shell '<home-manager>' -A install
-nix-env -iA nixgl.auto.nixGLDefault
 ```
 
 ### You are ready

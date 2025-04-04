@@ -1,16 +1,20 @@
+{ config, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
+  terminal = with config.programs; {
+    kitty = "${kitty.package}/bin/kitty";
+    ghostty = "${ghostty.package}/bin/ghostty";
+  };
 in
 {
   programs.wofi = {
-    style = builtins.readFile ./style.css;
+    style = "@import url(\"${./style.css}\");";
     settings = {
       show = "drun";
       width = 750;
       height = 400;
       always_parse_args = true;
       show_all = false;
-      term = "${pkgsUnstable.ghostty}/bin/ghostty";
+      term = terminal.ghostty;
       hide_scroll = true;
       print_command = true;
       insensitive = true;

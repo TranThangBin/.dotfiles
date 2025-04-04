@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
-  home.packages = with pkgs; [
+  home.packages = with pkgsUnstable; [
     noto-fonts
     noto-fonts-cjk-serif
     noto-fonts-cjk-sans

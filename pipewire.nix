@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
-  home.packages = with pkgs; [
+  home.packages = with pkgsUnstable; [
     pwvucontrol
     helvum
     alsa-utils
@@ -9,32 +11,130 @@
     alsa-lib
   ];
 
-  systemd.user.services = with pkgs; {
-    pipewire = {
-      Install = {
-        WantedBy = [ "default.target" ];
+  systemd.user = with pkgsUnstable; {
+    sockets = {
+      pipewire = {
+        Unit = {
+          Description = "PipeWire Multimedia System Sockets";
+          ConditionUser = "!root";
+        };
+
+        Socket = {
+          Priority = 6;
+          ListenStream = [
+            "%t/pipewire-0"
+            "%t/pipewire-0-manager"
+          ];
+        };
+
+        Install.WantedBy = [ "sockets.target" ];
       };
-      Service = {
-        ExecStart = "${pipewire}/bin/pipewire";
+
+      pipewire-pulse = {
+        Unit = {
+          Description = "PipeWire PulseAudio";
+          ConditionUser = "!root";
+          Conflicts = "pulseaudio.socket";
+        };
+
+        Socket = {
+          Priority = 6;
+          ListenStream = "%t/pulse/native";
+        };
+
+        Install.WantedBy = [ "sockets.target" ];
       };
     };
 
-    pipewire-pulse = {
-      Install = {
-        WantedBy = [ "default.target" ];
+    services = {
+      filter-chain = {
+        Unit = {
+          Description = "PipeWire filter chain daemon";
+          After = [
+            "pipewire.service"
+            "pipewire-session-manager.service"
+          ];
+          BindsTo = "pipewire.service";
+        };
+        Service = {
+          LockPersonality = "yes";
+          MemoryDenyWriteExecute = "yes";
+          NoNewPrivileges = "yes";
+          RestrictNamespaces = "yes";
+          SystemCallArchitectures = "native";
+          SystemCallFilter = "@system-service";
+          Type = "simple";
+          ExecStart = "${pipewire}/bin/pipewire -c ${pipewire}/share/pipewire/filter-chain.conf";
+          Restart = "on-failure";
+          Slice = "session.slice";
+        };
+        Install = {
+          Also = "pipewire.socket";
+          WantedBy = [ "default.target" ];
+        };
       };
-      Service = {
-        ExecStart = "${pipewire}/bin/pipewire-pulse";
-      };
-    };
 
-    wireplumber = {
-      Install = {
-        WantedBy = [ "default.target" ];
+      pipewire = {
+        Unit = {
+          Description = "PipeWire Multimedia Service";
+          Requires = "pipewire.socket";
+          ConditionUser = "!root";
+        };
+
+        Service = {
+          LockPersonality = "yes";
+          MemoryDenyWriteExecute = "yes";
+          NoNewPrivileges = "yes";
+          RestrictNamespaces = "yes";
+          SystemCallArchitectures = "native";
+          SystemCallFilter = "@system-service";
+          Type = "simple";
+          ExecStart = "${pipewire}/bin/pipewire";
+          Restart = "on-failure";
+          Slice = "session.slice";
+        };
+
+        Install = {
+          Also = "pipewire.socket";
+          WantedBy = [ "default.target" ];
+        };
       };
-      Service = {
-        ExecStart = "${wireplumber}/bin/wireplumber";
-        Restart = "always";
+
+      pipewire-pulse = {
+        Install = {
+          WantedBy = [ "default.target" ];
+        };
+        Service = {
+          ExecStart = "${pipewire}/bin/pipewire-pulse";
+        };
+      };
+
+      wireplumber = {
+        Unit = {
+          Description = "Multimedia Service Session Manager";
+          After = "pipewire.service";
+          BindsTo = "pipewire.service";
+          Conflicts = "pipewire-media-session.service";
+        };
+
+        Service = {
+          LockPersonality = "yes";
+          MemoryDenyWriteExecute = "yes";
+          NoNewPrivileges = "yes";
+          SystemCallArchitectures = "native";
+          SystemCallFilter = "@system-service";
+          Type = "simple";
+          ExecStart = "${wireplumber}/bin/wireplumber";
+          Restart = "on-failure";
+          Slice = "session.slice";
+          Environment = "GIO_USE_VFS=local";
+        };
+
+        Install = {
+          WantedBy = [ "pipewire.service" ];
+          Alias = "pipewire-session-manager.service";
+        };
+
       };
     };
   };

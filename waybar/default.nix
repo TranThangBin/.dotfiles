@@ -4,7 +4,7 @@ in
 {
   programs.waybar = {
     systemd.enable = true;
-    style = builtins.readFile ./style.css;
+    style = "@import url(\"${./style.css}\");";
     settings = {
       mainBar = {
         layer = "top";

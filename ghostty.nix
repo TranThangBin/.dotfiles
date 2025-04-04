@@ -10,7 +10,7 @@ in
       command = "${pkgsUnstable.zsh}/bin/zsh";
       font-family = "FiraCode Nerd Font Mono";
       font-size = 16;
-      cursor-opacity = 0.5;
+      cursor-opacity = 0.75;
       background-opacity = 0.95;
     };
   };

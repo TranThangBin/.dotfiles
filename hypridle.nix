@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
   services.hypridle = {
     settings = {
@@ -8,7 +10,7 @@
         after_sleep_cmd = "hyprctl dispatch dpms on";
       };
 
-      listener = with pkgs; [
+      listener = with pkgsUnstable; [
         {
           timeout = 150;
           on-timeout = "${brightnessctl}/bin/brightnessctl -s set 10";
@@ -34,7 +36,7 @@
 
         {
           timeout = 1800;
-          on-timeout = "systemctl suspend";
+          on-timeout = "${pkgsUnstable.systemd}/bin/systemctl suspend";
         }
       ];
     };

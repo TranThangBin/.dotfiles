@@ -52,21 +52,19 @@
 @define-color crust-rgb rgb(17, 17, 27);
 
 * {
-	font-family: FiraCode Nerd Font Mono;
+	font-family: "FiraCode Nerd Font Mono", monospace;
 	font-size: 14px;
 }
 
-/* Window */
 window {
 	margin: 0px;
 	padding: 10px;
 	border: 0.16em solid @lavender;
 	border-radius: 0.1em;
 	background-color: @base;
-	animation: slideIn 0.5s ease-in-out both;
+	animation: slideIn 0.25s ease-in-out both;
 }
 
-/* Slide In */
 @keyframes slideIn {
 	0% {
 		opacity: 0;
@@ -77,16 +75,14 @@ window {
 	}
 }
 
-/* Inner Box */
 #inner-box {
 	margin: 5px;
 	padding: 10px;
 	border: none;
 	background-color: @base;
-	animation: fadeIn 0.5s ease-in-out both;
+	animation: fadeIn 0.25s ease-in-out both;
 }
 
-/* Fade In */
 @keyframes fadeIn {
 	0% {
 		opacity: 0;
@@ -97,7 +93,6 @@ window {
 	}
 }
 
-/* Outer Box */
 #outer-box {
 	margin: 5px;
 	padding: 10px;
@@ -105,7 +100,6 @@ window {
 	background-color: @base;
 }
 
-/* Scroll */
 #scroll {
 	margin: 0px;
 	padding: 10px;
@@ -113,7 +107,6 @@ window {
 	background-color: @base;
 }
 
-/* Input */
 #input {
 	margin: 5px 20px;
 	padding: 10px;
@@ -121,7 +114,7 @@ window {
 	border-radius: 0.1em;
 	color: @text;
 	background-color: @base;
-	animation: fadeIn 0.5s ease-in-out both;
+	animation: fadeIn 0.25s ease-in-out both;
 }
 
 #input image {
@@ -133,12 +126,11 @@ window {
 	outline: 4px solid @red !important;
 }
 
-/* Text */
 #text {
 	margin: 5px;
 	border: none;
 	color: @text;
-	animation: fadeIn 0.5s ease-in-out both;
+	animation: fadeIn 0.25s ease-in-out both;
 }
 
 #entry {
@@ -150,7 +142,6 @@ window {
 	color: @lavender;
 }
 
-/* Selected Entry */
 #entry:selected {
 	border: 0.11em solid @lavender;
 }
