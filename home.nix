@@ -69,7 +69,6 @@ in
     lolcat
     cowsay
     cmatrix
-    brightnessctl
     powertop
     mongosh
     tlrc
@@ -85,11 +84,15 @@ in
 
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload pkgs.discord)
+    (config.lib.nixGL.wrapOffload pkgsUnstable.obs-studio)
 
     pkgs.drawio
   ];
 
+  xdg.userDirs.enable = true;
+
   systemd.user.systemctlPath = "${pkgsUnstable.systemd}/bin/systemctl";
+  wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
 
   wayland.windowManager.hyprland.enable = true;
 
@@ -153,15 +156,9 @@ in
     fcitx5-tokyonight
   ];
 
-  qt = {
-    platformTheme = {
-      name = "qtct";
-      package = pkgsUnstable.libsForQt5.qt5ct;
-    };
-    style = {
-      name = "lightly";
-      package = pkgsUnstable.lightly-qt;
-    };
+  qt.platformTheme = {
+    name = "qt6ct";
+    package = pkgsUnstable.qt6ct;
   };
 
   gtk = {

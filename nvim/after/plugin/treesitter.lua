@@ -71,5 +71,7 @@ require("nvim-treesitter.configs").setup({
 
 require("nvim-ts-autotag").setup()
 
-require("treesitter-context").setup({ enable = false })
-vim.keymap.set("n", "<leader>ct", "<cmd>TSContextToggle<CR>")
+local ts_ctx = require("treesitter-context")
+ts_ctx.setup({ enable = false })
+vim.keymap.set("n", "<leader>ct", ts_ctx.toggle)
+vim.keymap.set("n", "[ct", ts_ctx.go_to_context)

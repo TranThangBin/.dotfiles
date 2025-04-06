@@ -1,4 +1,4 @@
-{ config, ... }:
+{ pkgs, config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 
@@ -10,13 +10,22 @@ let
   };
   fileManager = "${pkgsUnstable.kdePackages.dolphin}/bin/dolphin";
   menu = pkgsUnstable.writeShellScript "wofi.sh" ''
-    #! /usr/bin/bash
+    #! /usr/bin/env bash
 
     if [[ ! $(pidof ${pkgsUnstable.wofi}/bin/wofi) ]]; then
         ${pkgsUnstable.uwsm}/bin/uwsm app -- $(${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true)
     else
         ${pkgsUnstable.uwsm}/bin/uwsm app -- pkill ${pkgsUnstable.wofi}/bin/wofi
     fi
+  '';
+  xdg-desktop-portal = pkgsUnstable.writeShellScript "xdg-desktop-portal.sh" ''
+    #! /usr/bin/env bash
+
+    ${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland &
+    sleep 2
+    ${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal &
+    sleep 2
+    ${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.kdePackages.xwaylandvideobridge}/bin/xwaylandvideobridge &
   '';
 
   flamingo = "rgb(f2cdcd)";
@@ -26,24 +35,17 @@ let
 in
 {
   wayland.windowManager.hyprland = {
-    package = null; # Manage hyprland with your os package manager
     portalPackage = pkgsUnstable.xdg-desktop-portal-hyprland;
     systemd.enable = false;
     settings = {
       monitor = ",preferred,auto,1";
 
-      env = with import ./gpu-env.nix; [
-        "HYPRSHOT_DIR,${config.home.homeDirectory}/Pictures"
-        "XDG_DATA_DIRS,/usr/share:$HOME/.local/share:$XDG_DATA_DIRS"
-        "QT_QPA_PLATFORM,wayland"
-        "GBM_BACKEND,${GBM_BACKEND}"
-        "__GLX_VENDOR_LIBRARY_NAME,${__GLX_VENDOR_LIBRARY_NAME}"
-        "LIBVA_DRIVER_NAME,${LIBVA_DRIVER_NAME}"
-      ];
-
-      exec-once = [
-        "${pkgsUnstable.systemd}/bin/systemctl --user restart dconf.service"
-        "${pkgsUnstable.systemd}/bin/systemctl --user restart network-manager-applet.service"
+      exec-once = with pkgsUnstable; [
+        "${systemd}/bin/systemctl --user stop dconf.service"
+        "${systemd}/bin/systemctl --user start dconf.service"
+        "${systemd}/bin/systemctl --user stop network-manager-applet.service"
+        "${systemd}/bin/systemctl --user start network-manager-applet.service"
+        xdg-desktop-portal
       ];
 
       general = {
@@ -205,6 +207,13 @@ in
         "opacity ${toString config.programs.ghostty.settings.background-opacity}, class:ghostty"
         "suppressevent maximize, class:.*"
         "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+
+        "opacity 0.0 override, class:^(xwaylandvideobridge)$"
+        "noanim, class:^(xwaylandvideobridge)$"
+        "noinitialfocus, class:^(xwaylandvideobridge)$"
+        "maxsize 1 1, class:^(xwaylandvideobridge)$"
+        "noblur, class:^(xwaylandvideobridge)$"
+        "nofocus, class:^(xwaylandvideobridge)$"
       ];
     };
   };

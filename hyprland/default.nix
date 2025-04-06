@@ -22,23 +22,18 @@ with config.wayland.windowManager;
   services.hyprpaper.package = pkgsUnstable.hyprpaper;
   services.hypridle.package = pkgsUnstable.hypridle;
 
-  xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
-
   home.file.".profile".enable = hyprland.enable;
-
-  xdg.portal.configPackages = lib.optionals hyprland.enable [ hyprland.portalPackage ];
 
   home.packages = lib.optionals hyprland.enable [
     pkgsUnstable.uwsm
     pkgsUnstable.hyprshot
     pkgsUnstable.kdePackages.dolphin
+    pkgsUnstable.kdePackages.xwaylandvideobridge
   ];
 
-  xdg.configFile."uwsm/env-hyprland".text = ''
-    export AQ_DRM_DEVICES=${(import ./gpu-env.nix).AQ_DRM_DEVICES}
-  '';
-
   home.file.".profile".source = pkgsUnstable.writeShellScript ".profile" ''
+    #! /usr/bin/env bash
+
     if [[ "$(tty)" = "/dev/tty1" ]]; then
         ${pkgsUnstable.fastfetch}/bin/fastfetch
     	printf "Do you want to start Hyprland? (Y/n): "
@@ -48,6 +43,19 @@ with config.wayland.windowManager;
             exec ${pkgsUnstable.uwsm}/bin/uwsm start /usr/share/wayland-sessions/hyprland.desktop
         fi
     fi
+  '';
+
+  xdg.portal.config.hyprland.default = [ "hyprland" ];
+
+  xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
+
+  xdg.configFile."uwsm/env-hyprland".text = with import ./gpu-env.nix; ''
+    export AQ_DRM_DEVICES=${AQ_DRM_DEVICES}
+    export GBM_BACKEND=${GBM_BACKEND}
+    export __GLX_VENDOR_LIBRARY_NAME=${__GLX_VENDOR_LIBRARY_NAME}
+    export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
+    export HYPRSHOT_DIR=$XDG_PICTURES_DIR
+    export QT_QPA_PLATFORM=wayland
   '';
 
   imports = [
