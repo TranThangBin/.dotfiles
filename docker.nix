@@ -1,15 +1,15 @@
-# let
-#   pkgsUnstable = import <nixpkgs-unstable> { };
-# in
+let
+  pkgsUnstable = import <nixpkgs-unstable> { };
+in
 {
-  # home.packages = with pkgsUnstable; [
-  #   docker
-  #   docker-buildx
-  #   lazydocker
-  #   rootlesskit
-  #   fuse-overlayfs
-  #   # slirp4netns
-  # ];
+  home.packages = with pkgsUnstable; [
+    # docker
+    # docker-buildx
+    lazydocker
+    # rootlesskit
+    # fuse-overlayfs
+    # slirp4netns
+  ];
   #
   # xdg.configFile."docker/daemon.json".text = ''{ "dns": ["8.8.8.8", "8.8.4.4", "1.1.1.1"] }'';
   #
