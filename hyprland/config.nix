@@ -18,15 +18,6 @@ let
         ${pkgsUnstable.uwsm}/bin/uwsm app -- pkill ${pkgsUnstable.wofi}/bin/wofi
     fi
   '';
-  xdg-desktop-portal = pkgsUnstable.writeShellScript "xdg-desktop-portal.sh" ''
-    #! /usr/bin/env bash
-
-    ${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland &
-    sleep 2
-    ${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal &
-    sleep 2
-    ${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.kdePackages.xwaylandvideobridge}/bin/xwaylandvideobridge &
-  '';
 
   flamingo = "rgb(f2cdcd)";
   pink = "rgb(f5c2e7)";
@@ -45,7 +36,9 @@ in
         "${systemd}/bin/systemctl --user start dconf.service"
         "${systemd}/bin/systemctl --user stop network-manager-applet.service"
         "${systemd}/bin/systemctl --user start network-manager-applet.service"
-        xdg-desktop-portal
+        "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
+        "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.xdg-desktop-portal-gtk}/libexec/xdg-desktop-portal-gtk"
+        "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
       ];
 
       general = {

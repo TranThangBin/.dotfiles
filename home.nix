@@ -26,6 +26,7 @@ in
     (self: super: {
       less = pkgsUnstable.less;
       networkmanagerapplet = pkgsUnstable.networkmanagerapplet;
+      xdg-desktop-portal = pkgsUnstable.xdg-desktop-portal;
     })
   ];
 
@@ -92,9 +93,9 @@ in
   xdg.userDirs.enable = true;
 
   systemd.user.systemctlPath = "${pkgsUnstable.systemd}/bin/systemctl";
-  wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
 
   wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
 
   fonts.fontconfig.enable = true;
 
@@ -156,9 +157,15 @@ in
     fcitx5-tokyonight
   ];
 
-  qt.platformTheme = {
-    name = "qt6ct";
-    package = pkgsUnstable.qt6ct;
+  qt = {
+    platformTheme = {
+      name = "qt5ct";
+      package = pkgsUnstable.libsForQt5.qt5ct;
+    };
+    style = {
+      name = "lightly";
+      package = pkgsUnstable.lightly-qt;
+    };
   };
 
   gtk = {

@@ -45,7 +45,18 @@ with config.wayland.windowManager;
     fi
   '';
 
-  xdg.portal.config.hyprland.default = [ "hyprland" ];
+  xdg.autostart.enable = true;
+
+  xdg.autostart.entries = [
+    "${pkgsUnstable.kdePackages.xwaylandvideobridge}/share/applications/org.kde.xwaylandvideobridge.desktop"
+  ];
+
+  xdg.portal.extraPortals = [ pkgsUnstable.xdg-desktop-portal-gtk ];
+
+  xdg.portal.config.hyprland.default = [
+    "hyprland"
+    "gtk"
+  ];
 
   xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
 
