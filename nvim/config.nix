@@ -81,6 +81,7 @@ in
         p.gitcommit
         p.prolog
       ]))
+      cloak-nvim
       (fromGitHub "main" "eduardo-antunes/plainline")
     ];
     extraPackages = with pkgsUnstable; [

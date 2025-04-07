@@ -22,6 +22,7 @@ in
       "discord"
       "steam"
       "steam-unwrapped"
+      "postman"
     ];
 
   nixpkgs.overlays = [
@@ -86,10 +87,11 @@ in
     umu-launcher-unwrapped
 
     (config.lib.nixGL.wrapOffload godot_4)
-    (config.lib.nixGL.wrapOffload pkgs.discord)
     (config.lib.nixGL.wrapOffload pkgsUnstable.obs-studio)
-    pkgs.steam
+    (config.lib.nixGL.wrapOffload pkgs.discord)
 
+    pkgs.steam
+    pkgs.postman
     pkgs.drawio
   ];
 

@@ -28,3 +28,5 @@ local todo_keys = {
 for key, exec in pairs(todo_keys) do
 	vim.keymap.set("n", key, exec)
 end
+
+require("cloak").setup()
