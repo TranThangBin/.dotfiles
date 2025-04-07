@@ -16,10 +16,12 @@ in
 
   nixpkgs.config.allowUnfreePredicate =
     pkg:
-    builtins.elem (lib.getName pkg) [
+    lib.elem (lib.getName pkg) [
       "drawio"
       "nvidia"
       "discord"
+      "steam"
+      "steam-unwrapped"
     ];
 
   nixpkgs.overlays = [
@@ -86,6 +88,7 @@ in
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload pkgs.discord)
     (config.lib.nixGL.wrapOffload pkgsUnstable.obs-studio)
+    pkgs.steam
 
     pkgs.drawio
   ];

@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 
@@ -15,7 +20,7 @@ let
     if [[ ! $(pidof ${pkgsUnstable.wofi}/bin/wofi) ]]; then
         ${pkgsUnstable.uwsm}/bin/uwsm app -- $(${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true)
     else
-        ${pkgsUnstable.uwsm}/bin/uwsm app -- pkill ${pkgsUnstable.wofi}/bin/wofi
+        pkill ${pkgsUnstable.wofi}/bin/wofi
     fi
   '';
 
@@ -37,7 +42,6 @@ in
         "${systemd}/bin/systemctl --user stop network-manager-applet.service"
         "${systemd}/bin/systemctl --user start network-manager-applet.service"
         "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
-        "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.xdg-desktop-portal-gtk}/libexec/xdg-desktop-portal-gtk"
         "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
       ];
 
@@ -124,22 +128,22 @@ in
         [
           "${mainMod}, Return, exec, ${uwsm}/bin/uwsm app -- ${terminal.ghostty}"
           "${mainMod} SHIFT, Q, killactive,"
-          "${mainMod} SHIFT, E, exec, ${uwsm}/bin/uwsm app -- ${wlogout}/bin/wlogout"
+          "${mainMod} SHIFT, E, exec, ${wlogout}/bin/wlogout"
           "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManager}"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
-          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm app -- ${menu}"
+          "${mainMod}, Space, exec, ${menu}"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
-          "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm app -- hyprlock"
+          "${mainMod} CTRL SHIFT, S, exec, hyprlock"
 
-          "${mainMod}, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m region"
-          "${mainMod} SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m window"
-          "${mainMod} CTRL SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m output"
+          "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
+          "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"
+          "${mainMod} CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output"
 
-          ",PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m region --clipboard-only"
-          "SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m window --clipboard-only"
-          "CTRL SHIFT, PRINT, exec, ${uwsm}/bin/uwsm app -- ${hyprshot}/bin/hyprshot -m output --clipboard-only"
+          ",PRINT, exec, ${hyprshot}/bin/hyprshot -m region --clipboard-only"
+          "SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window --clipboard-only"
+          "CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output --clipboard-only"
         ]
         ++ [
           "${mainMod}, M, togglespecialworkspace, magic"
@@ -160,8 +164,8 @@ in
           "${mainMod}, J, movefocus, d"
           "${mainMod} SHIFT, J, movewindow, d"
         ]
-        ++ builtins.concatLists (
-          builtins.genList (i: [
+        ++ lib.concatLists (
+          lib.genList (i: [
             "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
             "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
           ]) 9
@@ -175,19 +179,19 @@ in
       ];
 
       bindl = with pkgsUnstable; [
-        ", XF86AudioNext, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl next"
-        ", XF86AudioPause, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl play-pause"
-        ", XF86AudioPlay, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl play-pause"
-        ", XF86AudioPrev, exec, ${uwsm}/bin/uwsm app --  ${playerctl}/bin/playerctl previous"
+        ", XF86AudioNext, exec, ${playerctl}/bin/playerctl next"
+        ", XF86AudioPause, exec, ${playerctl}/bin/playerctl play-pause"
+        ", XF86AudioPlay, exec, ${playerctl}/bin/playerctl play-pause"
+        ", XF86AudioPrev, exec, ${playerctl}/bin/playerctl previous"
       ];
 
       bindel = with pkgsUnstable; [
-        ", XF86AudioRaiseVolume, exec, ${uwsm}/bin/uwsm app --  ${wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, ${uwsm}/bin/uwsm app --  ${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioMute, exec, ${uwsm}/bin/uwsm app --  ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86AudioMicMute, exec, ${uwsm}/bin/uwsm app --  ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ", XF86MonBrightnessUp, exec, ${uwsm}/bin/uwsm app --  ${brightnessctl}/bin/brightnessctl s 10%+"
-        ", XF86MonBrightnessDown, exec, ${uwsm}/bin/uwsm app --  ${brightnessctl}/bin/brightnessctl s 10%-"
+        ", XF86AudioRaiseVolume, exec, ${wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, ${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86MonBrightnessUp, exec, ${brightnessctl}/bin/brightnessctl s 10%+"
+        ", XF86MonBrightnessDown, exec, ${brightnessctl}/bin/brightnessctl s 10%-"
       ];
 
       bindm = [
@@ -200,13 +204,6 @@ in
         "opacity ${toString config.programs.ghostty.settings.background-opacity}, class:ghostty"
         "suppressevent maximize, class:.*"
         "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-
-        "opacity 0.0 override, class:^(xwaylandvideobridge)$"
-        "noanim, class:^(xwaylandvideobridge)$"
-        "noinitialfocus, class:^(xwaylandvideobridge)$"
-        "maxsize 1 1, class:^(xwaylandvideobridge)$"
-        "noblur, class:^(xwaylandvideobridge)$"
-        "nofocus, class:^(xwaylandvideobridge)$"
       ];
     };
   };
