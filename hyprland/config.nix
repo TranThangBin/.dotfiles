@@ -13,7 +13,7 @@ let
     kitty = "${kitty.package}/bin/kitty";
     ghostty = "${ghostty.package}/bin/ghostty";
   };
-  fileManager = "${pkgsUnstable.kdePackages.dolphin}/bin/dolphin";
+  fileManager = /usr/bin/dolphin; # Look like I have to manage this package myself for smb authentication or maybe I shouldn't use a gui file explorer at all?
   menu = pkgsUnstable.writeShellScript "wofi.sh" ''
     #! /usr/bin/env bash
 
@@ -37,12 +37,15 @@ in
       monitor = ",preferred,auto,1";
 
       exec-once = with pkgsUnstable; [
-        "${systemd}/bin/systemctl --user stop dconf.service"
-        "${systemd}/bin/systemctl --user start dconf.service"
-        "${systemd}/bin/systemctl --user stop network-manager-applet.service"
-        "${systemd}/bin/systemctl --user start network-manager-applet.service"
-        "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgsUnstable.xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
-        "${pkgsUnstable.uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
+        "${uwsm}/bin/uwsm app -- ${networkmanagerapplet}/bin/nm-applet"
+        "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
+        "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
+        "${uwsm}/bin/uwsm app -- ${pkgs.dconf}/libexec/dconf-service"
+      ];
+
+      env = [
+        "HYPRCURSOR_THEME,rose-pine-hyprcursor"
+        "HYPRCURSOR_SIZE,28"
       ];
 
       general = {
@@ -135,7 +138,7 @@ in
           "${mainMod}, Space, exec, ${menu}"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
-          "${mainMod} CTRL SHIFT, S, exec, hyprlock"
+          "${mainMod} CTRL SHIFT, S, exec, /usr/bin/hyprlock"
 
           "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
           "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"

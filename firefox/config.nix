@@ -20,13 +20,11 @@ in
           "${ublock-origin}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net.xpi"
           "${vimium}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/{d7742d87-e61d-4b78-b8a1-b469842139fa}.xpi"
           "${darkreader}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/addon@darkreader.org.xpi"
-          "${tab-session-manager}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/Tab-Session-Manager@sienori.xpi"
         ];
         Locked = [
           "uBlock0@raymondhill.net"
           "{d7742d87-e61d-4b78-b8a1-b469842139fa}"
           "addon@darkreader.org"
-          "Tab-Session-Manager@sienori"
         ];
       };
       ExtensionSettings = {
@@ -50,14 +48,6 @@ in
           installation_mode = "allowed";
           allowed_types = [ ];
           block_install_message = "addon@darkreader.org is blocked";
-          install_sources = [ ];
-          restricted_domains = [ ];
-          temporarily_allow_weak_signatures = false;
-        };
-        "Tab-Session-Manager@sienori" = {
-          installation_mode = "allowed";
-          allowed_types = [ ];
-          block_install_message = "Tab-Session-Manager@sienori is blocked";
           install_sources = [ ];
           restricted_domains = [ ];
           temporarily_allow_weak_signatures = false;
@@ -93,11 +83,11 @@ in
       name = config.home.username;
       isDefault = true;
       extensions = {
+        force = true;
         packages = with NUR.repos.rycee.firefox-addons; [
           ublock-origin
           vimium
           darkreader
-          tab-session-manager
         ];
       };
       settings = {
@@ -113,7 +103,6 @@ in
             widget-overflow-fixed-list = [ ];
             unified-extensions-area = [
               "addon_darkreader_org-browser-action"
-              "tab-session-manager_sienori-browser-action"
               "ublock0_raymondhill_net-browser-action"
               "_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action"
             ];
@@ -142,7 +131,6 @@ in
             "ublock0_raymondhill_net-browser-action"
             "addon_darkreader_org-browser-action"
             "_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action"
-            "tab-session-manager_sienori-browser-action"
           ];
           dirtyAreaCache = [
             "nav-bar"

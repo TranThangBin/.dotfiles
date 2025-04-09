@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 in
@@ -24,25 +24,23 @@ with config.wayland.windowManager;
 
   home.file.".profile".enable = hyprland.enable;
 
-  home.packages = lib.optionals hyprland.enable [
-    pkgsUnstable.uwsm
-    pkgsUnstable.hyprshot
-    pkgsUnstable.kdePackages.dolphin
-  ];
+  home.file.".local/share/icons/rose-pine-hyprcursor".enable = true;
 
   home.file.".profile".source = pkgsUnstable.writeShellScript ".profile" ''
     #! /usr/bin/env bash
 
     if [[ "$(tty)" = "/dev/tty1" ]]; then
-        ${pkgsUnstable.fastfetch}/bin/fastfetch
     	printf "Do you want to start Hyprland? (Y/n): "
     	read -rn 1 answer
         echo
         if [[ "$answer" = "Y" ]] && ${pkgsUnstable.uwsm}/bin/uwsm check may-start; then
-            exec ${pkgsUnstable.uwsm}/bin/uwsm start /usr/share/wayland-sessions/hyprland.desktop
+            exec ${pkgsUnstable.uwsm}/bin/uwsm start ${/usr/share/wayland-sessions/hyprland.desktop}
         fi
     fi
   '';
+
+  home.file.".local/share/icons/rose-pine-hyprcursor".source =
+    "${pkgsUnstable.rose-pine-hyprcursor}/share/icons/rose-pine-hyprcursor";
 
   xdg.portal.config.hyprland.default = [ "hyprland" ];
 

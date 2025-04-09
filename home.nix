@@ -27,9 +27,7 @@ in
 
   nixpkgs.overlays = [
     (self: super: {
-      less = pkgsUnstable.less;
-      networkmanagerapplet = pkgsUnstable.networkmanagerapplet;
-      xdg-desktop-portal = pkgsUnstable.xdg-desktop-portal;
+      inherit (pkgsUnstable) less xdg-desktop-portal;
     })
   ];
 
@@ -52,7 +50,6 @@ in
   home.stateVersion = "25.05";
 
   home.packages = with pkgsUnstable; [
-    gcc
     templ
     zig
     rustup
@@ -62,9 +59,6 @@ in
 
     unzip
     zip
-    gnumake
-    cmake
-    pkg-config
     jq
 
     ripgrep
@@ -87,7 +81,7 @@ in
     umu-launcher-unwrapped
 
     (config.lib.nixGL.wrapOffload godot_4)
-    (config.lib.nixGL.wrapOffload pkgsUnstable.obs-studio)
+    (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload pkgs.discord)
 
     pkgs.steam
@@ -142,7 +136,6 @@ in
   programs.fzf.package = pkgsUnstable.fzf;
 
   services.playerctld.enable = true;
-  services.network-manager-applet.enable = true;
 
   services.playerctld.package = pkgsUnstable.playerctl;
 
