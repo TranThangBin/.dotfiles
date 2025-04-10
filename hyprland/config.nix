@@ -13,14 +13,28 @@ let
     kitty = "${kitty.package}/bin/kitty";
     ghostty = "${ghostty.package}/bin/ghostty";
   };
-  fileManager = /usr/bin/dolphin; # Look like I have to manage this package myself for smb authentication or maybe I shouldn't use a gui file explorer at all?
-  menu = pkgsUnstable.writeShellScript "wofi.sh" ''
+  fileManagerBin = /usr/bin/dolphin; # Look like I have to manage this package myself for smb authentication or maybe I shouldn't use a gui file explorer at all?
+  menuWrapped = pkgsUnstable.writeShellScript "wofi.sh" ''
     #! /usr/bin/env bash
 
     if [[ ! $(pidof ${pkgsUnstable.wofi}/bin/wofi) ]]; then
         ${pkgsUnstable.uwsm}/bin/uwsm app -- $(${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true)
     else
         pkill ${pkgsUnstable.wofi}/bin/wofi
+    fi
+  '';
+
+  hyprctlBin = /usr/bin/hyprctl;
+  loadRandomWallpaper = pkgsUnstable.writeShellScript "load-random-wallpaper.sh" ''
+    #!/usr/bin/env bash
+
+    WALLPAPER_DIR="${./wallpapers}"
+    CURRENT_WALL=$( ${hyprctlBin} hyprpaper listloaded )
+
+    WALLPAPER=$( ${pkgsUnstable.fd}/bin/fd . "$WALLPAPER_DIR" -t f -E "$( ${/usr/bin/basename} "$CURRENT_WALL" )" | ${/usr/bin/shuf} -n 1)
+
+    if [[ -n $WALLPAPER ]]; then
+        ${hyprctlBin} hyprpaper reload ,"$WALLPAPER"
     fi
   '';
 
@@ -37,15 +51,10 @@ in
       monitor = ",preferred,auto,1";
 
       exec-once = with pkgsUnstable; [
-        "${uwsm}/bin/uwsm app -- ${networkmanagerapplet}/bin/nm-applet"
-        "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
         "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
         "${uwsm}/bin/uwsm app -- ${pkgs.dconf}/libexec/dconf-service"
-      ];
-
-      env = [
-        "HYPRCURSOR_THEME,rose-pine-hyprcursor"
-        "HYPRCURSOR_SIZE,28"
+        "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
+        "${uwsm}/bin/uwsm app -- ${networkmanagerapplet}/bin/nm-applet"
       ];
 
       general = {
@@ -132,13 +141,14 @@ in
           "${mainMod}, Return, exec, ${uwsm}/bin/uwsm app -- ${terminal.ghostty}"
           "${mainMod} SHIFT, Q, killactive,"
           "${mainMod} SHIFT, E, exec, ${wlogout}/bin/wlogout"
-          "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManager}"
+          "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManagerBin}"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
-          "${mainMod}, Space, exec, ${menu}"
+          "${mainMod}, Space, exec, ${menuWrapped}"
           "${mainMod}, P, pseudo,"
+          "${mainMod} SHIFT, P, exec, ${loadRandomWallpaper}"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
-          "${mainMod} CTRL SHIFT, S, exec, /usr/bin/hyprlock"
+          "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm app -- ${/usr/bin/hyprlock}"
 
           "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
           "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"

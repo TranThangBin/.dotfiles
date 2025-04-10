@@ -112,7 +112,7 @@ in
         };
         "custom/lock" = {
           tooltip = false;
-          on-click = "sh -c '(sleep 0.5s; hyprlock)' & disown";
+          on-click = "${/usr/bin/sh} -c '(sleep 0.5s; ${/usr/bin/hyprlock})' & disown";
           format = "";
         };
         "custom/power" = {

@@ -1,6 +1,7 @@
 { config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
+  preferedWallpaper = ./wallpapers/fancy.jpg;
 in
 with config.wayland.windowManager;
 {
@@ -22,9 +23,14 @@ with config.wayland.windowManager;
   services.hyprpaper.package = pkgsUnstable.hyprpaper;
   services.hypridle.package = pkgsUnstable.hypridle;
 
-  home.file.".profile".enable = hyprland.enable;
+  services.hyprpaper.settings = {
+    preload = "${preferedWallpaper}";
+    wallpaper = ",${preferedWallpaper}";
+  };
 
-  home.file.".local/share/icons/rose-pine-hyprcursor".enable = true;
+  home.pointerCursor.hyprcursor.enable = hyprland.enable;
+
+  home.file.".profile".enable = hyprland.enable;
 
   home.file.".profile".source = pkgsUnstable.writeShellScript ".profile" ''
     #! /usr/bin/env bash
@@ -38,9 +44,6 @@ with config.wayland.windowManager;
         fi
     fi
   '';
-
-  home.file.".local/share/icons/rose-pine-hyprcursor".source =
-    "${pkgsUnstable.rose-pine-hyprcursor}/share/icons/rose-pine-hyprcursor";
 
   xdg.portal.config.hyprland.default = [ "hyprland" ];
 
@@ -57,10 +60,9 @@ with config.wayland.windowManager;
 
   imports = [
     ./config.nix
-    ../hyprlock
     ../waybar
     ../wofi
-    ../hyprpaper
+    ../hyprlock
     ../hypridle.nix
   ];
 }

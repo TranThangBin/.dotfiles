@@ -61,6 +61,7 @@ in
     zip
     jq
 
+    systemd
     ripgrep
     fd
     sl
@@ -73,6 +74,7 @@ in
     htop
     btop
     ncdu
+    uwsm
     sqlite
 
     resources
@@ -91,12 +93,20 @@ in
 
   xdg.userDirs.enable = true;
 
+  fonts.fontconfig.enable = true;
+
+  home.pointerCursor.gtk.enable = true;
+
+  home.pointerCursor = {
+    name = "Dracula-cursors";
+    package = pkgsUnstable.dracula-theme;
+    size = 28;
+  };
+
   systemd.user.systemctlPath = "${pkgsUnstable.systemd}/bin/systemctl";
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
-
-  fonts.fontconfig.enable = true;
 
   programs.home-manager.enable = true;
   programs.firefox.enable = true;
@@ -174,10 +184,6 @@ in
     iconTheme = {
       name = "Dracula";
       package = pkgsUnstable.dracula-icon-theme;
-    };
-    cursorTheme = {
-      name = "Dracula";
-      package = pkgsUnstable.dracula-theme;
     };
   };
 
