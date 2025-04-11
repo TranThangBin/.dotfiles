@@ -24,20 +24,6 @@ let
     fi
   '';
 
-  hyprctlBin = /usr/bin/hyprctl;
-  loadRandomWallpaper = pkgsUnstable.writeShellScript "load-random-wallpaper.sh" ''
-    #!/usr/bin/env bash
-
-    WALLPAPER_DIR="${./wallpapers}"
-    CURRENT_WALL=$( ${hyprctlBin} hyprpaper listloaded )
-
-    WALLPAPER=$( ${pkgsUnstable.fd}/bin/fd . "$WALLPAPER_DIR" -t f -E "$( ${/usr/bin/basename} "$CURRENT_WALL" )" | ${/usr/bin/shuf} -n 1)
-
-    if [[ -n $WALLPAPER ]]; then
-        ${hyprctlBin} hyprpaper reload ,"$WALLPAPER"
-    fi
-  '';
-
   flamingo = "rgb(f2cdcd)";
   pink = "rgb(f5c2e7)";
   surface0 = "rgb(313244)";
@@ -146,7 +132,6 @@ in
           "${mainMod} SHIFT, F, togglefloating,"
           "${mainMod}, Space, exec, ${menuWrapped}"
           "${mainMod}, P, pseudo,"
-          "${mainMod} SHIFT, P, exec, ${loadRandomWallpaper}"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
           "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm app -- ${/usr/bin/hyprlock}"
 

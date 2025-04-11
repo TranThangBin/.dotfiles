@@ -1,7 +1,7 @@
 { config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
-  preferedWallpaper = ./wallpapers/fancy.jpg;
+  preferedWallpaper = ./wallpapers/go-to-the-moon.png;
 in
 with config.wayland.windowManager;
 {
@@ -26,6 +26,7 @@ with config.wayland.windowManager;
   services.hyprpaper.settings = {
     preload = "${preferedWallpaper}";
     wallpaper = ",${preferedWallpaper}";
+    ipc = "off";
   };
 
   home.pointerCursor.hyprcursor.enable = hyprland.enable;
@@ -54,7 +55,6 @@ with config.wayland.windowManager;
     export GBM_BACKEND=${GBM_BACKEND}
     export __GLX_VENDOR_LIBRARY_NAME=${__GLX_VENDOR_LIBRARY_NAME}
     export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
-    export HYPRSHOT_DIR=$XDG_PICTURES_DIR
     export QT_QPA_PLATFORM=wayland
   '';
 

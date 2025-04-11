@@ -23,6 +23,7 @@ in
       "steam"
       "steam-unwrapped"
       "postman"
+      "rar"
     ];
 
   nixpkgs.overlays = [
@@ -59,6 +60,7 @@ in
 
     unzip
     zip
+    libreoffice
     jq
 
     systemd
@@ -89,6 +91,7 @@ in
     pkgs.steam
     pkgs.postman
     pkgs.drawio
+    pkgs.rar
   ];
 
   xdg.userDirs.enable = true;
@@ -190,6 +193,7 @@ in
   imports = [
     ./firefox
     ./nvim
+    ./yazi.nix
     ./hyprland
     ./kitty.nix
     ./ghostty.nix
