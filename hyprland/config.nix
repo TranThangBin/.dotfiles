@@ -13,7 +13,7 @@ let
     kitty = "${kitty.package}/bin/kitty";
     ghostty = "${ghostty.package}/bin/ghostty";
   };
-  fileManagerBin = /usr/bin/dolphin; # Look like I have to manage this package myself for smb authentication or maybe I shouldn't use a gui file explorer at all?
+  fileManager = "${pkgsUnstable.yazi}/share/applications/yazi.desktop";
   menuWrapped = pkgsUnstable.writeShellScript "wofi.sh" ''
     #! /usr/bin/env bash
 
@@ -127,7 +127,7 @@ in
           "${mainMod}, Return, exec, ${uwsm}/bin/uwsm app -- ${terminal.ghostty}"
           "${mainMod} SHIFT, Q, killactive,"
           "${mainMod} SHIFT, E, exec, ${wlogout}/bin/wlogout"
-          "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManagerBin}"
+          "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManager}"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
           "${mainMod}, Space, exec, ${menuWrapped}"

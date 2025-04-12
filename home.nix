@@ -20,10 +20,11 @@ in
       "drawio"
       "nvidia"
       "discord"
-      "steam"
-      "steam-unwrapped"
       "postman"
       "rar"
+      # "steam"
+      # "nixGL-steam"
+      # "steam-unwrapped"
     ];
 
   nixpkgs.overlays = [
@@ -62,6 +63,7 @@ in
     zip
     libreoffice
     jq
+    cifs-utils
 
     systemd
     ripgrep
@@ -78,6 +80,7 @@ in
     ncdu
     uwsm
     sqlite
+    exiftool
 
     resources
     gimp
@@ -87,8 +90,8 @@ in
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload pkgs.discord)
+    # (config.lib.nixGL.wrapOffload pkgs.steam)
 
-    pkgs.steam
     pkgs.postman
     pkgs.drawio
     pkgs.rar
