@@ -80,7 +80,6 @@ in
     ncdu
     uwsm
     sqlite
-    exiftool
 
     resources
     gimp
@@ -196,7 +195,7 @@ in
   imports = [
     ./firefox
     ./nvim
-    ./yazi.nix
+    ./yazi
     ./hyprland
     ./kitty.nix
     ./ghostty.nix

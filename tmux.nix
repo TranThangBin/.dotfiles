@@ -14,6 +14,9 @@ in
     extraConfig = ''
       set-option -g focus-events on
       bind -N "Create a new session" C-c new-session
+      set -g allow-passthrough on
+      set -ga update-environment TERM
+      set -ga update-environment TERM_PROGRAM
     '';
     plugins = with pkgsUnstable.tmuxPlugins; [
       cpu
