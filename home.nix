@@ -29,7 +29,7 @@ in
 
   nixpkgs.overlays = [
     (self: super: {
-      inherit (pkgsUnstable) less xdg-desktop-portal;
+      inherit (pkgsUnstable) less xdg-desktop-portal profile-sync-daemon;
     })
   ];
 
@@ -65,6 +65,13 @@ in
     jq
     cifs-utils
 
+    imagemagick
+    exiftool
+    wl-clipboard
+    xclip
+    xsel
+    ueberzugpp
+
     systemd
     ripgrep
     fd
@@ -72,19 +79,17 @@ in
     lolcat
     cowsay
     cmatrix
-    powertop
     mongosh
     tlrc
-    htop
-    btop
     ncdu
     uwsm
     sqlite
 
-    resources
     gimp
     vlc
     umu-launcher-unwrapped
+    brave
+    resources
 
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
@@ -131,6 +136,7 @@ in
   programs.zoxide.enable = true;
   programs.fzf.enable = true;
   programs.less.enable = true;
+  programs.btop.enable = true;
 
   programs.man.package = pkgsUnstable.man;
   programs.firefox.package = config.lib.nixGL.wrapOffload pkgsUnstable.firefox;
@@ -149,8 +155,10 @@ in
   programs.yazi.package = pkgsUnstable.yazi;
   programs.zoxide.package = pkgsUnstable.zoxide;
   programs.fzf.package = pkgsUnstable.fzf;
+  programs.btop.package = pkgsUnstable.btop;
 
   services.playerctld.enable = true;
+  services.psd.enable = true;
 
   services.playerctld.package = pkgsUnstable.playerctl;
 
@@ -163,6 +171,13 @@ in
   programs.fzf = {
     enableZshIntegration = true;
     tmux.enableShellIntegration = true;
+  };
+  programs.btop = {
+    settings = {
+      color_theme = "${pkgsUnstable.btop}/share/btop/themes/tokyo-storm.theme";
+      theme_background = false;
+      vim_keys = true;
+    };
   };
 
   i18n.inputMethod.fcitx5.addons = with pkgsUnstable; [

@@ -1,3 +1,4 @@
+{ config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
   yaziPlugins = builtins.fetchGit {
@@ -16,18 +17,15 @@ let
     url = "https://github.com/imsi32/yatline-catppuccin.yazi.git";
     ref = "main";
   };
+  yaziRelativeMotion = builtins.fetchGit {
+    url = "https://github.com/dedukun/relative-motions.yazi.git";
+    ref = "main";
+  };
 in
 {
-  home.packages = with pkgsUnstable; [
-    exiftool
-    wl-clipboard
-    xclip
-    xsel
-    ueberzugpp
-  ];
   programs.yazi = {
     enableZshIntegration = true;
-    initLua = builtins.readFile ./init.lua;
+    initLua = ./init.lua;
     plugins = {
       git = "${yaziPlugins}/git.yazi";
       toggle-pane = "${yaziPlugins}/toggle-pane.yazi";
@@ -41,6 +39,7 @@ in
       piper = "${yaziPlugins}/piper.yazi";
       yatline = "${yaziYatline}";
       yatline-catppuccin = "${yaziYatlineCatppuccin}";
+      relative-motions = "${yaziRelativeMotion}";
     };
     settings = {
       manager = {
@@ -54,7 +53,29 @@ in
         max_width = 1500;
         max_height = 1000;
       };
+      opener = {
+        play = [
+          {
+            run = ''${pkgsUnstable.vlc}/bin/vlc "$@"'';
+            orphan = true;
+            for = "unix";
+          }
+        ];
+        edit = [
+          {
+            run = ''${config.programs.neovim.finalPackage}/bin/nvim "$@"'';
+            block = true;
+            for = "unix";
+          }
+        ];
+      };
       plugin = {
+        append_previewers = [
+          {
+            name = "*";
+            run = ''piper -- ${pkgsUnstable.hexyl}/bin/hexyl --border=none --terminal-width=$w "$1"'';
+          }
+        ];
         prepend_previewers = [
           {
             name = "*.md";
@@ -147,6 +168,11 @@ in
             ];
             run = "plugin vcs-files";
             desc = "Show Git file changes";
+          }
+          {
+            on = "M";
+            run = "plugin relative-motions";
+            desc = "Trigger a new relative motion";
           }
         ];
       };

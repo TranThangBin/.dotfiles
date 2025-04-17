@@ -18,11 +18,12 @@ let
     #! /usr/bin/env bash
 
     if [[ ! $(pidof ${pkgsUnstable.wofi}/bin/wofi) ]]; then
-        ${pkgsUnstable.uwsm}/bin/uwsm app -- $(${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true)
+        ${pkgsUnstable.uwsm}/bin/uwsm app -- $( ${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true )
     else
         pkill ${pkgsUnstable.wofi}/bin/wofi
     fi
   '';
+  resourceMonitor = "${pkgsUnstable.btop}/share/applications/btop.desktop";
 
   flamingo = "rgb(f2cdcd)";
   pink = "rgb(f5c2e7)";
@@ -131,6 +132,7 @@ in
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
           "${mainMod}, Space, exec, ${menuWrapped}"
+          "${mainMod}, R, exec, ${uwsm}/bin/uwsm app -- ${resourceMonitor}"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
           "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm app -- ${/usr/bin/hyprlock}"
@@ -197,9 +199,9 @@ in
         "${mainMod} SHIFT, mouse:273, resizewindow"
       ];
 
-      windowrulev2 = [
-        "opacity 0.95 0.95, class:kitty"
-        "opacity ${toString config.programs.ghostty.settings.background-opacity}, class:ghostty"
+      windowrulev2 = with config.programs; [
+        "opacity ${toString kitty.settings.background_opacity} class:kitty"
+        "opacity ${toString ghostty.settings.background-opacity}, class:ghostty"
         "suppressevent maximize, class:.*"
         "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
       ];

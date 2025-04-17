@@ -30,3 +30,9 @@ for key, exec in pairs(todo_keys) do
 end
 
 require("cloak").setup()
+require("ccc").setup({
+	highlighter = {
+		auto_enable = true,
+		lsp = true,
+	},
+})

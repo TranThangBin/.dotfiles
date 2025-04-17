@@ -4,7 +4,7 @@ in
 {
   programs.waybar = {
     systemd.enable = true;
-    style = "@import url(\"${./style.css}\");";
+    style = ./style.css;
     settings = {
       mainBar = {
         layer = "top";
@@ -17,8 +17,7 @@ in
           "battery"
           "clock"
           "tray"
-          "custom/lock"
-          "custom/power"
+          "custom/notification"
         ];
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -98,27 +97,36 @@ in
         };
         pulseaudio = with pkgsUnstable; {
           format = "{icon} {volume}%";
-          format-muted = "<s>{icon} {volume}%</s>";
+          format-muted = "<s> {volume}%</s>";
           format-icons = {
             default = [
-              "󰎉"
-              "󰎋"
-              "󰎇"
+              ""
+              ""
+              ""
             ];
           };
           on-click = "${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
           on-click-middle = "${helvum}/bin/helvum";
           on-click-right = "${pwvucontrol}/bin/pwvucontrol";
         };
-        "custom/lock" = {
+        "custom/notification" = with pkgsUnstable; {
           tooltip = false;
-          on-click = "${/usr/bin/sh} -c '(sleep 0.5s; ${/usr/bin/hyprlock})' & disown";
-          format = "";
-        };
-        "custom/power" = {
-          tooltip = false;
-          on-click = "${pkgsUnstable.wlogout}/bin/wlogout &";
-          format = "";
+          format = "{icon}";
+          format-icons = {
+            notification = "󱅫";
+            none = "󰂚";
+            dnd-notification = "󰂛";
+            dnd-none = "󰂛";
+            inhibited-notification = "󱅫";
+            inhibited-none = "󰂚";
+            dnd-inhibited-notification = "󰂛";
+            dnd-inhibited-none = "󰂛";
+          };
+          return-type = "json";
+          exec = "${swaynotificationcenter}/bin/swaync-client -swb";
+          on-click = "${swaynotificationcenter}/bin/swaync-client -t -sw";
+          on-click-right = "${swaynotificationcenter}/bin/swaync-client -d -sw";
+          escape = true;
         };
       };
     };

@@ -58,6 +58,7 @@ in
       none-ls-nvim
       nvim-treesitter-textobjects
       nvim-treesitter-context
+      ccc-nvim
       (nvim-treesitter.withPlugins (p: [
         p.c
         p.cpp

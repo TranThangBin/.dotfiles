@@ -78,7 +78,8 @@
 #wireplumber,
 #pulseaudio,
 #custom-lock,
-#custom-power {
+#custom-power,
+#custom-notification {
 	background-color: @surface0;
 	padding: 0.5rem 1rem;
 	margin: 5px 0;
@@ -103,7 +104,7 @@
 }
 
 #backlight {
-	color: @yellow;
+	color: @peach;
 }
 
 #backlight,
@@ -123,14 +124,16 @@
 	border-radius: 1rem;
 }
 
-#custom-lock {
-	border-radius: 1rem 0px 0px 1rem;
-	color: @lavender;
+#custom-notification {
+	margin-right: 1rem;
+	border-radius: 1rem;
+	color: @yellow;
 }
 
-#custom-power {
-	margin-right: 1rem;
-	border-radius: 0px 1rem 1rem 0px;
+#custom-notification.notification,
+#custom-notification.dnd-notification,
+#custom-notification.inhibited-notification,
+#custom-notification.dnd-inhibited-notification {
 	color: @red;
 }
 

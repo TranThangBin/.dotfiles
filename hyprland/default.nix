@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
   preferedWallpaper = ./wallpapers/go-to-the-moon.png;
@@ -15,6 +15,8 @@ with config.wayland.windowManager;
   programs.wofi.package = pkgsUnstable.wofi;
   programs.wlogout.package = pkgsUnstable.wlogout;
 
+  programs.wofi.style = "@import url(\"${./wofi.css}\");";
+
   services.swaync.enable = hyprland.enable;
   services.hyprpaper.enable = hyprland.enable;
   services.hypridle.enable = hyprland.enable;
@@ -23,6 +25,7 @@ with config.wayland.windowManager;
   services.hyprpaper.package = pkgsUnstable.hyprpaper;
   services.hypridle.package = pkgsUnstable.hypridle;
 
+  services.swaync.style = ./swaync.css;
   services.hyprpaper.settings = {
     preload = "${preferedWallpaper}";
     wallpaper = ",${preferedWallpaper}";
@@ -51,7 +54,7 @@ with config.wayland.windowManager;
   xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
 
   xdg.configFile."uwsm/env-hyprland".text = with import ./gpu-env.nix; ''
-    export AQ_DRM_DEVICES=${AQ_DRM_DEVICES}
+    export AQ_DRM_DEVICES=${lib.concatStringsSep ":" AQ_DRM_DEVICES}
     export GBM_BACKEND=${GBM_BACKEND}
     export __GLX_VENDOR_LIBRARY_NAME=${__GLX_VENDOR_LIBRARY_NAME}
     export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
@@ -61,7 +64,6 @@ with config.wayland.windowManager;
   imports = [
     ./config.nix
     ../waybar
-    ../wofi
     ../hyprlock
     ../hypridle.nix
   ];
