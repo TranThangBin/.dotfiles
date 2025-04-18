@@ -1,18 +1,4 @@
-{ lib, ... }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-
-  fromGitHub =
-    ref: repo:
-    pkgsUnstable.vimUtils.buildVimPlugin {
-      pname = "${lib.strings.sanitizeDerivationName repo}";
-      version = ref;
-      src = builtins.fetchGit {
-        url = "https://github.com/${repo}.git";
-        ref = ref;
-      };
-    };
-in
+{ pkgsUnstable, nvimPlainline, ... }:
 {
   programs.neovim = {
     defaultEditor = true;
@@ -83,7 +69,7 @@ in
         p.prolog
       ]))
       cloak-nvim
-      (fromGitHub "main" "eduardo-antunes/plainline")
+      nvimPlainline
     ];
     extraPackages = with pkgsUnstable; [
       pyright

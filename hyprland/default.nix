@@ -1,6 +1,10 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgsUnstable,
+  ...
+}:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
   preferedWallpaper = ./wallpapers/go-to-the-moon.png;
 in
 with config.wayland.windowManager;

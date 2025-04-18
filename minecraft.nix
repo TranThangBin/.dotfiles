@@ -1,6 +1,4 @@
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ pkgsUnstable, ... }:
 {
   xdg.desktopEntries.LegacyLauncher = {
     type = "Application";

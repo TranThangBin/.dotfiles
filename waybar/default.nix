@@ -1,6 +1,4 @@
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ pkgsUnstable, ... }:
 {
   programs.waybar = {
     systemd.enable = true;

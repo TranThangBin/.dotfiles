@@ -1,17 +1,21 @@
 {
   pkgs,
   config,
+  pkgsUnstable,
   lib,
+  nixgl,
   ...
 }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
 in
 {
   nix.package = pkgsUnstable.nix;
 
   nix.settings = {
-    experimental-features = [ ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   nixpkgs.config.allowUnfreePredicate =
@@ -29,12 +33,19 @@ in
 
   nixpkgs.overlays = [
     (self: super: {
-      inherit (pkgsUnstable) less xdg-desktop-portal profile-sync-daemon;
+      inherit (pkgsUnstable) less xdg-desktop-portal;
+      profile-sync-daemon = pkgsUnstable.profile-sync-daemon.overrideAttrs (old: {
+        installPhase =
+          (old.installPhase or "")
+          + ''
+            cp $out/share/psd/contrib/brave $out/share/psd/browsers/brave
+          '';
+      });
     })
   ];
 
   nixGL = {
-    packages = import <nixgl> { inherit pkgs; };
+    packages = nixgl.packages;
     defaultWrapper = "mesa";
     offloadWrapper = "nvidiaPrime";
     installScripts = [
@@ -42,6 +53,8 @@ in
       "nvidiaPrime"
     ];
   };
+
+  home.enableNixpkgsReleaseCheck = false;
 
   home.username = "trant";
   home.homeDirectory = "/home/trant";
@@ -87,7 +100,7 @@ in
 
     gimp
     vlc
-    umu-launcher-unwrapped
+    umu-launcher
     brave
     resources
 
@@ -139,7 +152,7 @@ in
   programs.btop.enable = true;
 
   programs.man.package = pkgsUnstable.man;
-  programs.firefox.package = config.lib.nixGL.wrapOffload pkgsUnstable.firefox;
+  programs.firefox.package = pkgsUnstable.firefox;
   programs.neovim.package = pkgsUnstable.neovim-unwrapped;
   programs.kitty.package = config.lib.nixGL.wrap pkgsUnstable.kitty;
   programs.ghostty.package = config.lib.nixGL.wrap pkgsUnstable.ghostty;

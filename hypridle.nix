@@ -1,5 +1,5 @@
+{ pkgsUnstable, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
   hyprlockBin = /usr/bin/hyprlock;
   hyprctlBin = /usr/bin/hyprctl;
   loginCtlBin = /usr/bin/loginctl;

@@ -1,12 +1,11 @@
 {
   pkgs,
+  pkgsUnstable,
   config,
   lib,
   ...
 }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-
   mainMod = "ALT";
 
   terminal = with config.programs; {
@@ -75,7 +74,7 @@ in
 
       animations = {
         enabled = true;
-        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+        bezier = "myBezier, 0.3, 1, 0.7, 1";
         animation = [
           "windows, 1, 7, myBezier"
           "windowsOut, 1, 7, default, popin 80%"

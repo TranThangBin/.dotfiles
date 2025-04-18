@@ -1,6 +1,10 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  pkgsUnstable,
+  ...
+}:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
   mountSmbScript = pkgsUnstable.writeShellScript "mount-smb.sh" ''
     #/usr/bin/env bash
 

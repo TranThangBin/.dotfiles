@@ -1,27 +1,13 @@
-{ config, ... }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-  yaziPlugins = builtins.fetchGit {
-    url = "https://github.com/yazi-rs/plugins.git";
-    ref = "main";
-  };
-  yaziFlavors = builtins.fetchGit {
-    url = "https://github.com/yazi-rs/flavors.git";
-    ref = "main";
-  };
-  yaziYatline = builtins.fetchGit {
-    url = "https://github.com/imsi32/yatline.yazi.git";
-    ref = "main";
-  };
-  yaziYatlineCatppuccin = builtins.fetchGit {
-    url = "https://github.com/imsi32/yatline-catppuccin.yazi.git";
-    ref = "main";
-  };
-  yaziRelativeMotion = builtins.fetchGit {
-    url = "https://github.com/dedukun/relative-motions.yazi.git";
-    ref = "main";
-  };
-in
+{
+  config,
+  pkgsUnstable,
+  yaziPlugins,
+  yaziFlavors,
+  yaziYatline,
+  yaziYatlineCatppuccin,
+  yaziRelativeMotion,
+  ...
+}:
 {
   programs.yazi = {
     enableZshIntegration = true;
