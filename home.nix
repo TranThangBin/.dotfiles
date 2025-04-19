@@ -11,7 +11,10 @@ in
   nix.package = pkgsUnstable.nix;
 
   nix.settings = {
-    experimental-features = [ ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   nixpkgs.config.allowUnfreePredicate =
