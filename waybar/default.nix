@@ -104,8 +104,8 @@
             ];
           };
           on-click = "${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-          on-click-middle = "${helvum}/bin/helvum";
-          on-click-right = "${pwvucontrol}/bin/pwvucontrol";
+          on-click-middle = "${uwsm}/bin/uwsm-app -- ${helvum}/bin/helvum";
+          on-click-right = "${uwsm}/bin/uwsm-app -- ${pwvucontrol}/bin/pwvucontrol";
         };
         "custom/notification" = with pkgsUnstable; {
           tooltip = false;
