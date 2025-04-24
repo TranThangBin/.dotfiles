@@ -14,15 +14,7 @@ let
     ghostty = "${ghostty.package}/bin/ghostty";
   };
   fileManager = "${pkgsUnstable.yazi}/share/applications/yazi.desktop";
-  menuWrapped = pkgsUnstable.writeShellScript "wofi.sh" ''
-    #! /usr/bin/env bash
-
-    if [[ ! $(pidof ${pkgsUnstable.wofi}/bin/wofi) ]]; then
-        ${pkgsUnstable.uwsm}/bin/uwsm app -- $( ${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true )
-    else
-        pkill ${pkgsUnstable.wofi}/bin/wofi
-    fi
-  '';
+  menuOutput = "${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true";
   resourceMonitor = "${pkgsUnstable.btop}/share/applications/btop.desktop";
 
   flamingo = "rgb(f2cdcd)";
@@ -131,7 +123,7 @@ in
           "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManager}"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
-          "${mainMod}, Space, exec, ${menuWrapped}"
+          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm app -- $( ${menuOutput} )"
           "${mainMod}, R, exec, ${uwsm}/bin/uwsm app -- ${resourceMonitor}"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"

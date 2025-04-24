@@ -22,6 +22,8 @@ in
         "ctrl+equal=increase_font_size:1"
         "ctrl+minus=decrease_font_size:1"
         "ctrl+zero=reset_font_size"
+        "ctrl+shift+v=paste_from_clipboard"
+        "ctrl+shift+c=copy_to_clipboard"
       ];
     };
   };

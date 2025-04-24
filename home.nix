@@ -32,7 +32,13 @@ in
 
   nixpkgs.overlays = [
     (self: super: {
-      inherit (pkgsUnstable) less xdg-desktop-portal profile-sync-daemon;
+      inherit (pkgsUnstable) less xdg-desktop-portal;
+      profile-sync-daemon = pkgsUnstable.profile-sync-daemon.overrideAttrs (oldAttrs: {
+        installPhase = ''
+          ${oldAttrs.installPhase}
+          cp $out/share/psd/contrib/brave $out/share/psd/browsers/brave
+        '';
+      });
     })
   ];
 
@@ -70,7 +76,7 @@ in
 
     imagemagick
     exiftool
-    wl-clipboard
+    wl-clipboard-rs
     xclip
     xsel
     ueberzugpp
@@ -88,13 +94,13 @@ in
     uwsm
     sqlite
 
-    gimp
+    gimp3
     vlc
     umu-launcher-unwrapped
     brave
     resources
 
-    (config.lib.nixGL.wrapOffload godot_4)
+    # (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload pkgs.discord)
     # (config.lib.nixGL.wrapOffload pkgs.steam)
