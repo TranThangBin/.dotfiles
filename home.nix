@@ -228,6 +228,6 @@ in
     ./docker.nix
     ./pipewire.nix
     ./fonts.nix
-    ./minecraft.nix
+    ./games.nix
   ];
 }
