@@ -25,6 +25,14 @@ in
     icon = "${config.home.homeDirectory}/Games/karlson/Karlson_linux_Data/Resources/UnityPlayer.png";
     exec = "${config.home.homeDirectory}/Games/karlson/Karlson_linux.x86_64";
   };
+  xdg.desktopEntries.Rerun = {
+    type = "Application";
+    name = "Rerun";
+    categories = [ "Game" ];
+    prefersNonDefaultGPU = true;
+    icon = "${config.home.homeDirectory}/Games/rerun/RERUN_linux_Data/Resources/UnityPlayer.png";
+    exec = "${config.home.homeDirectory}/Games/rerun/RERUN_linux.x86_64";
+  };
   xdg.desktopEntries.ZenlessZoneZero = {
     type = "Application";
     name = "Zenless Zone Zero";
