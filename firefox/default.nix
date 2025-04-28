@@ -1,10 +1,10 @@
-{ config, lib, ... }:
+{ config, ... }:
 {
   imports = [ ./config.nix ];
 
-  xdg.desktopEntries.FirefoxSocials = {
+  xdg.desktopEntries.FirefoxCustom = {
     type = "Application";
-    name = "Firefox (Socials)";
+    name = "Firefox Custom";
     genericName = "Web Browser";
     icon = "firefox";
     prefersNonDefaultGPU = true;
@@ -22,14 +22,22 @@
       "x-scheme-handler/http"
       "x-scheme-handler/https"
     ];
-    exec = lib.concatStringsSep " " [
-      "${config.programs.firefox.finalPackage}/bin/firefox"
-      "--name"
-      "firefox"
-      "messenger.com"
-      "chat.zalo.me"
-      "web.telegram.org"
-      "youtube.com"
-    ];
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom";
+    actions.Socials = {
+      name = "Socials";
+      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab messenger.com --new-tab chat.zalo.me";
+    };
+    actions.Messenger = {
+      name = "Messenger";
+      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab messenger.com";
+    };
+    actions.Zalo = {
+      name = "Zalo";
+      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab chat.zalo.me";
+    };
+    actions.Youtube = {
+      name = "Youtube";
+      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab youtube.com";
+    };
   };
 }
