@@ -15,7 +15,52 @@ with config.wayland.windowManager;
   programs.wofi.package = pkgsUnstable.wofi;
   programs.wlogout.package = pkgsUnstable.wlogout;
 
-  programs.wofi.style = "@import url(\"${./wofi.css}\");";
+  programs.wofi.settings = {
+    hide_scroll = true;
+    insensitive = true;
+    allow_images = true;
+    style = "${./wofi.css}";
+    key_expand = "Ctrl-space";
+  };
+
+  programs.wlogout.layout = [
+    {
+      label = "lock";
+      action = "${pkgsUnstable.systemd}/bin/loginctl lock-session";
+      text = "Lock";
+      keybind = "l";
+    }
+    {
+      label = "hibernate";
+      action = "${pkgsUnstable.systemd}/bin/systemctl hibernate";
+      text = "Hibernate";
+      keybind = "h";
+    }
+    {
+      label = "logout";
+      action = "${pkgsUnstable.uwsm}/bin/uwsm stop";
+      text = "Logout";
+      keybind = "e";
+    }
+    {
+      label = "shutdown";
+      action = "${pkgsUnstable.systemd}/bin/systemctl poweroff";
+      text = "Shutdown";
+      keybind = "s";
+    }
+    {
+      label = "suspend";
+      action = "${pkgsUnstable.systemd}/bin/systemctl suspend";
+      text = "Suspend";
+      keybind = "u";
+    }
+    {
+      label = "reboot";
+      action = "${pkgsUnstable.systemd}/bin/systemctl reboot";
+      text = "Reboot";
+      keybind = "r";
+    }
+  ];
 
   services.swaync.enable = hyprland.enable;
   services.hyprpaper.enable = hyprland.enable;
@@ -58,6 +103,7 @@ with config.wayland.windowManager;
     export GBM_BACKEND=${GBM_BACKEND}
     export __GLX_VENDOR_LIBRARY_NAME=${__GLX_VENDOR_LIBRARY_NAME}
     export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
+    export ALSA_PLUGIN_DIR=${pkgsUnstable.pipewire}/lib/alsa-lib
   '';
 
   imports = [

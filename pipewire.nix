@@ -13,8 +13,6 @@ in
     alsa-plugins
   ];
 
-  home.sessionVariables.ALSA_PLUGIN_DIR = "${pkgsUnstable.pipewire}/lib/alsa-lib";
-
   home.file.".asoundrc".source =
     "${pkgsUnstable.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
 
