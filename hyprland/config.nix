@@ -33,10 +33,10 @@ in
       ];
 
       exec-once = with pkgsUnstable; [
-        "${uwsm}/bin/uwsm-app ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
-        "${uwsm}/bin/uwsm-app ${pkgs.dconf}/libexec/dconf-service"
-        "${uwsm}/bin/uwsm-app ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
-        "${uwsm}/bin/uwsm-app ${networkmanagerapplet}/bin/nm-applet"
+        "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
+        "${uwsm}/bin/uwsm app -- ${pkgs.dconf}/libexec/dconf-service"
+        "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
+        "${uwsm}/bin/uwsm app -- ${networkmanagerapplet}/bin/nm-applet"
       ];
 
       general = {
