@@ -5,11 +5,18 @@ in
   home.packages = with pkgsUnstable; [
     pwvucontrol
     helvum
+    tree
     alsa-utils
     alsa-firmware
     alsa-tools
     alsa-lib
+    alsa-plugins
   ];
+
+  home.sessionVariables.ALSA_PLUGIN_DIR = "${pkgsUnstable.pipewire}/lib/alsa-lib";
+
+  home.file.".asoundrc".source =
+    "${pkgsUnstable.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
 
   systemd.user = with pkgsUnstable; {
     sockets = {
@@ -89,7 +96,7 @@ in
           SystemCallArchitectures = "native";
           SystemCallFilter = "@system-service";
           Type = "simple";
-          ExecStart = "${pipewire}/bin/pipewire";
+          ExecStart = "${pipewire}/bin/pipewire -c ${pipewire}/share/pipewire/pipewire.conf";
           Restart = "on-failure";
           Slice = "session.slice";
         };
@@ -105,7 +112,7 @@ in
           WantedBy = [ "default.target" ];
         };
         Service = {
-          ExecStart = "${pipewire}/bin/pipewire-pulse";
+          ExecStart = "${pipewire}/bin/pipewire-pulse -c ${pipewire}/share/pipewire/pipewire-pulse.conf";
         };
       };
 
@@ -124,7 +131,7 @@ in
           SystemCallArchitectures = "native";
           SystemCallFilter = "@system-service";
           Type = "simple";
-          ExecStart = "${wireplumber}/bin/wireplumber";
+          ExecStart = "${wireplumber}/bin/wireplumber -c ${wireplumber}/share/wireplumber/wireplumber.conf";
           Restart = "on-failure";
           Slice = "session.slice";
           Environment = "GIO_USE_VFS=local";
@@ -134,7 +141,6 @@ in
           WantedBy = [ "pipewire.service" ];
           Alias = "pipewire-session-manager.service";
         };
-
       };
     };
   };
