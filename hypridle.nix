@@ -2,14 +2,13 @@ let
   pkgsUnstable = import <nixpkgs-unstable> { };
   hyprlockBin = /usr/bin/hyprlock;
   hyprctlBin = /usr/bin/hyprctl;
-  loginCtlBin = /usr/bin/loginctl;
 in
 {
   services.hypridle = {
     settings = {
       general = {
         lock_cmd = "pidof ${hyprlockBin} || ${hyprlockBin}";
-        before_sleep_cmd = "${loginCtlBin} lock-session";
+        before_sleep_cmd = "${pkgsUnstable.systemd}/bin/loginctl lock-session";
         after_sleep_cmd = "${hyprlockBin} dispatch dpms on";
       };
 
@@ -28,7 +27,7 @@ in
 
         {
           timeout = 300;
-          on-timeout = "${loginCtlBin} lock-session";
+          on-timeout = "${systemd}/bin/loginctl lock-session";
         }
 
         {
@@ -39,7 +38,7 @@ in
 
         {
           timeout = 1800;
-          on-timeout = "${pkgsUnstable.systemd}/bin/systemctl suspend";
+          on-timeout = "${systemd}/bin/systemctl suspend";
         }
       ];
     };
