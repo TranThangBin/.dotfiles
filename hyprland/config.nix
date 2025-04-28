@@ -14,7 +14,7 @@ let
     ghostty = "${ghostty.package}/bin/ghostty";
   };
   fileManager = "${pkgsUnstable.yazi}/share/applications/yazi.desktop";
-  menuOutput = "${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true";
+  menuOutput = "${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed 's/ /:/'";
   resourceMonitor = "${pkgsUnstable.btop}/share/applications/btop.desktop";
 
   flamingo = "rgb(f2cdcd)";
@@ -27,13 +27,16 @@ in
     portalPackage = pkgsUnstable.xdg-desktop-portal-hyprland;
     systemd.enable = false;
     settings = {
-      monitor = ",preferred,auto,1";
+      monitor = [
+        ",preferred,auto,1"
+        "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
+      ];
 
       exec-once = with pkgsUnstable; [
-        "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
-        "${uwsm}/bin/uwsm app -- ${pkgs.dconf}/libexec/dconf-service"
-        "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
-        "${uwsm}/bin/uwsm app -- ${networkmanagerapplet}/bin/nm-applet"
+        "${uwsm}/bin/uwsm-app ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
+        "${uwsm}/bin/uwsm-app ${pkgs.dconf}/libexec/dconf-service"
+        "${uwsm}/bin/uwsm-app ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
+        "${uwsm}/bin/uwsm-app ${networkmanagerapplet}/bin/nm-applet"
       ];
 
       general = {
@@ -117,17 +120,17 @@ in
       bind =
         with pkgsUnstable;
         [
-          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm app -- ${terminal.ghostty}"
+          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${terminal.ghostty}"
           "${mainMod} SHIFT, Q, killactive,"
           "${mainMod} SHIFT, E, exec, ${wlogout}/bin/wlogout"
-          "${mainMod}, E, exec, ${uwsm}/bin/uwsm app -- ${fileManager}"
+          "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${fileManager}"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
-          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm app -- $( ${menuOutput} )"
-          "${mainMod}, R, exec, ${uwsm}/bin/uwsm app -- ${resourceMonitor}"
+          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${menuOutput} )"
+          "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${resourceMonitor}"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
-          "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm app -- ${/usr/bin/hyprlock}"
+          "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm-app ${/usr/bin/hyprlock}"
 
           "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
           "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"
