@@ -1,6 +1,4 @@
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ config, ... }:
 {
   programs.kitty = {
     shellIntegration = {
@@ -13,7 +11,7 @@ in
       size = 16;
     };
     settings = {
-      shell = "${pkgsUnstable.zsh}/bin/zsh";
+      shell = "${config.programs.zsh.package}/bin/zsh";
       cursor_shape = "block";
       cursor_shape_unfocused = "block";
       cursor_blink_interval = 0;

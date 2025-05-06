@@ -1,6 +1,4 @@
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ config, ... }:
 {
   programs.ghostty = {
     enableZshIntegration = true;
@@ -9,7 +7,7 @@ in
     installVimSyntax = true;
     settings = {
       theme = "GitHub-Dark-High-Contrast";
-      command = "${pkgsUnstable.zsh}/bin/zsh";
+      command = "${config.programs.zsh.package}/bin/zsh";
       font-family = "FiraCode Nerd Font Mono";
       font-size = 16;
       shell-integration-features = "no-cursor";

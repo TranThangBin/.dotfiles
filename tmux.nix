@@ -1,3 +1,4 @@
+{ config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 in
@@ -8,7 +9,7 @@ in
     keyMode = "vi";
     mouse = false;
     customPaneNavigationAndResize = true;
-    shell = "${pkgsUnstable.zsh}/bin/zsh";
+    shell = "${config.programs.zsh.package}/bin/zsh";
     terminal = "screen-256color";
     escapeTime = 10;
     extraConfig = ''

@@ -1,3 +1,4 @@
+{ config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 in
@@ -40,13 +41,13 @@ in
           icon-size = 21;
           spacing = 10;
         };
-        "custom/music" = with pkgsUnstable; {
+        "custom/music" = with config.services; {
           format = "  {}";
           escape = true;
           interval = 5;
           tooltip = false;
-          exec = "${playerctl}/bin/playerctl metadata --format='{{ title }}'";
-          on-click = "${playerctl}/bin/playerctl play-pause";
+          exec = "${playerctld.package}/bin/playerctl metadata --format='{{ title }}'";
+          on-click = "${playerctld.package}/bin/playerctl play-pause";
           max-length = 50;
         };
         clock = {
@@ -96,8 +97,10 @@ in
           };
         };
         pulseaudio = with pkgsUnstable; {
-          format = "{icon} {volume}%";
-          format-muted = "<s> {volume}%</s>";
+          format = "{icon} {volume}% | {format_source}";
+          format-muted = "<s>{icon} {volume}%</s> | {format_source}";
+          format-source = "󰍬 {volume}%";
+          format-source-muted = "<s>󰍬 {volume}%</s>";
           format-icons = {
             default = [
               ""
@@ -105,11 +108,11 @@ in
               ""
             ];
           };
-          on-click = "${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-          on-click-middle = "${uwsm}/bin/uwsm-app -- ${helvum}/bin/helvum";
-          on-click-right = "${uwsm}/bin/uwsm-app -- ${pwvucontrol}/bin/pwvucontrol";
+          on-click = "${uwsm}/bin/uwsm-app ${pwvucontrol}/bin/pwvucontrol";
+          on-click-middle = "${uwsm}/bin/uwsm-app ${helvum}/bin/helvum";
+          on-click-right = "${uwsm}/bin/uwsm-app ${config.services.easyeffects.package}/bin/easyeffects";
         };
-        "custom/notification" = with pkgsUnstable; {
+        "custom/notification" = with config.services; {
           tooltip = false;
           format = "{icon}";
           format-icons = {
@@ -123,9 +126,9 @@ in
             dnd-inhibited-none = "󰂛";
           };
           return-type = "json";
-          exec = "${swaynotificationcenter}/bin/swaync-client -swb";
-          on-click = "${swaynotificationcenter}/bin/swaync-client -t -sw";
-          on-click-right = "${swaynotificationcenter}/bin/swaync-client -d -sw";
+          exec = "${swaync.package}/bin/swaync-client -swb";
+          on-click = "${swaync.package}/bin/swaync-client -t -sw";
+          on-click-right = "${swaync.package}/bin/swaync-client -d -sw";
           escape = true;
         };
       };
