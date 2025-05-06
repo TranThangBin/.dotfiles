@@ -3,6 +3,8 @@ let
 in
 {
   home.packages = with pkgsUnstable; [
+    pipewire
+    wireplumber
     pwvucontrol
     helvum
     tree
@@ -15,6 +17,9 @@ in
 
   home.file.".asoundrc".source =
     "${pkgsUnstable.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
+
+  services.easyeffects.enable = true;
+  services.easyeffects.package = pkgsUnstable.easyeffects;
 
   systemd.user = with pkgsUnstable; {
     sockets = {
