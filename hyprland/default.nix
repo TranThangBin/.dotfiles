@@ -1,7 +1,6 @@
 { config, lib, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
-  preferedWallpaper = ./wallpapers/go-to-the-moon.png;
 in
 with config.wayland.windowManager;
 {
@@ -14,6 +13,8 @@ with config.wayland.windowManager;
   programs.waybar.package = pkgsUnstable.waybar;
   programs.wofi.package = pkgsUnstable.wofi;
   programs.wlogout.package = pkgsUnstable.wlogout;
+
+  i18n.inputMethod.fcitx5.waylandFrontend = hyprland.enable;
 
   programs.wofi.settings = {
     hide_scroll = true;
@@ -32,7 +33,7 @@ with config.wayland.windowManager;
     }
     {
       label = "hibernate";
-      action = "${pkgsUnstable.systemd}/bin/systemctl hibernate";
+      action = "${config.systemd.user.systemctlPath} hibernate";
       text = "Hibernate";
       keybind = "h";
     }
@@ -44,19 +45,19 @@ with config.wayland.windowManager;
     }
     {
       label = "shutdown";
-      action = "${pkgsUnstable.systemd}/bin/systemctl poweroff";
+      action = "${config.systemd.user.systemctlPath} poweroff";
       text = "Shutdown";
       keybind = "s";
     }
     {
       label = "suspend";
-      action = "${pkgsUnstable.systemd}/bin/systemctl suspend";
+      action = "${config.systemd.user.systemctlPath} suspend";
       text = "Suspend";
       keybind = "u";
     }
     {
       label = "reboot";
-      action = "${pkgsUnstable.systemd}/bin/systemctl reboot";
+      action = "${config.systemd.user.systemctlPath} reboot";
       text = "Reboot";
       keybind = "r";
     }
@@ -65,25 +66,42 @@ with config.wayland.windowManager;
   services.swaync.enable = hyprland.enable;
   services.hyprpaper.enable = hyprland.enable;
   services.hypridle.enable = hyprland.enable;
+  services.network-manager-applet.enable = hyprland.enable;
+  # services.hyprsunset.enable = hyprland.enable;
 
   services.swaync.package = pkgsUnstable.swaynotificationcenter;
   services.hyprpaper.package = pkgsUnstable.hyprpaper;
   services.hypridle.package = pkgsUnstable.hypridle;
+  # services.hyprsunset.package = pkgsUnstable.hyprsunset;
 
   services.swaync.style = ./swaync.css;
-  services.hyprpaper.settings = {
-    preload = "${preferedWallpaper}";
-    wallpaper = ",${preferedWallpaper}";
-    ipc = "off";
-  };
+  # services.hyprsunset.transitions = {
+  #   sunrise = {
+  #     calendar = "*-*-* 06:00:00";
+  #     requests = [
+  #       [
+  #         "temperature"
+  #         "6500"
+  #       ]
+  #       [ "gamma 100" ]
+  #     ];
+  #   };
+  #   sunset = {
+  #     calendar = "*-*-* 19:00:00";
+  #     requests = [
+  #       [
+  #         "temperature"
+  #         "3500"
+  #       ]
+  #     ];
+  #   };
+  # };
 
   home.pointerCursor.hyprcursor.enable = hyprland.enable;
 
   home.file.".profile".enable = hyprland.enable;
 
   home.file.".profile".source = pkgsUnstable.writeShellScript ".profile" ''
-    #! /usr/bin/env bash
-
     if [[ "$(tty)" = "/dev/tty1" ]]; then
     	printf "Do you want to start Hyprland? (Y/n): "
     	read -rn 1 answer
@@ -94,9 +112,14 @@ with config.wayland.windowManager;
     fi
   '';
 
-  xdg.portal.config.hyprland.default = [ "hyprland" ];
+  xdg.portal.config = {
+    # common."org.freedesktop.impl.portal.FileChooser" = "termfilechooser";
+    hyprland.default = [ "hyprland" ];
+  };
 
   xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
+
+  # xdg.configFile."xdg-desktop-portal-termfilechooser/config".enable = hyprland.enable;
 
   xdg.configFile."uwsm/env-hyprland".text = with import ./gpu-env.nix; ''
     export AQ_DRM_DEVICES=${lib.concatStringsSep ":" AQ_DRM_DEVICES}
@@ -106,10 +129,14 @@ with config.wayland.windowManager;
     export ALSA_PLUGIN_DIR=${pkgsUnstable.pipewire}/lib/alsa-lib
   '';
 
+  # xdg.configFile."xdg-desktop-portal-termfilechooser/config".source =
+  #   "${pkgsUnstable.xdg-desktop-portal-termfilechooser}/share/xdg-desktop-portal-termfilechooser/config";
+
   imports = [
     ./config.nix
     ../waybar
     ../hyprlock
+    ../hyprpaper
     ../hypridle.nix
   ];
 }
