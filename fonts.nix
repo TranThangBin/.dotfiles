@@ -1,3 +1,4 @@
+{ pkgs, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 in
@@ -9,6 +10,8 @@ in
     noto-fonts-color-emoji
 
     nerd-fonts.fira-code
+
+    pkgs.corefonts
   ];
   fonts.fontconfig.defaultFonts = {
     emoji = [ "Noto Color Emoji" ];
