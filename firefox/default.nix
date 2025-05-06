@@ -39,5 +39,17 @@
       name = "Youtube";
       exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab youtube.com";
     };
+    actions.Gmail = {
+      name = "Gmail";
+      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab gmail.com";
+    };
+    actions.ChatGPT = {
+      name = "ChatGPT";
+      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab chatgpt.com";
+    };
+    actions.Spotify = {
+      name = "Spotify";
+      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab open.spotify.com";
+    };
   };
 }

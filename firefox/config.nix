@@ -143,6 +143,7 @@ in
           currentVersion = 21;
           newElementCount = 2;
         };
+        # "widget.use-xdg-desktop-portal.file-picker" = 1;
       };
     };
   };
