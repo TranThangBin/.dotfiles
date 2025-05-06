@@ -10,7 +10,7 @@ in
     categories = [ "Game" ];
     prefersNonDefaultGPU = true;
     icon = ./desktop-icons/legacy-launcher.png;
-    exec = "${pkgsUnstable.jdk}/bin/java -jar ${
+    exec = "${/usr/bin/env} __GL_THREADED_OPTIMIZATIONS=0 LIBGL_ALWAYS_SOFTWARE=1 ${config.programs.java.package}/bin/java -jar ${
       pkgsUnstable.fetchurl {
         url = "https://llaun.ch/jar";
         hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
@@ -49,7 +49,7 @@ in
     categories = [ "Game" ];
     prefersNonDefaultGPU = true;
     icon = ./desktop-icons/pvz-fusion.jpg;
-    exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.4.2.toml";
+    exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
     actions.V2-3-1 = {
       name = "Version 2.3.1";
       exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.3.1.toml";
@@ -57,6 +57,10 @@ in
     actions.V2-4-2 = {
       name = "Version 2.4.2";
       exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.4.2.toml";
+    };
+    actions.V2-5-1 = {
+      name = "Version 2.5.1";
+      exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
     };
   };
 }
