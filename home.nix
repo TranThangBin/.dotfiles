@@ -25,6 +25,7 @@ in
       "discord"
       "postman"
       "rar"
+      "corefonts"
       # "steam"
       # "nixGL-steam"
       # "steam-unwrapped"
@@ -32,7 +33,7 @@ in
 
   nixpkgs.overlays = [
     (self: super: {
-      inherit (pkgsUnstable) less xdg-desktop-portal;
+      inherit (pkgsUnstable) less xdg-desktop-portal networkmanagerapplet;
       profile-sync-daemon = pkgsUnstable.profile-sync-daemon.overrideAttrs (oldAttrs: {
         installPhase = ''
           ${oldAttrs.installPhase}
@@ -64,15 +65,17 @@ in
     templ
     zig
     rustup
-    python311
+    python314
     nodejs_23
     swi-prolog
 
     unzip
     zip
     libreoffice
-    jq
     cifs-utils
+    yt-dlp
+    ventoy-full
+    sfxr
 
     imagemagick
     exiftool
@@ -92,6 +95,7 @@ in
     tlrc
     ncdu
     uwsm
+    hyprpicker
     sqlite
 
     gimp3
@@ -100,7 +104,7 @@ in
     brave
     resources
 
-    # (config.lib.nixGL.wrapOffload godot_4)
+    (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload pkgs.discord)
     # (config.lib.nixGL.wrapOffload pkgs.steam)
@@ -146,10 +150,24 @@ in
   programs.fzf.enable = true;
   programs.less.enable = true;
   programs.btop.enable = true;
+  programs.jq.enable = true;
+  programs.jqp.enable = true;
+  # programs.lazydocker.enable = true;
 
   programs.man.package = pkgsUnstable.man;
   programs.firefox.package = config.lib.nixGL.wrapOffload pkgsUnstable.firefox;
-  programs.neovim.package = pkgsUnstable.neovim-unwrapped;
+  programs.neovim.package = pkgsUnstable.neovim-unwrapped.overrideAttrs (prevAttrs: {
+    meta = {
+      description = prevAttrs.description or "Vim text editor fork focused on extensibility and agility";
+      maintainers = prevAttrs.maintainers or lib.teams.neovim.members;
+      license =
+        prevAttrs.license or (with lib.licenses; [
+          asl20
+          vim
+        ]);
+      platforms = prevAttrs.platforms or lib.platforms.unix;
+    };
+  });
   programs.kitty.package = config.lib.nixGL.wrap pkgsUnstable.kitty;
   programs.ghostty.package = config.lib.nixGL.wrap pkgsUnstable.ghostty;
   programs.zsh.package = pkgsUnstable.zsh;
@@ -165,6 +183,9 @@ in
   programs.zoxide.package = pkgsUnstable.zoxide;
   programs.fzf.package = pkgsUnstable.fzf;
   programs.btop.package = pkgsUnstable.btop;
+  programs.jq.package = pkgsUnstable.jq;
+  programs.jqp.package = pkgsUnstable.jqp;
+  # programs.lazydocker.package = pkgsUnstable.lazydocker;
 
   services.playerctld.enable = true;
   services.psd.enable = true;
@@ -172,6 +193,15 @@ in
   services.playerctld.package = pkgsUnstable.playerctl;
 
   i18n.inputMethod.enabled = "fcitx5";
+  i18n.glibcLocales = pkgsUnstable.glibcLocales.override {
+    locales = [ "en_US.UTF-8/UTF-8" ];
+  };
+
+  i18n.inputMethod.fcitx5.fcitx5-with-addons = pkgsUnstable.fcitx5-with-addons;
+  i18n.inputMethod.fcitx5.addons = with pkgsUnstable; [
+    kdePackages.fcitx5-unikey
+    fcitx5-tokyonight
+  ];
 
   qt.enable = true;
   gtk.enable = true;
@@ -189,10 +219,38 @@ in
     };
   };
 
-  i18n.inputMethod.fcitx5.addons = with pkgsUnstable; [
-    kdePackages.fcitx5-unikey
-    fcitx5-tokyonight
-  ];
+  # i18n.inputMethod.type = "fcitx5";
+  # i18n.inputMethod.fcitx5.themes.Tokyonight-Storm.theme =
+  #   "${pkgsUnstable.fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";
+  # i18n.inputMethod.fcitx5.settings.inputMethod = {
+  #   GroupOrder."0" = "Default";
+  #   "Groups/0" = {
+  #     Name = "Default";
+  #     "Default Layout" = "us";
+  #     DefaultIM = "unikey";
+  #   };
+  #   "Groups/0/Items/0".Name = "keyboard-us";
+  #   "Groups/0/Items/1".Name = "unikey";
+  # };
+  # i18n.inputMethod.fcitx5.settings.globalOptions = {
+  #   Hotkey = {
+  #     EnumerateWithTriggerKeys = true;
+  #     TriggerKeys = [ "Control+Shift+Space" ];
+  #   };
+  # };
+  # i18n.inputMethod.fcitx5.settings.addons = {
+  #   clipboard.globalSection = {
+  #     TriggerKey = "Super+V";
+  #   };
+  #   classicui.globalSection = {
+  #     Font = "Noto Sans 12";
+  #     MenuFont = "Noto Sans 12";
+  #     TrayFont = "Noto Sans 12";
+  #     Theme = "Tokyonight-Storm";
+  #     DarkTheme = "Tokyonight-Storm";
+  #     UseDarkTheme = false;
+  #   };
+  # };
 
   qt = {
     platformTheme = {
@@ -226,7 +284,7 @@ in
     ./zsh.nix
     ./tmux.nix
     ./docker.nix
-    ./pipewire.nix
+    ./audio.nix
     ./fonts.nix
     ./games.nix
   ];
