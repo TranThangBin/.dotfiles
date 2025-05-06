@@ -7,15 +7,18 @@
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 
-  mainMod = "ALT";
+  mainMod = "SUPER";
 
-  terminal = with config.programs; {
-    kitty = "${kitty.package}/bin/kitty";
-    ghostty = "${ghostty.package}/bin/ghostty";
+  settings = with config.programs; {
+    terminal = {
+      kitty = "${kitty.package}/bin/kitty";
+      ghostty = "${ghostty.package}/bin/ghostty";
+    };
+    logoutMenu = "${wlogout.package}/bin/wlogout";
+    fileManager = "${yazi.package}/share/applications/yazi.desktop";
+    menuOutput = ''${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed -E "s/(\.desktop) /\1:/"'';
+    resourceMonitor = "${btop.package}/share/applications/btop.desktop";
   };
-  fileManager = "${pkgsUnstable.yazi}/share/applications/yazi.desktop";
-  menuOutput = "${pkgsUnstable.wofi}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed 's/ /:/'";
-  resourceMonitor = "${pkgsUnstable.btop}/share/applications/btop.desktop";
 
   flamingo = "rgb(f2cdcd)";
   pink = "rgb(f5c2e7)";
@@ -32,16 +35,22 @@ in
         "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
       ];
 
-      exec-once = with pkgsUnstable; [
-        "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
-        "${uwsm}/bin/uwsm app -- ${pkgs.dconf}/libexec/dconf-service"
-        "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland"
-        "${uwsm}/bin/uwsm app -- ${networkmanagerapplet}/bin/nm-applet"
-      ];
+      exec-once =
+        (with config.systemd.user; [
+          "${systemctlPath} stop dconf.service"
+          "${systemctlPath} start dconf.service"
+          "${systemctlPath} stop network-manager-applet.service"
+          "${systemctlPath} start network-manager-applet.service"
+        ])
+        ++ (with pkgsUnstable; [
+          "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
+          "${uwsm}/bin/uwsm app -- ${config.wayland.windowManager.hyprland.portalPackage}/libexec/xdg-desktop-portal-hyprland"
+          # "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-termfilechooser}/libexec/xdg-desktop-portal-termfilechooser"
+        ]);
 
       general = {
         gaps_in = 5;
-        gaps_out = 10;
+        gaps_out = 5;
         border_size = 2;
         "col.active_border" = pink;
         "col.inactive_border" = surface0;
@@ -53,9 +62,9 @@ in
       };
 
       decoration = {
-        rounding = 10;
+        rounding = 5;
         active_opacity = 1.0;
-        inactive_opacity = 1.0;
+        inactive_opacity = 0.9;
         blur = {
           enabled = true;
           size = 3;
@@ -120,14 +129,14 @@ in
       bind =
         with pkgsUnstable;
         [
-          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${terminal.ghostty}"
+          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
           "${mainMod} SHIFT, Q, killactive,"
-          "${mainMod} SHIFT, E, exec, ${wlogout}/bin/wlogout"
-          "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${fileManager}"
+          "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
+          "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
-          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${menuOutput} )"
-          "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${resourceMonitor}"
+          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${settings.menuOutput} )"
+          "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
           "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm-app ${/usr/bin/hyprlock}"
@@ -173,11 +182,11 @@ in
         "${mainMod} CTRL, J, resizeactive, 0 10"
       ];
 
-      bindl = with pkgsUnstable; [
-        ", XF86AudioNext, exec, ${playerctl}/bin/playerctl next"
-        ", XF86AudioPause, exec, ${playerctl}/bin/playerctl play-pause"
-        ", XF86AudioPlay, exec, ${playerctl}/bin/playerctl play-pause"
-        ", XF86AudioPrev, exec, ${playerctl}/bin/playerctl previous"
+      bindl = with config.services; [
+        ", XF86AudioNext, exec, ${playerctld.package}/bin/playerctl next"
+        ", XF86AudioPause, exec,${playerctld.package}/bin/playerctl play-pause"
+        ", XF86AudioPlay, exec, ${playerctld.package}/bin/playerctl play-pause"
+        ", XF86AudioPrev, exec, ${playerctld.package}/bin/playerctl previous"
       ];
 
       bindel = with pkgsUnstable; [

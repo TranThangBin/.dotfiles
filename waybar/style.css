@@ -6,7 +6,7 @@
 @define-color subtext0 #a6adc8;
 @define-color subtext1 #bac2de;
 
-@define-color surface0 #313244;
+@define-color surface0 rgba(49, 50, 68, 0.8);
 @define-color surface1 #45475a;
 @define-color surface2 #585b70;
 
