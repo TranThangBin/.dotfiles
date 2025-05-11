@@ -18,6 +18,7 @@ let
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
     menuOutput = ''${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed -E "s/(\.desktop) /\1:/"'';
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
+    colorPicker = "${pkgsUnstable.hyprpicker}/bin/hyprpicker -a";
   };
 
   flamingo = "rgb(f2cdcd)";
@@ -37,10 +38,10 @@ in
 
       exec-once =
         (with config.systemd.user; [
-          "${systemctlPath} stop dconf.service"
-          "${systemctlPath} start dconf.service"
-          "${systemctlPath} stop network-manager-applet.service"
-          "${systemctlPath} start network-manager-applet.service"
+          "${systemctlPath} --user stop network-manager-applet.service"
+          "${systemctlPath} --user start network-manager-applet.service"
+          "${systemctlPath} --user stop dconf.service"
+          "${systemctlPath} --user start dconf.service"
         ])
         ++ (with pkgsUnstable; [
           "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
@@ -111,7 +112,7 @@ in
         kb_options = "";
         kb_rules = "";
         follow_mouse = 1;
-        sensitivity = 1;
+        sensitivity = 2;
         touchpad = {
           natural_scroll = false;
         };
@@ -121,33 +122,33 @@ in
         workspace_swipe = false;
       };
 
-      device = {
-        name = "epic-mouse-v1";
-        sensitivity = -0.5;
-      };
-
       bind =
-        with pkgsUnstable;
-        [
-          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
+        (
+          with pkgsUnstable;
+          [
+            "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
+            "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${settings.menuOutput} )"
+            "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
+            "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
+            "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
+            "${mainMod}, C, exec, ${settings.colorPicker}"
+          ]
+          ++ [
+            "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
+            "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"
+            "${mainMod} CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output"
+
+            ",PRINT, exec, ${hyprshot}/bin/hyprshot -m region --clipboard-only"
+            "SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window --clipboard-only"
+            "CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output --clipboard-only"
+          ]
+        )
+        ++ [
           "${mainMod} SHIFT, Q, killactive,"
-          "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
-          "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
-          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${settings.menuOutput} )"
-          "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
-          "${mainMod} CTRL SHIFT, S, exec, ${uwsm}/bin/uwsm-app ${/usr/bin/hyprlock}"
-
-          "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
-          "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"
-          "${mainMod} CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output"
-
-          ",PRINT, exec, ${hyprshot}/bin/hyprshot -m region --clipboard-only"
-          "SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window --clipboard-only"
-          "CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output --clipboard-only"
         ]
         ++ [
           "${mainMod}, M, togglespecialworkspace, magic"
@@ -168,11 +169,17 @@ in
           "${mainMod}, J, movefocus, d"
           "${mainMod} SHIFT, J, movewindow, d"
         ]
-        ++ lib.concatLists (
-          lib.genList (i: [
-            "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
-            "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
-          ]) 9
+        ++ (
+          lib.concatLists (
+            lib.genList (i: [
+              "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
+              "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
+            ]) 9
+          )
+          ++ [
+            "${mainMod}, 0, workspace, 10"
+            "${mainMod} SHIFT, 0, movetoworkspace, 10"
+          ]
         );
 
       binde = [
@@ -203,12 +210,15 @@ in
         "${mainMod} SHIFT, mouse:273, resizewindow"
       ];
 
-      windowrulev2 = with config.programs; [
-        "opacity ${toString kitty.settings.background_opacity} class:kitty"
-        "opacity ${toString ghostty.settings.background-opacity}, class:ghostty"
-        "suppressevent maximize, class:.*"
-        "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-      ];
+      windowrulev2 =
+        [
+          "suppressevent maximize, class:.*"
+          "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+        ]
+        ++ (with config.programs; [
+          "opacity ${toString kitty.settings.background_opacity} class:kitty"
+          "opacity ${toString ghostty.settings.background-opacity}, class:ghostty"
+        ]);
     };
   };
 }

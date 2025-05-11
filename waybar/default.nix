@@ -11,7 +11,7 @@ in
         layer = "top";
         position = "top";
         modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "custom/music" ];
+        modules-center = [ "custom/player" ];
         modules-right = [
           "pulseaudio"
           "backlight"
@@ -41,7 +41,7 @@ in
           icon-size = 21;
           spacing = 10;
         };
-        "custom/music" = with config.services; {
+        "custom/player" = with config.services; {
           format = "  {}";
           escape = true;
           interval = 5;

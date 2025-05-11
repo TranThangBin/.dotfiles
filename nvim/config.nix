@@ -59,6 +59,11 @@ in
       nvim-treesitter-textobjects
       nvim-treesitter-context
       ccc-nvim
+      cloak-nvim
+      vim-dadbod
+      vim-dadbod-completion
+      vim-dadbod-ui
+      (fromGitHub "main" "eduardo-antunes/plainline")
       (nvim-treesitter.withPlugins (p: [
         p.c
         p.cpp
@@ -82,13 +87,11 @@ in
         p.gitcommit
         p.prolog
       ]))
-      cloak-nvim
-      (fromGitHub "main" "eduardo-antunes/plainline")
     ];
     extraPackages = with pkgsUnstable; [
       pyright
       ruff
-      nixd
+      nil
       nixfmt-rfc-style
       lua-language-server
       stylua

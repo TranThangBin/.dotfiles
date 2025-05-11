@@ -23,6 +23,7 @@ local servers = {
 	"rust_analyzer",
 	"taplo",
 	"zls",
+	"nil_ls",
 	lua_ls = lsp_zero.nvim_lua_ls(),
 	ruff = { init_options = { settings = { logLevel = "debug" } } },
 	pyright = {
@@ -45,21 +46,6 @@ local servers = {
 			schemaStore = {
 				enable = false,
 				url = "",
-			},
-		},
-	},
-	nixd = {
-		cmd = { "nixd" },
-		settings = {
-			nixd = {
-				nixpkgs = {
-					expr = "import <nixpkgs> { }",
-				},
-				options = {
-					home_manager = {
-						expr = "(import <home-manager> { pkgs = import <nixpkgs> {}; }).options",
-					},
-				},
 			},
 		},
 	},

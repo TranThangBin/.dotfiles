@@ -54,6 +54,13 @@ cmp.setup({
 	}),
 })
 
+cmp.setup.filetype("sql", {
+	sources = {
+		{ name = "vim-dadbob-completion" },
+		{ name = "buffer" },
+	},
+})
+
 cmp.setup.cmdline("/", {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = {
@@ -65,7 +72,6 @@ cmp.setup.cmdline(":", {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
 		{ name = "path" },
-	}, {
 		{ name = "cmdline" },
 	}),
 })

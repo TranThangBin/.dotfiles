@@ -1,14 +1,16 @@
 { config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
-in
-{
-  xdg.desktopEntries.LegacyLauncher = {
+  gameEntry = {
     type = "Application";
-    name = "Legacy Launcher";
-    genericName = "Minecraft";
     categories = [ "Game" ];
     prefersNonDefaultGPU = true;
+  };
+in
+{
+  xdg.desktopEntries.LegacyLauncher = gameEntry // {
+    name = "Legacy Launcher";
+    genericName = "Minecraft";
     icon = ./desktop-icons/legacy-launcher.png;
     exec = "${/usr/bin/env} __GL_THREADED_OPTIMIZATIONS=0 LIBGL_ALWAYS_SOFTWARE=1 ${config.programs.java.package}/bin/java -jar ${
       pkgsUnstable.fetchurl {
@@ -17,37 +19,25 @@ in
       }
     }";
   };
-  xdg.desktopEntries.Karlson = {
-    type = "Application";
+  xdg.desktopEntries.Karlson = gameEntry // {
     name = "Karlson";
-    categories = [ "Game" ];
-    prefersNonDefaultGPU = true;
     icon = "${config.home.homeDirectory}/Games/karlson/Karlson_linux_Data/Resources/UnityPlayer.png";
     exec = "${config.home.homeDirectory}/Games/karlson/Karlson_linux.x86_64";
   };
-  xdg.desktopEntries.Rerun = {
-    type = "Application";
+  xdg.desktopEntries.Rerun = gameEntry // {
     name = "Rerun";
-    categories = [ "Game" ];
-    prefersNonDefaultGPU = true;
     icon = "${config.home.homeDirectory}/Games/rerun/RERUN_linux_Data/Resources/UnityPlayer.png";
     exec = "${config.home.homeDirectory}/Games/rerun/RERUN_linux.x86_64";
   };
-  xdg.desktopEntries.ZenlessZoneZero = {
-    type = "Application";
+  xdg.desktopEntries.ZenlessZoneZero = gameEntry // {
     name = "Zenless Zone Zero";
     genericName = "zzz";
-    categories = [ "Game" ];
-    prefersNonDefaultGPU = true;
     icon = ./desktop-icons/zzz.png;
     exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/zzz.toml";
   };
-  xdg.desktopEntries.PlantVsZombiesRH = {
-    type = "Application";
+  xdg.desktopEntries.PlantVsZombiesRH = gameEntry // {
     name = "PlantVsZombiesRH";
     genericName = "pvz-fusion";
-    categories = [ "Game" ];
-    prefersNonDefaultGPU = true;
     icon = ./desktop-icons/pvz-fusion.jpg;
     exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
     actions.V2-3-1 = {

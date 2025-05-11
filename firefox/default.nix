@@ -1,12 +1,8 @@
 { config, ... }:
-{
-  imports = [ ./config.nix ];
-
-  xdg.desktopEntries.FirefoxCustom = {
+let
+  firefoxEntry = {
     type = "Application";
-    name = "Firefox Custom";
     genericName = "Web Browser";
-    icon = "firefox";
     prefersNonDefaultGPU = true;
     startupNotify = true;
     terminal = false;
@@ -22,34 +18,50 @@
       "x-scheme-handler/http"
       "x-scheme-handler/https"
     ];
-    exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom";
-    actions.Socials = {
-      name = "Socials";
-      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab messenger.com --new-tab chat.zalo.me";
-    };
-    actions.Messenger = {
-      name = "Messenger";
-      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab messenger.com";
-    };
-    actions.Zalo = {
-      name = "Zalo";
-      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab chat.zalo.me";
-    };
-    actions.Youtube = {
-      name = "Youtube";
-      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab youtube.com";
-    };
-    actions.Gmail = {
-      name = "Gmail";
-      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab gmail.com";
-    };
-    actions.ChatGPT = {
-      name = "ChatGPT";
-      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab chatgpt.com";
-    };
-    actions.Spotify = {
-      name = "Spotify";
-      exec = "${config.programs.firefox.finalPackage}/bin/firefox --name firefox-custom --new-tab open.spotify.com";
-    };
+  };
+in
+{
+  imports = [ ./config.nix ];
+
+  xdg.desktopEntries.Messenger = firefoxEntry // {
+    name = "Messenger";
+    icon = "${../desktop-icons/Facebook_Messenger_logo_2018.svg}";
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window messenger.com";
+  };
+
+  xdg.desktopEntries.Zalo = firefoxEntry // {
+    name = "Zalo";
+    icon = "${../desktop-icons/Icon_of_Zalo.svg}";
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window chat.zalo.me";
+  };
+
+  xdg.desktopEntries.Youtube = firefoxEntry // {
+    name = "Youtube";
+    icon = "${../desktop-icons/YouTube_full-color_icon_2017.svg}";
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window youtube.com";
+  };
+
+  xdg.desktopEntries.Gmail = firefoxEntry // {
+    name = "Gmail";
+    icon = "${../desktop-icons/Gmail_icon_2020.svg}";
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window gmail.com";
+  };
+
+  xdg.desktopEntries.ChatGPT = firefoxEntry // {
+    name = "ChatGPT";
+    icon = "${../desktop-icons/ChatGPT-Logo.svg}";
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window chatgpt.com";
+  };
+
+  xdg.desktopEntries.Spotify = firefoxEntry // {
+    name = "Spotify";
+    icon = "${../desktop-icons/Spotify_icon.svg}";
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window open.spotify.com";
+  };
+
+  xdg.desktopEntries.Socials = firefoxEntry // {
+    name = "Socials";
+    icon = "${../desktop-icons/multiple-users-silhouette.png}";
+    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-tab messenger.com --new-tab chat.zalo.me";
   };
 }

@@ -26,9 +26,9 @@ in
       "postman"
       "rar"
       "corefonts"
-      # "steam"
-      # "nixGL-steam"
-      # "steam-unwrapped"
+      "steam"
+      "steam-unwrapped"
+      "nixGL-steam"
     ];
 
   nixpkgs.overlays = [
@@ -66,11 +66,12 @@ in
     zig
     rustup
     python314
-    nodejs_23
+    nodejs_24
     swi-prolog
 
     unzip
     zip
+    p7zip
     libreoffice
     cifs-utils
     yt-dlp
@@ -85,8 +86,6 @@ in
     ueberzugpp
 
     systemd
-    ripgrep
-    fd
     sl
     lolcat
     cowsay
@@ -97,17 +96,20 @@ in
     uwsm
     hyprpicker
     sqlite
+    dysk
 
     gimp3
+    openshot-qt
     vlc
     umu-launcher-unwrapped
     brave
     resources
+    qbittorrent-enhanced
 
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload pkgs.discord)
-    # (config.lib.nixGL.wrapOffload pkgs.steam)
+    (config.lib.nixGL.wrapOffload pkgs.steam)
 
     pkgs.postman
     pkgs.drawio
@@ -153,6 +155,8 @@ in
   programs.jq.enable = true;
   programs.jqp.enable = true;
   # programs.lazydocker.enable = true;
+  programs.ripgrep.enable = true;
+  programs.fd.enable = true;
 
   programs.man.package = pkgsUnstable.man;
   programs.firefox.package = config.lib.nixGL.wrapOffload pkgsUnstable.firefox;
@@ -186,6 +190,8 @@ in
   programs.jq.package = pkgsUnstable.jq;
   programs.jqp.package = pkgsUnstable.jqp;
   # programs.lazydocker.package = pkgsUnstable.lazydocker;
+  programs.ripgrep.package = pkgsUnstable.ripgrep;
+  programs.fd.package = pkgsUnstable.fd;
 
   services.playerctld.enable = true;
   services.psd.enable = true;

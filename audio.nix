@@ -13,6 +13,7 @@ in
     alsa-tools
     alsa-lib
     alsa-plugins
+    openal
   ];
 
   home.file.".asoundrc".source =
