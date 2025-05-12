@@ -200,7 +200,8 @@ in
   services.playerctld.package = pkgsUnstable.playerctl;
   services.podman.package = pkgsUnstable.podman;
 
-  i18n.inputMethod.enabled = "fcitx5";
+  i18n.inputMethod.enable = true;
+  i18n.inputMethod.type = "fcitx5";
   i18n.glibcLocales = pkgsUnstable.glibcLocales.override {
     locales = [ "en_US.UTF-8/UTF-8" ];
   };
@@ -226,39 +227,6 @@ in
       vim_keys = true;
     };
   };
-
-  # i18n.inputMethod.type = "fcitx5";
-  # i18n.inputMethod.fcitx5.themes.Tokyonight-Storm.theme =
-  #   "${pkgsUnstable.fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";
-  # i18n.inputMethod.fcitx5.settings.inputMethod = {
-  #   GroupOrder."0" = "Default";
-  #   "Groups/0" = {
-  #     Name = "Default";
-  #     "Default Layout" = "us";
-  #     DefaultIM = "unikey";
-  #   };
-  #   "Groups/0/Items/0".Name = "keyboard-us";
-  #   "Groups/0/Items/1".Name = "unikey";
-  # };
-  # i18n.inputMethod.fcitx5.settings.globalOptions = {
-  #   Hotkey = {
-  #     EnumerateWithTriggerKeys = true;
-  #     TriggerKeys = [ "Control+Shift+Space" ];
-  #   };
-  # };
-  # i18n.inputMethod.fcitx5.settings.addons = {
-  #   clipboard.globalSection = {
-  #     TriggerKey = "Super+V";
-  #   };
-  #   classicui.globalSection = {
-  #     Font = "Noto Sans 12";
-  #     MenuFont = "Noto Sans 12";
-  #     TrayFont = "Noto Sans 12";
-  #     Theme = "Tokyonight-Storm";
-  #     DarkTheme = "Tokyonight-Storm";
-  #     UseDarkTheme = false;
-  #   };
-  # };
 
   qt = {
     platformTheme = {
@@ -295,5 +263,6 @@ in
     ./audio.nix
     ./fonts.nix
     ./games.nix
+    ./fcitx5.nix
   ];
 }

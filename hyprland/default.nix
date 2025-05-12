@@ -67,35 +67,14 @@ with config.wayland.windowManager;
   services.hyprpaper.enable = hyprland.enable;
   services.hypridle.enable = hyprland.enable;
   services.network-manager-applet.enable = hyprland.enable;
-  # services.hyprsunset.enable = hyprland.enable;
+  services.hyprsunset.enable = hyprland.enable;
 
   services.swaync.package = pkgsUnstable.swaynotificationcenter;
   services.hyprpaper.package = pkgsUnstable.hyprpaper;
   services.hypridle.package = pkgsUnstable.hypridle;
-  # services.hyprsunset.package = pkgsUnstable.hyprsunset;
+  services.hyprsunset.package = pkgsUnstable.hyprsunset;
 
   services.swaync.style = ./swaync.css;
-  # services.hyprsunset.transitions = {
-  #   sunrise = {
-  #     calendar = "*-*-* 06:00:00";
-  #     requests = [
-  #       [
-  #         "temperature"
-  #         "6500"
-  #       ]
-  #       [ "gamma 100" ]
-  #     ];
-  #   };
-  #   sunset = {
-  #     calendar = "*-*-* 19:00:00";
-  #     requests = [
-  #       [
-  #         "temperature"
-  #         "3500"
-  #       ]
-  #     ];
-  #   };
-  # };
 
   home.pointerCursor.hyprcursor.enable = hyprland.enable;
 
@@ -113,13 +92,10 @@ with config.wayland.windowManager;
   '';
 
   xdg.portal.config = {
-    # common."org.freedesktop.impl.portal.FileChooser" = "termfilechooser";
     hyprland.default = [ "hyprland" ];
   };
 
   xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
-
-  # xdg.configFile."xdg-desktop-portal-termfilechooser/config".enable = hyprland.enable;
 
   xdg.configFile."uwsm/env-hyprland".text = with import ./gpu-env.nix; ''
     export AQ_DRM_DEVICES=${lib.concatStringsSep ":" AQ_DRM_DEVICES}
@@ -128,9 +104,6 @@ with config.wayland.windowManager;
     export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
     export ALSA_PLUGIN_DIR=${pkgsUnstable.pipewire}/lib/alsa-lib
   '';
-
-  # xdg.configFile."xdg-desktop-portal-termfilechooser/config".source =
-  #   "${pkgsUnstable.xdg-desktop-portal-termfilechooser}/share/xdg-desktop-portal-termfilechooser/config";
 
   imports = [
     ./config.nix
