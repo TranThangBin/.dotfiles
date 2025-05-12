@@ -94,7 +94,6 @@ in
     tlrc
     ncdu
     uwsm
-    hyprpicker
     sqlite
     dysk
 

@@ -1,9 +1,4 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 
@@ -19,6 +14,7 @@ let
     menuOutput = ''${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed -E "s/(\.desktop) /\1:/"'';
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
     colorPicker = "${pkgsUnstable.hyprpicker}/bin/hyprpicker -a";
+    emojiPicker = "${pkgsUnstable.wofi-emoji}/bin/wofi-emoji";
   };
 
   flamingo = "rgb(f2cdcd)";
@@ -36,17 +32,15 @@ in
         "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
       ];
 
-      exec-once =
-        (with config.systemd.user; [
+      exec-once = (
+        with config.systemd.user;
+        [
           "${systemctlPath} --user stop network-manager-applet.service"
           "${systemctlPath} --user start network-manager-applet.service"
           "${systemctlPath} --user stop dconf.service"
           "${systemctlPath} --user start dconf.service"
-        ])
-        ++ (with pkgsUnstable; [
-          "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
-          "${uwsm}/bin/uwsm app -- ${config.wayland.windowManager.hyprland.portalPackage}/libexec/xdg-desktop-portal-hyprland"
-        ]);
+        ]
+      );
 
       general = {
         gaps_in = 5;
@@ -131,6 +125,7 @@ in
             "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
             "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
             "${mainMod}, C, exec, ${settings.colorPicker}"
+            "${mainMod} SHIFT, Space, exec, ${settings.emojiPicker}"
           ]
           ++ [
             "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"

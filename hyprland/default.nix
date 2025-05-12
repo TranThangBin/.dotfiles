@@ -92,6 +92,7 @@ with config.wayland.windowManager;
   '';
 
   xdg.portal.config = {
+    common.default = [ "hyprland" ];
     hyprland.default = [ "hyprland" ];
   };
 
@@ -107,6 +108,7 @@ with config.wayland.windowManager;
 
   imports = [
     ./config.nix
+    ./xdg-desktop-portal.nix
     ../waybar
     ../hyprlock
     ../hyprpaper
