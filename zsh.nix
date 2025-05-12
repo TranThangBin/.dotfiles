@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
   mountSmbScript = pkgsUnstable.writeShellScript "mount-smb.sh" ''
@@ -28,9 +28,9 @@ in
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    initExtra = "[ -z $TMUX ] && ${config.programs.fastfetch.package}/bin/fastfetch";
+    initContent = "[ -z $TMUX ] && ${config.programs.fastfetch.package}/bin/fastfetch";
     shellAliases = {
-      home-manager = "${pkgs.home-manager}/bin/home-manager -f ${config.home.homeDirectory}/.dotfiles/home.nix";
+      home-manager = "home-manager -f ${config.home.homeDirectory}/.dotfiles/home.nix";
       mount-smb = "${mountSmbScript}";
     };
 
