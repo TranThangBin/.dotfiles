@@ -46,7 +46,6 @@ in
         ++ (with pkgsUnstable; [
           "${uwsm}/bin/uwsm app -- ${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal"
           "${uwsm}/bin/uwsm app -- ${config.wayland.windowManager.hyprland.portalPackage}/libexec/xdg-desktop-portal-hyprland"
-          # "${uwsm}/bin/uwsm app -- ${xdg-desktop-portal-termfilechooser}/libexec/xdg-desktop-portal-termfilechooser"
         ]);
 
       general = {

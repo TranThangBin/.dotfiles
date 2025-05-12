@@ -1,3 +1,4 @@
+{ config, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
   hyprlockBin = /usr/bin/hyprlock;
@@ -38,7 +39,7 @@ in
 
         {
           timeout = 1800;
-          on-timeout = "${systemd}/bin/systemctl suspend";
+          on-timeout = "${config.systemd.user.systemctlPath} suspend";
         }
       ];
     };
