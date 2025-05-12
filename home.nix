@@ -154,7 +154,7 @@ in
   programs.btop.enable = true;
   programs.jq.enable = true;
   programs.jqp.enable = true;
-  # programs.lazydocker.enable = true;
+  programs.lazydocker.enable = true;
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
 
@@ -189,14 +189,16 @@ in
   programs.btop.package = pkgsUnstable.btop;
   programs.jq.package = pkgsUnstable.jq;
   programs.jqp.package = pkgsUnstable.jqp;
-  # programs.lazydocker.package = pkgsUnstable.lazydocker;
+  programs.lazydocker.package = pkgsUnstable.lazydocker;
   programs.ripgrep.package = pkgsUnstable.ripgrep;
   programs.fd.package = pkgsUnstable.fd;
 
   services.playerctld.enable = true;
   services.psd.enable = true;
+  services.podman.enable = true;
 
   services.playerctld.package = pkgsUnstable.playerctl;
+  services.podman.package = pkgsUnstable.podman;
 
   i18n.inputMethod.enabled = "fcitx5";
   i18n.glibcLocales = pkgsUnstable.glibcLocales.override {
@@ -289,7 +291,7 @@ in
     ./ghostty.nix
     ./zsh.nix
     ./tmux.nix
-    ./docker.nix
+    ./container.nix
     ./audio.nix
     ./fonts.nix
     ./games.nix
