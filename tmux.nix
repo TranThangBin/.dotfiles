@@ -26,7 +26,7 @@ in
       {
         plugin = resurrect;
         extraConfig = ''
-          set -g @resurrect-processes '"~nvim->nvim"'
+          set -g @resurrect-processes '"~nvim->nvim" lazydocker'
           set -g @resurrect-strategy-nvim 'session'
         '';
       }
