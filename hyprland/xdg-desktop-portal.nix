@@ -4,7 +4,7 @@
     xdg-desktop-portal = {
       Unit = {
         Description = "Portal service";
-        PartOf = config.wayland.systemd.target;
+        # PartOf = config.wayland.systemd.target;
       };
 
       Service = {
@@ -14,12 +14,12 @@
         Slice = "session.slice";
       };
 
-      Install.WantedBy = [ config.wayland.systemd.target ];
+      Install.WantedBy = [ "xdg-desktop-autostart.target" ];
     };
     xdg-desktop-portal-hyprland = {
       Unit = {
         Description = "Portal service (Hyprland implementation)";
-        PartOf = config.wayland.systemd.target;
+        # PartOf = config.wayland.systemd.target;
         After = config.wayland.systemd.target;
         ConditionEnvironment = "WAYLAND_DISPLAY";
       };
@@ -32,7 +32,7 @@
         Slice = "session.slice";
       };
 
-      Install.WantedBy = [ config.wayland.systemd.target ];
+      Install.WantedBy = [ "xdg-desktop-autostart.target" ];
     };
   };
 }

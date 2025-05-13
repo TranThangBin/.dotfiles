@@ -115,6 +115,8 @@ in
     pkgs.rar
   ];
 
+  targets.genericLinux.enable = true;
+
   xdg.userDirs.enable = true;
 
   fonts.fontconfig.enable = true;
@@ -195,9 +197,11 @@ in
   services.playerctld.enable = true;
   services.psd.enable = true;
   services.podman.enable = true;
+  services.easyeffects.enable = true;
 
   services.playerctld.package = pkgsUnstable.playerctl;
   services.podman.package = pkgsUnstable.podman;
+  services.easyeffects.package = pkgsUnstable.easyeffects;
 
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";
@@ -254,12 +258,12 @@ in
     ./nvim
     ./yazi
     ./hyprland
+    ./audio
     ./kitty.nix
     ./ghostty.nix
     ./zsh.nix
     ./tmux.nix
     ./container.nix
-    ./audio.nix
     ./fonts.nix
     ./games.nix
     ./fcitx5.nix

@@ -40,6 +40,7 @@ in
         "tmux"
         "vi-mode"
         "systemd"
+        "git"
       ];
       extraConfig = ''
         bindkey '^ ' autosuggest-accept
