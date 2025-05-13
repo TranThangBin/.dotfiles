@@ -1,28 +1,29 @@
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
+  pipewire = pkgsUnstable.pipewire;
+  wireplumber = pkgsUnstable.wireplumber;
 in
 {
-  home.packages = with pkgsUnstable; [
-    pipewire
-    wireplumber
-    pwvucontrol
-    helvum
-    tree
-    alsa-utils
-    alsa-firmware
-    alsa-tools
-    alsa-lib
-    alsa-plugins
-    openal
-  ];
+  home.packages =
+    [
+      pipewire
+      wireplumber
+    ]
+    ++ (with pkgsUnstable; [
+      pwvucontrol
+      helvum
+      tree
+      alsa-utils
+      alsa-firmware
+      alsa-tools
+      alsa-lib
+      alsa-plugins
+      openal
+    ]);
 
-  home.file.".asoundrc".source =
-    "${pkgsUnstable.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
+  home.file.".asoundrc".source = "${pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
 
-  services.easyeffects.enable = true;
-  services.easyeffects.package = pkgsUnstable.easyeffects;
-
-  systemd.user = with pkgsUnstable; {
+  systemd.user = {
     sockets = {
       pipewire = {
         Unit = {
@@ -112,11 +113,31 @@ in
       };
 
       pipewire-pulse = {
-        Install = {
-          WantedBy = [ "default.target" ];
+        Unit = {
+          Description = "PipeWire PulseAudio";
+          Requires = "pipewire-pulse.socket";
+          ConditionUser = "!root";
+          Wants = "pipewire.service pipewire-session-manager.service";
+          After = "pipewire.service pipewire-session-manager.service";
+          Conflicts = "pulseaudio.service";
         };
+
         Service = {
+          LockPersonality = "yes";
+          MemoryDenyWriteExecute = "yes";
+          NoNewPrivileges = "yes";
+          RestrictNamespaces = "yes";
+          SystemCallArchitectures = "native";
+          SystemCallFilter = "@system-service";
+          Type = "simple";
           ExecStart = "${pipewire}/bin/pipewire-pulse -c ${pipewire}/share/pipewire/pipewire-pulse.conf";
+          Restart = "on-failure";
+          Slice = "session.slice";
+        };
+
+        Install = {
+          Also = "pipewire-pulse.socket";
+          WantedBy = [ "default.target" ];
         };
       };
 
@@ -148,4 +169,6 @@ in
       };
     };
   };
+
+  imports = [ ./easyeffects.nix ];
 }
