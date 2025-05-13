@@ -91,7 +91,7 @@ in
     xsel
     ueberzugpp
 
-    systemdMinimal
+    systemd
     sl
     lolcat
     cowsay
@@ -135,7 +135,7 @@ in
     size = 28;
   };
 
-  systemd.user.systemctlPath = "${pkgsUnstable.systemdMinimal}/bin/systemctl";
+  systemd.user.systemctlPath = "${pkgsUnstable.systemd}/bin/systemctl";
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
