@@ -33,7 +33,12 @@ in
 
   nixpkgs.overlays = [
     (self: super: {
-      inherit (pkgsUnstable) less xdg-desktop-portal networkmanagerapplet;
+      inherit (pkgsUnstable)
+        less
+        xdg-desktop-portal
+        networkmanagerapplet
+        poweralertd
+        ;
       profile-sync-daemon = pkgsUnstable.profile-sync-daemon.overrideAttrs (oldAttrs: {
         installPhase = ''
           ${oldAttrs.installPhase}
@@ -77,6 +82,7 @@ in
     yt-dlp
     ventoy-full
     sfxr
+    powertop
 
     imagemagick
     exiftool
@@ -85,7 +91,7 @@ in
     xsel
     ueberzugpp
 
-    systemd
+    systemdMinimal
     sl
     lolcat
     cowsay
@@ -129,7 +135,7 @@ in
     size = 28;
   };
 
-  systemd.user.systemctlPath = "${pkgsUnstable.systemd}/bin/systemctl";
+  systemd.user.systemctlPath = "${pkgsUnstable.systemdMinimal}/bin/systemctl";
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
@@ -198,6 +204,7 @@ in
   services.psd.enable = true;
   services.podman.enable = true;
   services.easyeffects.enable = true;
+  services.poweralertd.enable = true;
 
   services.playerctld.package = pkgsUnstable.playerctl;
   services.podman.package = pkgsUnstable.podman;

@@ -9,7 +9,7 @@ in
     settings = {
       general = {
         lock_cmd = "pidof ${hyprlockBin} || ${hyprlockBin}";
-        before_sleep_cmd = "${pkgsUnstable.systemd}/bin/loginctl lock-session";
+        before_sleep_cmd = "${pkgsUnstable.systemdMinimal}/bin/loginctl lock-session";
         after_sleep_cmd = "${hyprlockBin} dispatch dpms on";
       };
 

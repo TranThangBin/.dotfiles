@@ -27,7 +27,7 @@ with config.wayland.windowManager;
   programs.wlogout.layout = [
     {
       label = "lock";
-      action = "${pkgsUnstable.systemd}/bin/loginctl lock-session";
+      action = "${pkgsUnstable.systemdMinimal}/bin/loginctl lock-session";
       text = "Lock";
       keybind = "l";
     }
