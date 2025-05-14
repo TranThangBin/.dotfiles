@@ -1,5 +1,5 @@
 let
-  preferedWallpaper = ./wallpapers/Snow-valley.jpg;
+  preferedWallpaper = ../wallpapers/Snow-valley.jpg;
 in
 {
   services.hyprpaper.settings = {

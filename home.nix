@@ -1,11 +1,19 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
+  pkgsUnstable = import <nixpkgs-unstable> {
+    config.allowUnfreePredicate =
+      pkg:
+      lib.elem (lib.getName pkg) [
+        "drawio"
+        "nvidia"
+        "discord"
+        "postman"
+        "rar"
+        "steam"
+        "steam-unwrapped"
+        "nixGL-steam"
+      ];
+  };
 in
 {
   nix.package = pkgsUnstable.nix;
@@ -16,20 +24,6 @@ in
       "flakes"
     ];
   };
-
-  nixpkgs.config.allowUnfreePredicate =
-    pkg:
-    lib.elem (lib.getName pkg) [
-      "drawio"
-      "nvidia"
-      "discord"
-      "postman"
-      "rar"
-      "corefonts"
-      "steam"
-      "steam-unwrapped"
-      "nixGL-steam"
-    ];
 
   nixpkgs.overlays = [
     (self: super: {
@@ -49,7 +43,7 @@ in
   ];
 
   nixGL = {
-    packages = import <nixgl> { inherit pkgs; };
+    packages = import <nixgl> { inherit ({ pkgs = pkgsUnstable; }) pkgs; };
     defaultWrapper = "mesa";
     offloadWrapper = "nvidiaPrime";
     installScripts = [
@@ -80,7 +74,6 @@ in
     libreoffice
     cifs-utils
     yt-dlp
-    ventoy-full
     sfxr
     powertop
 
@@ -91,7 +84,7 @@ in
     xsel
     ueberzugpp
 
-    systemd
+    # systemd
     sl
     lolcat
     cowsay
@@ -110,18 +103,20 @@ in
     brave
     resources
     qbittorrent-enhanced
+    postman
+    drawio
+    rar
+    # ventoy-full-gtk
 
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
-    (config.lib.nixGL.wrapOffload pkgs.discord)
-    (config.lib.nixGL.wrapOffload pkgs.steam)
-
-    pkgs.postman
-    pkgs.drawio
-    pkgs.rar
+    (config.lib.nixGL.wrapOffload discord)
+    (config.lib.nixGL.wrapOffload steam)
   ];
 
   targets.genericLinux.enable = true;
+
+  xdg.portal.enable = true;
 
   xdg.userDirs.enable = true;
 
@@ -135,7 +130,7 @@ in
     size = 28;
   };
 
-  systemd.user.systemctlPath = "${pkgsUnstable.systemd}/bin/systemctl";
+  systemd.user.systemctlPath = "${/usr/bin/systemctl}";
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
@@ -167,18 +162,7 @@ in
 
   programs.man.package = pkgsUnstable.man;
   programs.firefox.package = config.lib.nixGL.wrapOffload pkgsUnstable.firefox;
-  programs.neovim.package = pkgsUnstable.neovim-unwrapped.overrideAttrs (prevAttrs: {
-    meta = {
-      description = prevAttrs.description or "Vim text editor fork focused on extensibility and agility";
-      maintainers = prevAttrs.maintainers or lib.teams.neovim.members;
-      license =
-        prevAttrs.license or (with lib.licenses; [
-          asl20
-          vim
-        ]);
-      platforms = prevAttrs.platforms or lib.platforms.unix;
-    };
-  });
+  programs.neovim.package = pkgsUnstable.neovim-unwrapped;
   programs.kitty.package = config.lib.nixGL.wrap pkgsUnstable.kitty;
   programs.ghostty.package = config.lib.nixGL.wrap pkgsUnstable.ghostty;
   programs.zsh.package = pkgsUnstable.zsh;
@@ -274,5 +258,6 @@ in
     ./fonts.nix
     ./games.nix
     ./fcitx5.nix
+    ./xdg-desktop-portal.nix
   ];
 }

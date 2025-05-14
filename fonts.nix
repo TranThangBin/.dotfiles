@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ lib, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
+  pkgsUnstable = import <nixpkgs-unstable> {
+    config.allowUnfreePredicate = pkg: lib.elem (lib.getName pkg) [ "corefonts" ];
+  };
 in
 {
   home.packages = with pkgsUnstable; [
@@ -11,7 +13,7 @@ in
 
     nerd-fonts.fira-code
 
-    pkgs.corefonts
+    corefonts
   ];
   fonts.fontconfig.defaultFonts = {
     emoji = [ "Noto Color Emoji" ];
