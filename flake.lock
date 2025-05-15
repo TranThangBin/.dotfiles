@@ -128,12 +128,29 @@
         "type": "github"
       }
     },
+    "plainline": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1730670758,
+        "narHash": "sha256-pe4S0/9qgDrhiFOALt2vdKnfV2zaDmUmhTd2BZMkfqQ=",
+        "owner": "eduardo-antunes",
+        "repo": "plainline",
+        "rev": "0916a2e42a83a9adef157420bc8a0be11ff93ebe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "eduardo-antunes",
+        "repo": "plainline",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs_2",
-        "nur": "nur"
+        "nur": "nur",
+        "plainline": "plainline"
       }
     },
     "treefmt-nix": {

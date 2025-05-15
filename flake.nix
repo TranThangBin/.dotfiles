@@ -13,6 +13,10 @@
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    plainline = {
+      url = "github:eduardo-antunes/plainline";
+      flake = false;
+    };
   };
 
   outputs =
@@ -21,6 +25,7 @@
       home-manager,
       nixgl,
       nur,
+      plainline,
       ...
     }:
     let
@@ -30,6 +35,15 @@
         overlays = [
           nur.overlays.default
           nixgl.overlay
+          (self: super: {
+            vimPlugins = super.vimPlugins // {
+              Plainline = super.vimUtils.buildVimPlugin {
+                pname = "plainline";
+                version = "unstable";
+                src = plainline;
+              };
+            };
+          })
         ];
       };
     in

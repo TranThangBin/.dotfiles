@@ -1,16 +1,4 @@
-{ lib, pkgs, ... }:
-let
-  fromGitHub =
-    ref: repo:
-    pkgs.vimUtils.buildVimPlugin {
-      pname = "${lib.strings.sanitizeDerivationName repo}";
-      version = ref;
-      src = builtins.fetchGit {
-        url = "https://github.com/${repo}.git";
-        ref = ref;
-      };
-    };
-in
+{ pkgs, ... }:
 {
   programs.neovim = {
     defaultEditor = true;
@@ -61,7 +49,6 @@ in
       vim-dadbod
       vim-dadbod-completion
       vim-dadbod-ui
-      (fromGitHub "main" "eduardo-antunes/plainline")
       (nvim-treesitter.withPlugins (p: [
         p.c
         p.cpp
@@ -85,6 +72,8 @@ in
         p.gitcommit
         p.prolog
       ]))
+
+      Plainline
     ];
     extraPackages = with pkgs; [
       pyright
