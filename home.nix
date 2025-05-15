@@ -12,7 +12,9 @@ let
         "steam"
         "steam-unwrapped"
         "nixGL-steam"
+        "ventoy-gtk3"
       ];
+    config.permittedInsecurePackages = [ "ventoy-gtk3-1.1.05" ];
   };
 in
 {
@@ -32,6 +34,7 @@ in
         xdg-desktop-portal
         networkmanagerapplet
         poweralertd
+        systemd
         ;
       profile-sync-daemon = pkgsUnstable.profile-sync-daemon.overrideAttrs (oldAttrs: {
         installPhase = ''
@@ -61,6 +64,13 @@ in
   home.stateVersion = "25.05";
 
   home.packages = with pkgsUnstable; [
+    libgcc
+    libpkgconf
+    cmake
+    gnumake
+    debugedit
+    fakeroot
+
     templ
     zig
     rustup
@@ -71,10 +81,9 @@ in
     unzip
     zip
     p7zip
-    libreoffice
+    rar
     cifs-utils
     yt-dlp
-    sfxr
     powertop
 
     imagemagick
@@ -84,7 +93,6 @@ in
     xsel
     ueberzugpp
 
-    # systemd
     sl
     lolcat
     cowsay
@@ -95,18 +103,19 @@ in
     uwsm
     sqlite
     dysk
+    umu-launcher-unwrapped
 
     gimp3
     openshot-qt
     vlc
-    umu-launcher-unwrapped
     brave
     resources
     qbittorrent-enhanced
     postman
     drawio
-    rar
-    # ventoy-full-gtk
+    ventoy-full-gtk
+    sfxr
+    libreoffice
 
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
@@ -129,8 +138,6 @@ in
     package = pkgsUnstable.dracula-theme;
     size = 28;
   };
-
-  systemd.user.systemctlPath = "${/usr/bin/systemctl}";
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
@@ -161,7 +168,7 @@ in
   programs.fd.enable = true;
 
   programs.man.package = pkgsUnstable.man;
-  programs.firefox.package = config.lib.nixGL.wrapOffload pkgsUnstable.firefox;
+  programs.firefox.package = pkgsUnstable.firefox;
   programs.neovim.package = pkgsUnstable.neovim-unwrapped;
   programs.kitty.package = config.lib.nixGL.wrap pkgsUnstable.kitty;
   programs.ghostty.package = config.lib.nixGL.wrap pkgsUnstable.ghostty;

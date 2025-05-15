@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
   mountSmbScript = pkgsUnstable.writeShellScript "mount-smb.sh" ''
@@ -15,7 +15,17 @@ let
     read -rs password
 
     echo
-    sudo mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
+
+    ${
+      if lib.pathExists "/usr/bin/sudo" then
+        "sudo"
+      else if lib.pathExists "/usr/bin/doas" then
+        "doas"
+      else
+        ""
+    } mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
+
+    unset address mount_point username password
   '';
 in
 {

@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   pkgsUnstable = import <nixpkgs-unstable> { };
 in
@@ -29,7 +34,7 @@ with config.wayland.windowManager;
   programs.wlogout.layout = [
     {
       label = "lock";
-      action = "${/usr/bin/loginctl} lock-session";
+      action = "${pkgs.systemd}/bin/loginctl lock-session";
       text = "Lock";
       keybind = "l";
     }
@@ -70,13 +75,11 @@ with config.wayland.windowManager;
   services.hypridle.enable = hyprland.enable;
   services.network-manager-applet.enable = hyprland.enable;
   services.hyprsunset.enable = hyprland.enable;
-  services.hyprpolkitagent.enable = hyprland.enable;
 
   services.swaync.package = pkgsUnstable.swaynotificationcenter;
   services.hyprpaper.package = pkgsUnstable.hyprpaper;
   services.hypridle.package = pkgsUnstable.hypridle;
   services.hyprsunset.package = pkgsUnstable.hyprsunset;
-  services.hyprpolkitagent.package = pkgsUnstable.hyprpolkitagent;
 
   services.swaync.style = ./swaync.css;
   # services.hyprsunset.transitions = {
@@ -111,7 +114,10 @@ with config.wayland.windowManager;
     	read -rn 1 answer
         echo
         if [[ "$answer" = "Y" ]] && ${pkgsUnstable.uwsm}/bin/uwsm check may-start; then
-            exec ${pkgsUnstable.uwsm}/bin/uwsm start hyprland.desktop
+            exec ${pkgsUnstable.uwsm}/bin/uwsm start ${
+              assert lib.pathExists "/usr/share/wayland-sessions/hyprland.desktop";
+              "hyprland.desktop"
+            }
         fi
     fi
   '';

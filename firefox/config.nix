@@ -107,13 +107,13 @@ in
               "_d7742d87-e61d-4b78-b8a1-b469842139fa_-browser-action"
             ];
             nav-bar = [
-              "sidebar-button"
-              "firefox-view-button"
               "back-button"
               "forward-button"
-              "customizableui-special-spring2"
-              "urlbar-container"
+              "stop-reload-button"
               "vertical-spacer"
+              "urlbar-container"
+              "customizableui-special-spring2"
+              "downloads-button"
               "alltabs-button"
               "unified-extensions-button"
             ];
@@ -139,8 +139,9 @@ in
             "unified-extensions-area"
             "PersonalToolbar"
             "toolbar-menubar"
+            "widget-overflow-fixed-list"
           ];
-          currentVersion = 21;
+          currentVersion = 22;
           newElementCount = 2;
         };
         "widget.use-xdg-desktop-portal.file-picker" = 1;

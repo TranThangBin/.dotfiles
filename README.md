@@ -33,6 +33,5 @@ For follow up rebuild you only need to use `home-manager switch` since I have al
 
 > [!NOTE]
 >
-> `hyprland` and `hyprlock` should be managed by your prefered package manager.
-> Use `uwsm` for systemd-boot
-> [Rootless mode (reconsider later if understand docker network)](https://docs.docker.com/engine/security/rootless) for `docker` service.
+> `hyprland` and `hyprlock` should be managed by your native package manager. Also just want to throw `hyprpolkitagent` as a reminder.
+> Use `uwsm` with systemd-boot
