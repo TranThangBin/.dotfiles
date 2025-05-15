@@ -17,6 +17,10 @@
       url = "github:eduardo-antunes/plainline";
       flake = false;
     };
+    yazi-flavors = {
+      url = "github:yazi-rs/flavors";
+      flake = false;
+    };
   };
 
   outputs =
@@ -26,6 +30,7 @@
       nixgl,
       nur,
       plainline,
+      yazi-flavors,
       ...
     }:
     let
@@ -46,6 +51,13 @@
           })
         ];
       };
+      yaziFlavors = {
+        catppuccin-frappe = "${yazi-flavors.outPath}/catppuccin-frappe.yazi";
+        catppuccin-latte = "${yazi-flavors.outPath}/catppuccin-latte.yazi";
+        catppuccin-macchiato = "${yazi-flavors.outPath}/catppuccin-macchiato.yazi";
+        catppuccin-mocha = "${yazi-flavors.outPath}/catppuccin-mocha.yazi";
+        dracula = "${yazi-flavors.outPath}/dracula.yazi";
+      };
     in
     {
       homeConfigurations."trant" = home-manager.lib.homeManagerConfiguration {
@@ -57,6 +69,9 @@
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
+        extraSpecialArgs = {
+          inherit yaziFlavors;
+        };
       };
     };
 }

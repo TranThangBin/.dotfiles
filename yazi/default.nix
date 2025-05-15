@@ -1,44 +1,29 @@
-{ config, pkgs, ... }:
-let
-  yaziPlugins = builtins.fetchGit {
-    url = "https://github.com/yazi-rs/plugins.git";
-    ref = "main";
-  };
-  yaziFlavors = builtins.fetchGit {
-    url = "https://github.com/yazi-rs/flavors.git";
-    ref = "main";
-  };
-  yaziYatline = builtins.fetchGit {
-    url = "https://github.com/imsi32/yatline.yazi.git";
-    ref = "main";
-  };
-  yaziYatlineCatppuccin = builtins.fetchGit {
-    url = "https://github.com/imsi32/yatline-catppuccin.yazi.git";
-    ref = "main";
-  };
-  yaziRelativeMotion = builtins.fetchGit {
-    url = "https://github.com/dedukun/relative-motions.yazi.git";
-    ref = "main";
-  };
-in
+{
+  config,
+  pkgs,
+  yaziFlavors,
+  ...
+}:
 {
   programs.yazi = {
     enableZshIntegration = true;
     initLua = ./init.lua;
     plugins = {
-      git = "${yaziPlugins}/git.yazi";
-      toggle-pane = "${yaziPlugins}/toggle-pane.yazi";
-      diff = "${yaziPlugins}/diff.yazi";
-      chmod = "${yaziPlugins}/chmod.yazi";
-      mime-ext = "${yaziPlugins}/mime-ext.yazi";
-      jump-to-char = "${yaziPlugins}/jump-to-char.yazi";
-      smart-enter = "${yaziPlugins}/smart-enter.yazi";
-      smart-filter = "${yaziPlugins}/smart-filter.yazi";
-      vcs-files = "${yaziPlugins}/vcs-files.yazi";
-      piper = "${yaziPlugins}/piper.yazi";
-      yatline = "${yaziYatline}";
-      yatline-catppuccin = "${yaziYatlineCatppuccin}";
-      relative-motions = "${yaziRelativeMotion}";
+      inherit (pkgs.yaziPlugins)
+        git
+        toggle-pane
+        diff
+        chmod
+        mime-ext
+        jump-to-char
+        smart-enter
+        smart-filter
+        vcs-files
+        piper
+        yatline
+        yatline-catppuccin
+        relative-motions
+        ;
     };
     settings = {
       manager = {
@@ -177,11 +162,13 @@ in
       };
     };
     flavors = {
-      catppuccin-frappe = "${yaziFlavors}/catppuccin-frappe.yazi";
-      catppuccin-latte = "${yaziFlavors}/catppuccin-latte.yazi";
-      catppuccin-macchiato = "${yaziFlavors}/catppuccin-macchiato.yazi";
-      catppuccin-mocha = "${yaziFlavors}/catppuccin-mocha.yazi";
-      dracula = "${yaziFlavors}/dracula.yazi";
+      inherit (yaziFlavors)
+        catppuccin-frappe
+        catppuccin-latte
+        catppuccin-macchiato
+        catppuccin-mocha
+        dracula
+        ;
     };
     theme.flavor = {
       light = "catppuccin-mocha";

@@ -43,7 +43,7 @@ in
     syntaxHighlighting.enable = true;
     initContent = "[ -z $TMUX ] && ${config.programs.fastfetch.package}/bin/fastfetch";
     shellAliases = {
-      home-manager = "home-manager --flake ${config.home.homeDirectory}/.dotfiles --impure";
+      home-manager = "home-manager --flake ${config.home.homeDirectory}/.dotfiles";
       mount-smb = "${mountSmbScript}";
     };
 

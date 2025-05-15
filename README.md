@@ -21,7 +21,7 @@ curl -L https://nixos.org/nix/install | sh -s -- --daemon
 nix --extra-experimental-features "nix-command flakes" run home-manager/master -- switch --flake $HOME/.dotfiles --impure
 ```
 
-For follow up rebuild you only need to use `home-manager switch` since I have alias the target file part
+For follow up rebuild you only need to use `home-manager switch --impure` since I have alias the target file part
 
 > [!NOTE]
 >

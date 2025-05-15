@@ -150,7 +150,8 @@
         "nixgl": "nixgl",
         "nixpkgs": "nixpkgs_2",
         "nur": "nur",
-        "plainline": "plainline"
+        "plainline": "plainline",
+        "yazi-flavors": "yazi-flavors"
       }
     },
     "treefmt-nix": {
@@ -171,6 +172,22 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "yazi-flavors": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1746876067,
+        "narHash": "sha256-7facwGT4DoaMwdkBrMzPlqDbrbSjwW57qRD34iP48+0=",
+        "owner": "yazi-rs",
+        "repo": "flavors",
+        "rev": "02f3fc64b78223c1005672e105f6d0e97c0db79e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yazi-rs",
+        "repo": "flavors",
         "type": "github"
       }
     }
