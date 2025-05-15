@@ -4,9 +4,6 @@
   pkgs,
   ...
 }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
 with config.wayland.windowManager;
 {
   wayland.systemd.target = "wayland-session@hyprland.desktop.target";
@@ -15,11 +12,6 @@ with config.wayland.windowManager;
   programs.waybar.enable = hyprland.enable;
   programs.wofi.enable = hyprland.enable;
   programs.wlogout.enable = hyprland.enable;
-
-  programs.hyprlock.package = pkgsUnstable.emptyDirectory; # Manage hyprlock with your os package manager
-  programs.waybar.package = pkgsUnstable.waybar;
-  programs.wofi.package = pkgsUnstable.wofi;
-  programs.wlogout.package = pkgsUnstable.wlogout;
 
   i18n.inputMethod.fcitx5.waylandFrontend = hyprland.enable;
 
@@ -46,7 +38,7 @@ with config.wayland.windowManager;
     }
     {
       label = "logout";
-      action = "${pkgsUnstable.uwsm}/bin/uwsm stop";
+      action = "${pkgs.uwsm}/bin/uwsm stop";
       text = "Logout";
       keybind = "e";
     }
@@ -76,11 +68,6 @@ with config.wayland.windowManager;
   services.network-manager-applet.enable = hyprland.enable;
   services.hyprsunset.enable = hyprland.enable;
 
-  services.swaync.package = pkgsUnstable.swaynotificationcenter;
-  services.hyprpaper.package = pkgsUnstable.hyprpaper;
-  services.hypridle.package = pkgsUnstable.hypridle;
-  services.hyprsunset.package = pkgsUnstable.hyprsunset;
-
   services.swaync.style = ./swaync.css;
   # services.hyprsunset.transitions = {
   #   sunrise = {
@@ -108,13 +95,13 @@ with config.wayland.windowManager;
 
   home.file.".profile".enable = hyprland.enable;
 
-  home.file.".profile".source = pkgsUnstable.writeShellScript ".profile" ''
+  home.file.".profile".source = pkgs.writeShellScript ".profile" ''
     if [[ "$(tty)" = "/dev/tty1" ]]; then
     	printf "Do you want to start Hyprland? (Y/n): "
     	read -rn 1 answer
         echo
-        if [[ "$answer" = "Y" ]] && ${pkgsUnstable.uwsm}/bin/uwsm check may-start; then
-            exec ${pkgsUnstable.uwsm}/bin/uwsm start ${
+        if [[ "$answer" = "Y" ]] && ${pkgs.uwsm}/bin/uwsm check may-start; then
+            exec ${pkgs.uwsm}/bin/uwsm start ${
               assert lib.pathExists "/usr/share/wayland-sessions/hyprland.desktop";
               "hyprland.desktop"
             }
@@ -134,7 +121,7 @@ with config.wayland.windowManager;
     export GBM_BACKEND=${GBM_BACKEND}
     export __GLX_VENDOR_LIBRARY_NAME=${__GLX_VENDOR_LIBRARY_NAME}
     export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
-    export ALSA_PLUGIN_DIR=${pkgsUnstable.pipewire}/lib/alsa-lib
+    export ALSA_PLUGIN_DIR=${pkgs.pipewire}/lib/alsa-lib
   '';
 
   imports = [

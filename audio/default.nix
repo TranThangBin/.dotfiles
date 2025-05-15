@@ -1,7 +1,7 @@
+{ pkgs, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-  pipewire = pkgsUnstable.pipewire;
-  wireplumber = pkgsUnstable.wireplumber;
+  pipewire = pkgs.pipewire;
+  wireplumber = pkgs.wireplumber;
 in
 {
   home.packages =
@@ -9,7 +9,7 @@ in
       pipewire
       wireplumber
     ]
-    ++ (with pkgsUnstable; [
+    ++ (with pkgs; [
       pwvucontrol
       helvum
       tree

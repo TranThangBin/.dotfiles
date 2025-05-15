@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-  xdg-desktop-portal-termfilechooser = pkgsUnstable.xdg-desktop-portal-termfilechooser;
+  xdg-desktop-portal-termfilechooser = pkgs.xdg-desktop-portal-termfilechooser;
 in
 {
   xdg.portal.extraPortals = [ xdg-desktop-portal-termfilechooser ];

@@ -1,7 +1,4 @@
-{ config, ... }:
-let
-  NUR = import <nur> { };
-in
+{ config, pkgs, ... }:
 {
   programs.firefox = {
     policies = {
@@ -16,7 +13,7 @@ in
       DisableSystemAddonUpdate = true;
       ExtensionUpdate = false;
       Extensions = {
-        Install = with NUR.repos.rycee.firefox-addons; [
+        Install = with pkgs.nur.repos.rycee.firefox-addons; [
           "${ublock-origin}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net.xpi"
           "${vimium}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/{d7742d87-e61d-4b78-b8a1-b469842139fa}.xpi"
           "${darkreader}/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/addon@darkreader.org.xpi"
@@ -84,7 +81,7 @@ in
       isDefault = true;
       extensions = {
         force = true;
-        packages = with NUR.repos.rycee.firefox-addons; [
+        packages = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
           vimium
           darkreader

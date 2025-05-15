@@ -5,8 +5,8 @@
 ### Clone the repos
 
 ```bash
-git clone git@github:TranThangBin/.dotfiles ~/.dotfiles
-cd ~/.dotfiles
+git clone git@github:TranThangBin/.dotfiles $HOME/.dotfiles
+cd $HOME/.dotfiles
 ```
 
 ### Install nix (if you don't already have)
@@ -15,18 +15,10 @@ cd ~/.dotfiles
 curl -L https://nixos.org/nix/install | sh -s -- --daemon
 ```
 
-### Setup home-manager and nixGL
-
-```bash
-cp .nix-channels ~/.nix-channels
-nix-channel --update
-nix-shell '<home-manager>' -A install
-```
-
 ### You are ready
 
 ```bash
-home-manager switch -f $HOME/.dotfiles/home.nix
+nix --extra-experimental-features "nix-command flakes" run home-manager/master -- switch --flake $HOME/.dotfiles --impure
 ```
 
 For follow up rebuild you only need to use `home-manager switch` since I have alias the target file part

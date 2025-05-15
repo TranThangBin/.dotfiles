@@ -1,7 +1,21 @@
-{ config, lib, ... }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> {
-    config.allowUnfreePredicate =
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  nix.package = pkgs.nix;
+
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
+
+  nixpkgs.config = {
+    allowUnfreePredicate =
       pkg:
       lib.elem (lib.getName pkg) [
         "drawio"
@@ -13,30 +27,14 @@ let
         "steam-unwrapped"
         "nixGL-steam"
         "ventoy-gtk3"
+        "corefonts"
       ];
-    config.permittedInsecurePackages = [ "ventoy-gtk3-1.1.05" ];
-  };
-in
-{
-  nix.package = pkgsUnstable.nix;
-
-  nix.settings = {
-    experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+    permittedInsecurePackages = [ "ventoy-gtk3-1.1.05" ];
   };
 
   nixpkgs.overlays = [
     (self: super: {
-      inherit (pkgsUnstable)
-        less
-        xdg-desktop-portal
-        networkmanagerapplet
-        poweralertd
-        systemd
-        ;
-      profile-sync-daemon = pkgsUnstable.profile-sync-daemon.overrideAttrs (oldAttrs: {
+      profile-sync-daemon = super.profile-sync-daemon.overrideAttrs (oldAttrs: {
         installPhase = ''
           ${oldAttrs.installPhase}
           cp $out/share/psd/contrib/brave $out/share/psd/browsers/brave
@@ -46,7 +44,7 @@ in
   ];
 
   nixGL = {
-    packages = import <nixgl> { inherit ({ pkgs = pkgsUnstable; }) pkgs; };
+    packages = pkgs.nixgl;
     defaultWrapper = "mesa";
     offloadWrapper = "nvidiaPrime";
     installScripts = [
@@ -63,7 +61,7 @@ in
 
   home.stateVersion = "25.05";
 
-  home.packages = with pkgsUnstable; [
+  home.packages = with pkgs; [
     libgcc
     libpkgconf
     cmake
@@ -135,7 +133,7 @@ in
 
   home.pointerCursor = {
     name = "Dracula-cursors";
-    package = pkgsUnstable.dracula-theme;
+    package = pkgs.dracula-theme;
     size = 28;
   };
 
@@ -167,29 +165,8 @@ in
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
 
-  programs.man.package = pkgsUnstable.man;
-  programs.firefox.package = pkgsUnstable.firefox;
-  programs.neovim.package = pkgsUnstable.neovim-unwrapped;
-  programs.kitty.package = config.lib.nixGL.wrap pkgsUnstable.kitty;
-  programs.ghostty.package = config.lib.nixGL.wrap pkgsUnstable.ghostty;
-  programs.zsh.package = pkgsUnstable.zsh;
-  programs.tmux.package = pkgsUnstable.tmux;
-  programs.bat.package = pkgsUnstable.bat;
-  programs.bun.package = pkgsUnstable.bun;
-  programs.go.package = pkgsUnstable.go;
-  programs.java.package = pkgsUnstable.jdk;
-  programs.fastfetch.package = pkgsUnstable.fastfetch;
-  programs.ssh.package = pkgsUnstable.openssh;
-  programs.git.package = pkgsUnstable.git;
-  programs.yazi.package = pkgsUnstable.yazi;
-  programs.zoxide.package = pkgsUnstable.zoxide;
-  programs.fzf.package = pkgsUnstable.fzf;
-  programs.btop.package = pkgsUnstable.btop;
-  programs.jq.package = pkgsUnstable.jq;
-  programs.jqp.package = pkgsUnstable.jqp;
-  programs.lazydocker.package = pkgsUnstable.lazydocker;
-  programs.ripgrep.package = pkgsUnstable.ripgrep;
-  programs.fd.package = pkgsUnstable.fd;
+  programs.kitty.package = config.lib.nixGL.wrap pkgs.kitty;
+  programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
 
   services.playerctld.enable = true;
   services.psd.enable = true;
@@ -197,18 +174,13 @@ in
   services.easyeffects.enable = true;
   services.poweralertd.enable = true;
 
-  services.playerctld.package = pkgsUnstable.playerctl;
-  services.podman.package = pkgsUnstable.podman;
-  services.easyeffects.package = pkgsUnstable.easyeffects;
-
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";
-  i18n.glibcLocales = pkgsUnstable.glibcLocales.override {
+  i18n.glibcLocales = pkgs.glibcLocales.override {
     locales = [ "en_US.UTF-8/UTF-8" ];
   };
 
-  i18n.inputMethod.fcitx5.fcitx5-with-addons = pkgsUnstable.fcitx5-with-addons;
-  i18n.inputMethod.fcitx5.addons = with pkgsUnstable; [
+  i18n.inputMethod.fcitx5.addons = with pkgs; [
     kdePackages.fcitx5-unikey
     fcitx5-tokyonight
   ];
@@ -223,7 +195,7 @@ in
   };
   programs.btop = {
     settings = {
-      color_theme = "${pkgsUnstable.btop}/share/btop/themes/tokyo-storm.theme";
+      color_theme = "${pkgs.btop}/share/btop/themes/tokyo-storm.theme";
       theme_background = false;
       vim_keys = true;
     };
@@ -232,22 +204,22 @@ in
   qt = {
     platformTheme = {
       name = "qt5ct";
-      package = pkgsUnstable.libsForQt5.qt5ct;
+      package = pkgs.libsForQt5.qt5ct;
     };
     style = {
       name = "lightly";
-      package = pkgsUnstable.lightly-qt;
+      package = pkgs.lightly-qt;
     };
   };
 
   gtk = {
     theme = {
       name = "Dracula";
-      package = pkgsUnstable.dracula-theme;
+      package = pkgs.dracula-theme;
     };
     iconTheme = {
       name = "Dracula";
-      package = pkgsUnstable.dracula-icon-theme;
+      package = pkgs.dracula-icon-theme;
     };
   };
 

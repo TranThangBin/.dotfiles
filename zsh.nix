@@ -1,7 +1,11 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-  mountSmbScript = pkgsUnstable.writeShellScript "mount-smb.sh" ''
+  mountSmbScript = pkgs.writeShellScript "mount-smb.sh" ''
     printf "Enter your address (e.g: //192.168.1.5/share): "
     read -r address
 
@@ -33,14 +37,13 @@ in
 
   programs.zsh = {
     oh-my-zsh.enable = true;
-    oh-my-zsh.package = pkgsUnstable.oh-my-zsh;
 
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     initContent = "[ -z $TMUX ] && ${config.programs.fastfetch.package}/bin/fastfetch";
     shellAliases = {
-      home-manager = "home-manager -f ${config.home.homeDirectory}/.dotfiles/home.nix";
+      home-manager = "home-manager --flake ${config.home.homeDirectory}/.dotfiles --impure";
       mount-smb = "${mountSmbScript}";
     };
 

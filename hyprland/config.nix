@@ -1,7 +1,10 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-
   mainMod = "SUPER";
 
   settings = with config.programs; {
@@ -13,8 +16,8 @@ let
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
     menuOutput = ''${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed -E "s/(\.desktop) /\1:/"'';
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
-    colorPicker = "${pkgsUnstable.hyprpicker}/bin/hyprpicker -a";
-    emojiPicker = "${pkgsUnstable.wofi-emoji}/bin/wofi-emoji";
+    colorPicker = "${pkgs.hyprpicker}/bin/hyprpicker -a";
+    emojiPicker = "${pkgs.wofi-emoji}/bin/wofi-emoji";
   };
 
   flamingo = "rgb(f2cdcd)";
@@ -24,7 +27,6 @@ let
 in
 {
   wayland.windowManager.hyprland = {
-    portalPackage = pkgsUnstable.xdg-desktop-portal-hyprland;
     systemd.enable = false;
     settings = {
       monitor = [
@@ -117,7 +119,7 @@ in
 
       bind =
         (
-          with pkgsUnstable;
+          with pkgs;
           [
             "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
             "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${settings.menuOutput} )"
@@ -190,7 +192,7 @@ in
         ", XF86AudioPrev, exec, ${playerctld.package}/bin/playerctl previous"
       ];
 
-      bindel = with pkgsUnstable; [
+      bindel = with pkgs; [
         ", XF86AudioRaiseVolume, exec, ${wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, ${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
         ", XF86AudioMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"

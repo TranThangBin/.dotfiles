@@ -1,6 +1,5 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
   yaziPlugins = builtins.fetchGit {
     url = "https://github.com/yazi-rs/plugins.git";
     ref = "main";
@@ -56,7 +55,7 @@ in
       opener = {
         play = [
           {
-            run = ''${pkgsUnstable.vlc}/bin/vlc "$@"'';
+            run = ''${pkgs.vlc}/bin/vlc "$@"'';
             orphan = true;
             for = "unix";
           }
@@ -73,17 +72,17 @@ in
         append_previewers = [
           {
             name = "*";
-            run = ''piper -- ${pkgsUnstable.hexyl}/bin/hexyl --border=none --terminal-width=$w "$1"'';
+            run = ''piper -- ${pkgs.hexyl}/bin/hexyl --border=none --terminal-width=$w "$1"'';
           }
         ];
         prepend_previewers = [
           {
             name = "*.md";
-            run = ''piper -- CLICOLOR_FORCE=1 ${pkgsUnstable.glow}/bin/glow -w=$w -s=dark "$1"'';
+            run = ''piper -- CLICOLOR_FORCE=1 ${pkgs.glow}/bin/glow -w=$w -s=dark "$1"'';
           }
           {
             name = "*/";
-            run = ''piper -- ${pkgsUnstable.eza}/bin/eza -TL=3 --color=always --icons=always --group-directories-first --no-quotes "$1"'';
+            run = ''piper -- ${pkgs.eza}/bin/eza -TL=3 --color=always --icons=always --group-directories-first --no-quotes "$1"'';
           }
         ];
         prepend_fetchers = [

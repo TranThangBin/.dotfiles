@@ -1,7 +1,4 @@
-{ config, ... }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ config, pkgs, ... }:
 {
   programs.tmux = {
     baseIndex = 1;
@@ -19,7 +16,7 @@ in
       set -ga update-environment TERM
       set -ga update-environment TERM_PROGRAM
     '';
-    plugins = with pkgsUnstable.tmuxPlugins; [
+    plugins = with pkgs.tmuxPlugins; [
       cpu
       battery
       copycat

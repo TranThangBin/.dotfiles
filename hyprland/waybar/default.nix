@@ -1,7 +1,4 @@
-{ config, ... }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ config, pkgs, ... }:
 {
   programs.waybar = {
     systemd.enable = true;
@@ -96,7 +93,7 @@ in
             plugged = "";
           };
         };
-        pulseaudio = with pkgsUnstable; {
+        pulseaudio = with pkgs; {
           format = "{icon} {volume}% | {format_source}";
           format-muted = "<s>{icon} {volume}%</s> | {format_source}";
           format-source = "󰍬 {volume}%";

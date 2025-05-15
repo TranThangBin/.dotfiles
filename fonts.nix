@@ -1,11 +1,6 @@
-{ lib, ... }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> {
-    config.allowUnfreePredicate = pkg: lib.elem (lib.getName pkg) [ "corefonts" ];
-  };
-in
+{ pkgs, ... }:
 {
-  home.packages = with pkgsUnstable; [
+  home.packages = with pkgs; [
     noto-fonts
     noto-fonts-cjk-serif
     noto-fonts-cjk-sans

@@ -1,6 +1,5 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
   gameEntry = {
     type = "Application";
     categories = [ "Game" ];
@@ -13,7 +12,7 @@ in
     genericName = "Minecraft";
     icon = ./desktop-icons/legacy-launcher.png;
     exec = "${/usr/bin/env} __GL_THREADED_OPTIMIZATIONS=0 LIBGL_ALWAYS_SOFTWARE=1 ${config.programs.java.package}/bin/java -jar ${
-      pkgsUnstable.fetchurl {
+      pkgs.fetchurl {
         url = "https://llaun.ch/jar";
         hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
       }
@@ -33,24 +32,24 @@ in
     name = "Zenless Zone Zero";
     genericName = "zzz";
     icon = ./desktop-icons/zzz.png;
-    exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/zzz.toml";
+    exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/zzz.toml";
   };
   xdg.desktopEntries.PlantVsZombiesRH = gameEntry // {
     name = "PlantVsZombiesRH";
     genericName = "pvz-fusion";
     icon = ./desktop-icons/pvz-fusion.jpg;
-    exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
+    exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
     actions.V2-3-1 = {
       name = "Version 2.3.1";
-      exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.3.1.toml";
+      exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.3.1.toml";
     };
     actions.V2-4-2 = {
       name = "Version 2.4.2";
-      exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.4.2.toml";
+      exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.4.2.toml";
     };
     actions.V2-5-1 = {
       name = "Version 2.5.1";
-      exec = "${pkgsUnstable.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
+      exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
     };
   };
 }

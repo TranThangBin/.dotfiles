@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-  brightnessctl = pkgsUnstable.brightnessctl;
+  brightnessctl = pkgs.brightnessctl;
 
   hyprctlBin = /usr/bin/hyprctl;
   hyprlockBin = /usr/bin/hyprlock;

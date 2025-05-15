@@ -1,10 +1,8 @@
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ pkgs, ... }:
 {
   i18n.inputMethod.fcitx5.ignoreUserConfig = true;
   i18n.inputMethod.fcitx5.themes.Tokyonight-Storm.theme =
-    "${pkgsUnstable.fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";
+    "${pkgs.fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";
   i18n.inputMethod.fcitx5.settings.inputMethod = {
     GroupOrder."0" = "Default";
     "Groups/0" = {

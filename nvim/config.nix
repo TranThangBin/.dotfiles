@@ -1,10 +1,8 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-
   fromGitHub =
     ref: repo:
-    pkgsUnstable.vimUtils.buildVimPlugin {
+    pkgs.vimUtils.buildVimPlugin {
       pname = "${lib.strings.sanitizeDerivationName repo}";
       version = ref;
       src = builtins.fetchGit {
@@ -17,7 +15,7 @@ in
   programs.neovim = {
     defaultEditor = true;
     vimAlias = true;
-    plugins = with pkgsUnstable.vimPlugins; [
+    plugins = with pkgs.vimPlugins; [
       plenary-nvim
       nvim-web-devicons
       vim-obsession
@@ -88,7 +86,7 @@ in
         p.prolog
       ]))
     ];
-    extraPackages = with pkgsUnstable; [
+    extraPackages = with pkgs; [
       pyright
       ruff
       nil

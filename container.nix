@@ -1,17 +1,14 @@
-{ config, ... }:
-let
-  pkgsUnstable = import <nixpkgs-unstable> { };
-in
+{ config, pkgs, ... }:
 {
   home.shellAliases.docker = "${config.services.podman.package}/bin/podman";
 
   home.sessionVariables = {
     DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
-    PODMAN_COMPOSE_PROVIDER = "${pkgsUnstable.podman-compose}/bin/podman-compose";
+    PODMAN_COMPOSE_PROVIDER = "${pkgs.podman-compose}/bin/podman-compose";
   };
 
   services.podman.settings.containers.network.compose_providers = [
-    "${pkgsUnstable.podman-compose}/bin/podman-compose"
+    "${pkgs.podman-compose}/bin/podman-compose"
   ];
 
   systemd.user = {
