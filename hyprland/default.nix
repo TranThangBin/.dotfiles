@@ -67,7 +67,6 @@ with config.wayland.windowManager;
   services.swaync.enable = hyprland.enable;
   services.hyprpaper.enable = hyprland.enable;
   services.hypridle.enable = hyprland.enable;
-  services.network-manager-applet.enable = hyprland.enable;
   services.hyprsunset.enable = hyprland.enable;
 
   services.swaync.style = ./swaync.css;

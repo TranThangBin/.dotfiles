@@ -167,6 +167,19 @@
   services.podman.enable = true;
   services.easyeffects.enable = true;
   services.poweralertd.enable = true;
+  services.network-manager-applet.enable = true;
+
+  xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".enable = true;
+  xdg.configFile."systemd/user/dconf.service.d/override.conf".enable = true;
+
+  xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".text = ''
+    [Service]
+    Restart=on-failure
+  '';
+  xdg.configFile."systemd/user/dconf.service.d/override.conf".text = ''
+    [Install]
+    WantedBy=default.target
+  '';
 
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";

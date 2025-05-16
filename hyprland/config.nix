@@ -34,16 +34,6 @@ in
         "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
       ];
 
-      exec-once = (
-        with config.systemd.user;
-        [
-          "${systemctlPath} --user stop network-manager-applet.service"
-          "${systemctlPath} --user start network-manager-applet.service"
-          "${systemctlPath} --user stop dconf.service"
-          "${systemctlPath} --user start dconf.service"
-        ]
-      );
-
       general = {
         gaps_in = 5;
         gaps_out = 5;
