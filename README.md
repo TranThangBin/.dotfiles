@@ -1,5 +1,19 @@
 # .dotfiles
 
+## Prerequisite
+
+### Require
+
+- `hyprland`
+- `hyprlock`
+
+### Optional
+
+- `NetworkManager`
+- `cups`
+- `bluez`
+- `hyprpolkitagent`
+
 ## Installation
 
 ### Clone the repos
@@ -21,9 +35,4 @@ curl -L https://nixos.org/nix/install | sh -s -- --daemon
 nix --extra-experimental-features "nix-command flakes" run home-manager/master -- switch --flake $HOME/.dotfiles --impure
 ```
 
-For follow up rebuild you only need to use `home-manager switch --impure` since I have alias the target file part
-
-> [!NOTE]
->
-> `hyprland` and `hyprlock` should be managed by your native package manager. Also just want to throw `hyprpolkitagent` as a reminder.
-> Use `uwsm` with systemd-boot
+For follow up rebuild on zsh we can use `home-manager switch --impure` use `which home-manager` if you are confused
