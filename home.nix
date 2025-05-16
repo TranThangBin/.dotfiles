@@ -76,6 +76,7 @@
     cifs-utils
     yt-dlp
     powertop
+    trash-cli
 
     imagemagick
     exiftool

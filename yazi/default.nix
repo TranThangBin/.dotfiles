@@ -23,6 +23,7 @@
         yatline
         yatline-catppuccin
         relative-motions
+        restore
         ;
     };
     settings = {
@@ -157,6 +158,26 @@
             on = "M";
             run = "plugin relative-motions";
             desc = "Trigger a new relative motion";
+          }
+          {
+            on = [
+              "d"
+              "u"
+            ];
+            run = "plugin restore";
+            desc = "Restore last deleted files/folders";
+          }
+          {
+            on = "d";
+            run = "noop";
+          }
+          {
+            on = [
+              "d"
+              "d"
+            ];
+            run = "remove";
+            desc = "Trash selected files";
           }
         ];
       };
