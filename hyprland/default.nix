@@ -13,6 +13,8 @@ with config.wayland.windowManager;
   programs.wofi.enable = hyprland.enable;
   programs.wlogout.enable = hyprland.enable;
 
+  programs.hyprlock.package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
+
   i18n.inputMethod.fcitx5.waylandFrontend = hyprland.enable;
 
   programs.wofi.settings = {

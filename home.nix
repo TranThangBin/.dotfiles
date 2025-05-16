@@ -62,13 +62,6 @@
   home.stateVersion = "25.05";
 
   home.packages = with pkgs; [
-    libgcc
-    libpkgconf
-    cmake
-    gnumake
-    debugedit
-    fakeroot
-
     templ
     zig
     rustup
@@ -207,8 +200,8 @@
       package = pkgs.libsForQt5.qt5ct;
     };
     style = {
-      name = "lightly";
-      package = pkgs.lightly-qt;
+      name = "Darkly";
+      package = pkgs.Darkly-qt5;
     };
   };
 

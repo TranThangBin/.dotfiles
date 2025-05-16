@@ -5,6 +5,7 @@
     # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixgl.url = "github:nix-community/nixGL";
+    darkly.url = "github:Bali10050/Darkly";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,8 +30,9 @@
       home-manager,
       nixgl,
       nur,
-      plainline,
       yazi-flavors,
+      plainline,
+      darkly,
       ...
     }:
     let
@@ -41,6 +43,7 @@
           nur.overlays.default
           nixgl.overlay
           (self: super: {
+            Darkly-qt5 = darkly.packages."${system}".darkly-qt5;
             vimPlugins = super.vimPlugins // {
               Plainline = super.vimUtils.buildVimPlugin {
                 pname = "plainline";
