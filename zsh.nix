@@ -26,8 +26,8 @@
 
         echo
 
-        sudo mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
-        sudo -k
+        ${/usr/bin/sudo} mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
+        ${/usr/bin/sudo} -k
 
         unset address mount_point username password
       ''}";
