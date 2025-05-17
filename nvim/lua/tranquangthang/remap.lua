@@ -31,9 +31,7 @@ vim.keymap.set("n", "<leader><leader>", function()
 end)
 
 vim.keymap.set("n", "<leader>e", function()
-	local file_pattern = "^"
-		.. vim.fn.escape(vim.fn.expand("%:t"), "\\/.*~")
-		.. [[\(@|*\)\?\>]]
+	local file_pattern = vim.fn.escape(vim.fn.expand("%:t"), [[\/.*~]])
 	vim.cmd.Explore()
 	vim.fn.search(file_pattern)
 end)
