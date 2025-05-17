@@ -20,13 +20,7 @@
     "Hotkey/TriggerKeys"."0" = "Control+Shift+space";
   };
   i18n.inputMethod.fcitx5.settings.addons = {
-    clipboard.sections.TriggerKey."0" = "Super+V";
-    clipboard.globalSection = {
-      "Number of entries" = 5;
-      IgnorePasswordFromPasswordManager = false;
-      ShowPassword = false;
-      ClearPasswordAfter = 30;
-    };
+    clipboard.sections.TriggerKey = { };
     classicui.globalSection = {
       Font = "Noto Sans 12";
       MenuFont = "Noto Sans 12";

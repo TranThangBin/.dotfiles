@@ -49,6 +49,7 @@
       vim-dadbod
       vim-dadbod-completion
       vim-dadbod-ui
+      plainline
       (nvim-treesitter.withPlugins (p: [
         p.c
         p.cpp
@@ -72,8 +73,6 @@
         p.gitcommit
         p.prolog
       ]))
-
-      Plainline
     ];
     extraPackages = with pkgs; [
       pyright

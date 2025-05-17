@@ -80,7 +80,7 @@
 
     imagemagick
     exiftool
-    wl-clipboard-rs
+    wl-clipboard
     xclip
     xsel
     ueberzugpp
@@ -215,7 +215,7 @@
     };
     style = {
       name = "Darkly";
-      package = pkgs.Darkly-qt5;
+      package = pkgs.darkly-qt5;
     };
   };
 

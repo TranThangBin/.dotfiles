@@ -7,6 +7,11 @@
 let
   mainMod = "SUPER";
 
+  uwsm = pkgs.uwsm;
+  hyprshot = pkgs.hyprshot;
+  cliphist = config.services.cliphist;
+  wofi = config.programs.wofi;
+
   settings = with config.programs; {
     terminal = {
       kitty = "${kitty.package}/bin/kitty";
@@ -14,7 +19,7 @@ let
     };
     logoutMenu = "${wlogout.package}/bin/wlogout";
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
-    menuOutput = ''${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed -E "s/(\.desktop) /\1:/"'';
+    menuOutput = "${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed -E 's/(\.desktop) /\1:/'";
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
     colorPicker = "${pkgs.hyprpicker}/bin/hyprpicker -a";
     emojiPicker = "${pkgs.wofi-emoji}/bin/wofi-emoji";
@@ -108,27 +113,36 @@ in
       };
 
       bind =
-        (
-          with pkgs;
-          [
-            "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
-            "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${settings.menuOutput} )"
-            "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
-            "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
-            "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
-            "${mainMod}, C, exec, ${settings.colorPicker}"
-            "${mainMod} SHIFT, Space, exec, ${settings.emojiPicker}"
-          ]
-          ++ [
-            "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
-            "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"
-            "${mainMod} CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output"
 
-            ",PRINT, exec, ${hyprshot}/bin/hyprshot -m region --clipboard-only"
-            "SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window --clipboard-only"
-            "CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output --clipboard-only"
-          ]
-        )
+        [
+          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
+          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${settings.menuOutput} )"
+          "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
+          "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
+          "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
+          "${mainMod}, C, exec, ${settings.colorPicker}"
+          "${mainMod} SHIFT, Space, exec, ${settings.emojiPicker}"
+        ]
+        ++ [
+          "${mainMod}, V, exec, ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' | ${cliphist.package}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
+          "${mainMod} SHIFT, V, exec, ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete"
+          "${mainMod} CTRL SHIFT, V, exec, ${pkgs.writeShellScript "clipboard-wipe.sh" ''
+            confirm=$( ( echo no; echo yes; ) | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
+            if [[ $confirm = "yes" ]] then
+                ${cliphist.package}/bin/cliphist wipe
+            fi
+            unset confirm
+          ''}"
+        ]
+        ++ [
+          "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
+          "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"
+          "${mainMod} CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output"
+
+          ",PRINT, exec, ${hyprshot}/bin/hyprshot -m region --clipboard-only"
+          "SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window --clipboard-only"
+          "CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output --clipboard-only"
+        ]
         ++ [
           "${mainMod} SHIFT, Q, killactive,"
           "${mainMod}, F, fullscreen,"

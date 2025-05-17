@@ -1,5 +1,13 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  legacyLauncher,
+  ...
+}:
 let
+  umu-launcher = pkgs.umu-launcher-unwrapped;
+  gamesDirectory = "${config.home.homeDirectory}/Games";
+  umuConfigDirectory = "${gamesDirectory}/umu/config";
   gameEntry = {
     type = "Application";
     categories = [ "Game" ];
@@ -11,45 +19,40 @@ in
     name = "Legacy Launcher";
     genericName = "Minecraft";
     icon = ./desktop-icons/legacy-launcher.png;
-    exec = "${/usr/bin/env} __GL_THREADED_OPTIMIZATIONS=0 LIBGL_ALWAYS_SOFTWARE=1 ${config.programs.java.package}/bin/java -jar ${
-      pkgs.fetchurl {
-        url = "https://llaun.ch/jar";
-        hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
-      }
-    }";
+    exec = "${/usr/bin/env} __GL_THREADED_OPTIMIZATIONS=0 LIBGL_ALWAYS_SOFTWARE=1 ${config.programs.java.package}/bin/java -jar ${legacyLauncher}";
   };
   xdg.desktopEntries.Karlson = gameEntry // {
     name = "Karlson";
-    icon = "${config.home.homeDirectory}/Games/karlson/Karlson_linux_Data/Resources/UnityPlayer.png";
-    exec = "${config.home.homeDirectory}/Games/karlson/Karlson_linux.x86_64";
+    icon = "${gamesDirectory}/karlson/Karlson_linux_Data/Resources/UnityPlayer.png";
+    exec = "${gamesDirectory}/karlson/Karlson_linux.x86_64";
   };
   xdg.desktopEntries.Rerun = gameEntry // {
     name = "Rerun";
-    icon = "${config.home.homeDirectory}/Games/rerun/RERUN_linux_Data/Resources/UnityPlayer.png";
-    exec = "${config.home.homeDirectory}/Games/rerun/RERUN_linux.x86_64";
+    icon = "${gamesDirectory}/rerun/RERUN_linux_Data/Resources/UnityPlayer.png";
+    exec = "${gamesDirectory}/rerun/RERUN_linux.x86_64";
   };
   xdg.desktopEntries.ZenlessZoneZero = gameEntry // {
     name = "Zenless Zone Zero";
     genericName = "zzz";
     icon = ./desktop-icons/zzz.png;
-    exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/zzz.toml";
+    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/zzz.toml";
   };
   xdg.desktopEntries.PlantVsZombiesRH = gameEntry // {
     name = "PlantVsZombiesRH";
     genericName = "pvz-fusion";
     icon = ./desktop-icons/pvz-fusion.jpg;
-    exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
+    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.5.1.toml";
     actions.V2-3-1 = {
       name = "Version 2.3.1";
-      exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.3.1.toml";
+      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.3.1.toml";
     };
     actions.V2-4-2 = {
       name = "Version 2.4.2";
-      exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.4.2.toml";
+      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.4.2.toml";
     };
     actions.V2-5-1 = {
       name = "Version 2.5.1";
-      exec = "${pkgs.umu-launcher-unwrapped}/bin/umu-run --config ${config.home.homeDirectory}/Games/umu/config/pvz-2.5.1.toml";
+      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.5.1.toml";
     };
   };
 }

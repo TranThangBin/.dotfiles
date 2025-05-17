@@ -42,10 +42,10 @@
         overlays = [
           nur.overlays.default
           nixgl.overlay
-          (self: super: {
-            Darkly-qt5 = darkly.packages."${system}".darkly-qt5;
-            vimPlugins = super.vimPlugins // {
-              Plainline = super.vimUtils.buildVimPlugin {
+          (final: prev: {
+            darkly-qt5 = darkly.packages."${system}".darkly-qt5;
+            vimPlugins = prev.vimPlugins // {
+              plainline = prev.vimUtils.buildVimPlugin {
                 pname = "plainline";
                 version = "unstable";
                 src = plainline;
@@ -61,6 +61,10 @@
         catppuccin-mocha = "${yazi-flavors.outPath}/catppuccin-mocha.yazi";
         dracula = "${yazi-flavors.outPath}/dracula.yazi";
       };
+      legacyLauncher = pkgs.fetchurl {
+        url = "https://llaun.ch/jar";
+        hash = "sha256-3y0lFukFzch6aOxFb4gWZKWxWLqBCTQlHXtwp0BnlYg=";
+      };
     in
     {
       homeConfigurations."trant" = home-manager.lib.homeManagerConfiguration {
@@ -73,7 +77,7 @@
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
         extraSpecialArgs = {
-          inherit yaziFlavors;
+          inherit yaziFlavors legacyLauncher;
         };
       };
     };
