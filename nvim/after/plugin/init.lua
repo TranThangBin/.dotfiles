@@ -6,7 +6,11 @@ require("plainline").setup()
 vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<CR>")
 
 require("oil").setup({ default_file_explorer = false })
-vim.keymap.set("n", "<leader>-", "<cmd>Oil<CR>")
+vim.keymap.set("n", "<leader>-", function()
+	local file_pattern = vim.fn.escape(vim.fn.expand("%:t"), [[\/.*~]])
+	vim.cmd.Oil()
+	vim.fn.search(file_pattern)
+end)
 
 local fugitive_keys = {
 	["<leader>gs"] = "<cmd>Git<CR>",
