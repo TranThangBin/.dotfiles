@@ -12,6 +12,8 @@
 - `NetworkManager`
 - `cups`
 - `bluez`
+- `ufw`
+- `sbctl`
 - `hyprpolkitagent`
 
 ## Installation
@@ -35,4 +37,4 @@ curl -L https://nixos.org/nix/install | sh -s -- --daemon
 nix --extra-experimental-features "nix-command flakes" run home-manager/master -- switch --flake $HOME/.dotfiles --impure
 ```
 
-For follow up rebuild on zsh we can use `home-manager switch --impure` use `which home-manager` if you are confused
+Relaunch zsh we can use `home-manager switch --impure` instead. Use `which home-manager` if you are confused
