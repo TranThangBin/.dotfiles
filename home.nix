@@ -33,8 +33,8 @@
   };
 
   nixpkgs.overlays = [
-    (self: super: {
-      profile-sync-daemon = super.profile-sync-daemon.overrideAttrs (oldAttrs: {
+    (final: prev: {
+      profile-sync-daemon = prev.profile-sync-daemon.overrideAttrs (oldAttrs: {
         installPhase = ''
           ${oldAttrs.installPhase}
           cp $out/share/psd/contrib/brave $out/share/psd/browsers/brave

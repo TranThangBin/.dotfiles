@@ -1,15 +1,13 @@
 { config, pkgs, ... }:
 let
   brightnessctl = pkgs.brightnessctl;
-
   hyprctlBin = /usr/bin/hyprctl;
-  hyprlockBin = /usr/bin/hyprlock;
 in
 {
   services.hypridle = {
     settings = {
       general = {
-        lock_cmd = "pidof ${hyprlockBin} || ${hyprlockBin}";
+        lock_cmd = "${pkgs.toybox}/bin/pidof hyprlock || ${/usr/bin/hyprlock}";
         before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
         after_sleep_cmd = "${hyprctlBin} dispatch dpms on";
       };

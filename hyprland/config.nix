@@ -12,17 +12,50 @@ let
   cliphist = config.services.cliphist;
   wofi = config.programs.wofi;
 
+  toybox = pkgs.toybox;
+
   settings = with config.programs; {
     terminal = {
       kitty = "${kitty.package}/bin/kitty";
       ghostty = "${ghostty.package}/bin/ghostty";
     };
-    logoutMenu = "${wlogout.package}/bin/wlogout";
+    logoutMenu = "${toybox}/bin/pidof wlogout || ${wlogout.package}/bin/wlogout";
+    colorPicker = "${toybox}/bin/pidof hyprpicker || ${pkgs.hyprpicker}/bin/hyprpicker -a";
+    emojiPicker = "${toybox}/bin/pidof wofi || ${pkgs.wofi-emoji}/bin/wofi-emoji";
+    menuOutput = pkgs.writeShellScript "wofi.sh" ''
+      app=$( ${toybox}/bin/pidof wofi || ${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true )
+      if [[ "$app" == *'desktop '* ]]; then
+         echo "''${app%.desktop *}.desktop:''${app#*.desktop }"
+      elif [[ "$app" == *'desktop' ]]; then
+         echo "$app"
+      fi
+      unset app
+    '';
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
-    menuOutput = "${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true | sed -E 's/(\.desktop) /\1:/'";
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
-    colorPicker = "${pkgs.hyprpicker}/bin/hyprpicker -a";
-    emojiPicker = "${pkgs.wofi-emoji}/bin/wofi-emoji";
+    clipboard = {
+      picker = "${toybox}/bin/pidof wofi || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' | ${cliphist.package}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy";
+      delete = "${toybox}/bin/pidof wofi || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete";
+      wipe = pkgs.writeShellScript "clipboard-wipe.sh" ''
+        confirm=$( ${toybox}/bin/pidof wofi || ( echo no; echo yes; ) | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
+        if [[ $confirm = "yes" ]] then
+            ${cliphist.package}/bin/cliphist wipe
+        fi
+        unset confirm
+      '';
+    };
+    screenshot = {
+      save = {
+        region = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m region";
+        window = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m window";
+        output = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m output";
+      };
+      clipboard = {
+        region = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m region --clipboard-only";
+        window = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m window --clipboard-only";
+        output = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m output --clipboard-only";
+      };
+    };
   };
 
   flamingo = "rgb(f2cdcd)";
@@ -124,24 +157,18 @@ in
           "${mainMod} SHIFT, Space, exec, ${settings.emojiPicker}"
         ]
         ++ [
-          "${mainMod}, V, exec, ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' | ${cliphist.package}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"
-          "${mainMod} SHIFT, V, exec, ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete"
-          "${mainMod} CTRL SHIFT, V, exec, ${pkgs.writeShellScript "clipboard-wipe.sh" ''
-            confirm=$( ( echo no; echo yes; ) | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
-            if [[ $confirm = "yes" ]] then
-                ${cliphist.package}/bin/cliphist wipe
-            fi
-            unset confirm
-          ''}"
+          "${mainMod}, V, exec, ${settings.clipboard.picker}"
+          "${mainMod} SHIFT, V, exec, ${settings.clipboard.delete}"
+          "${mainMod} CTRL SHIFT, V, exec, ${settings.clipboard.wipe}"
         ]
         ++ [
-          "${mainMod}, PRINT, exec, ${hyprshot}/bin/hyprshot -m region"
-          "${mainMod} SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window"
-          "${mainMod} CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output"
+          "${mainMod}, PRINT, exec, ${settings.screenshot.save.region}"
+          "${mainMod} SHIFT, PRINT, exec, ${settings.screenshot.save.window}"
+          "${mainMod} CTRL SHIFT, PRINT, exec, ${settings.screenshot.save.output}"
 
-          ",PRINT, exec, ${hyprshot}/bin/hyprshot -m region --clipboard-only"
-          "SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m window --clipboard-only"
-          "CTRL SHIFT, PRINT, exec, ${hyprshot}/bin/hyprshot -m output --clipboard-only"
+          ",PRINT, exec, ${settings.screenshot.clipboard.region}"
+          "SHIFT, PRINT, exec, ${settings.screenshot.clipboard.window}"
+          "CTRL SHIFT, PRINT, exec, ${settings.screenshot.clipboard.output}"
         ]
         ++ [
           "${mainMod} SHIFT, Q, killactive,"
