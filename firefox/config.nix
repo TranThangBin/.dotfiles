@@ -92,6 +92,7 @@
         "sidebar.visibility" = "hide-sidebar";
         "sidebar.main.tools" = "";
         "browser.toolbars.bookmarks.visibility" = "never";
+        "browser.tabs.warnOnClose" = true;
         "browser.newtabpage.activity-stream.newtabWallpapers.wallpaper" = "dark-beach";
         "browser.newtabpage.activity-stream.newtabWallpapers.wallpaper-dark" = "dark-beach";
         "browser.newtabpage.activity-stream.newtabWallpapers.wallpaper-light" = "dark-beach";

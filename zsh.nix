@@ -32,6 +32,11 @@
         unset address mount_point username password
       ''}";
     };
+    history = {
+      ignoreAllDups = true;
+      ignoreSpace = true;
+      ignorePatterns = [ "clear" ];
+    };
 
     oh-my-zsh = {
       theme = "robbyrussell";
