@@ -10,11 +10,17 @@ let
   uwsm = pkgs.uwsm;
   hyprshot = pkgs.hyprshot;
   cliphist = config.services.cliphist;
+
+  kitty = config.programs.kitty;
+  ghostty = config.programs.ghostty;
+  wlogout = config.programs.wlogout;
   wofi = config.programs.wofi;
+  yazi = config.programs.yazi;
+  btop = config.programs.btop;
 
   toybox = pkgs.toybox;
 
-  settings = with config.programs; {
+  settings = {
     terminal = {
       kitty = "${kitty.package}/bin/kitty";
       ghostty = "${ghostty.package}/bin/ghostty";
@@ -155,13 +161,11 @@ in
           "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
           "${mainMod}, C, exec, ${settings.colorPicker}"
           "${mainMod} SHIFT, Space, exec, ${settings.emojiPicker}"
-        ]
-        ++ [
+
           "${mainMod}, V, exec, ${settings.clipboard.picker}"
           "${mainMod} SHIFT, V, exec, ${settings.clipboard.delete}"
           "${mainMod} CTRL SHIFT, V, exec, ${settings.clipboard.wipe}"
-        ]
-        ++ [
+
           "${mainMod}, PRINT, exec, ${settings.screenshot.save.region}"
           "${mainMod} SHIFT, PRINT, exec, ${settings.screenshot.save.window}"
           "${mainMod} CTRL SHIFT, PRINT, exec, ${settings.screenshot.save.output}"
@@ -176,8 +180,7 @@ in
           "${mainMod} SHIFT, F, togglefloating,"
           "${mainMod}, P, pseudo,"
           "${mainMod} CTRL SHIFT, J, togglesplit,"
-        ]
-        ++ [
+
           "${mainMod}, M, togglespecialworkspace, magic"
           "${mainMod} SHIFT, M, movetoworkspace, special:magic"
 
@@ -196,17 +199,17 @@ in
           "${mainMod}, J, movefocus, d"
           "${mainMod} SHIFT, J, movewindow, d"
         ]
-        ++ (
-          lib.concatLists (
-            lib.genList (i: [
-              "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
-              "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
-            ]) 9
-          )
-          ++ [
-            "${mainMod}, 0, workspace, 10"
-            "${mainMod} SHIFT, 0, movetoworkspace, 10"
+        ++ lib.concatLists (
+          [
+            [
+              "${mainMod}, 0, workspace, 10"
+              "${mainMod} SHIFT, 0, movetoworkspace, 10"
+            ]
           ]
+          ++ (lib.genList (i: [
+            "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
+            "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
+          ]) 9)
         );
 
       binde = [
@@ -237,15 +240,12 @@ in
         "${mainMod} SHIFT, mouse:273, resizewindow"
       ];
 
-      windowrulev2 =
-        [
-          "suppressevent maximize, class:.*"
-          "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
-        ]
-        ++ (with config.programs; [
-          "opacity ${toString kitty.settings.background_opacity} class:kitty"
-          "opacity ${toString ghostty.settings.background-opacity}, class:ghostty"
-        ]);
+      windowrulev2 = [
+        "opacity ${toString kitty.settings.background_opacity} class:kitty"
+        "opacity ${toString ghostty.settings.background-opacity}, class:ghostty"
+        "suppressevent maximize, class:.*"
+        "prop nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0"
+      ];
     };
   };
 }

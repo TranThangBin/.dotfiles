@@ -4,7 +4,11 @@
   pkgs,
   ...
 }:
-with config.wayland.windowManager;
+let
+  hyprland = config.wayland.windowManager.hyprland;
+  systemd = pkgs.systemd;
+  systemctl = config.systemd.user.systemctlPath;
+in
 {
   wayland.systemd.target = "wayland-session@hyprland.desktop.target";
 
@@ -28,13 +32,13 @@ with config.wayland.windowManager;
   programs.wlogout.layout = [
     {
       label = "lock";
-      action = "${pkgs.systemd}/bin/loginctl lock-session";
+      action = "${systemd}/bin/loginctl lock-session";
       text = "Lock";
       keybind = "l";
     }
     {
       label = "hibernate";
-      action = "${config.systemd.user.systemctlPath} hibernate";
+      action = "${systemctl} hibernate";
       text = "Hibernate";
       keybind = "h";
     }
@@ -46,19 +50,19 @@ with config.wayland.windowManager;
     }
     {
       label = "shutdown";
-      action = "${config.systemd.user.systemctlPath} poweroff";
+      action = "${systemctl} poweroff";
       text = "Shutdown";
       keybind = "s";
     }
     {
       label = "suspend";
-      action = "${config.systemd.user.systemctlPath} suspend";
+      action = "${systemctl} suspend";
       text = "Suspend";
       keybind = "u";
     }
     {
       label = "reboot";
-      action = "${config.systemd.user.systemctlPath} reboot";
+      action = "${systemctl} reboot";
       text = "Reboot";
       keybind = "r";
     }
@@ -120,10 +124,10 @@ with config.wayland.windowManager;
   xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
 
   xdg.configFile."uwsm/env-hyprland".text = with import ./gpu-env.nix; ''
-    export AQ_DRM_DEVICES=${lib.concatStringsSep ":" AQ_DRM_DEVICES}
     export GBM_BACKEND=${GBM_BACKEND}
     export __GLX_VENDOR_LIBRARY_NAME=${__GLX_VENDOR_LIBRARY_NAME}
     export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
+    export AQ_DRM_DEVICES=${lib.concatStringsSep ":" AQ_DRM_DEVICES}
     export ALSA_PLUGIN_DIR=${pkgs.pipewire}/lib/alsa-lib
   '';
 
