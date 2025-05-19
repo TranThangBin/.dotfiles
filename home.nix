@@ -23,9 +23,6 @@
         "discord"
         "postman"
         "rar"
-        "steam"
-        "steam-unwrapped"
-        "nixGL-steam"
         "ventoy-gtk3"
         "corefonts"
       ];
@@ -112,7 +109,6 @@
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload discord)
-    (config.lib.nixGL.wrapOffload steam)
   ];
 
   targets.genericLinux.enable = true;
