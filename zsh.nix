@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   home.shell.enableZshIntegration = config.programs.zsh.enable;
 
@@ -12,6 +17,11 @@
     shellAliases = {
       home-manager = "home-manager --flake ${config.home.homeDirectory}/.dotfiles";
       mount-smb = "${pkgs.writeShellScript "mount-smb.sh" ''
+        sudo=${
+          assert lib.pathExists "/usr/bin/sudo";
+          "sudo"
+        }
+
         printf "Enter your address (e.g: //192.168.1.5/share): "
         read -r address
 
@@ -26,10 +36,10 @@
 
         echo
 
-        ${/usr/bin/sudo} mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
-        ${/usr/bin/sudo} -k
+        "$sudo" mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
+        "$sudo" -k
 
-        unset address mount_point username password
+        unset sudo address mount_point username password
       ''}";
     };
     history = {

@@ -232,13 +232,13 @@
     ./yazi
     ./hyprland
     ./audio
+    ./games
     ./kitty.nix
     ./ghostty.nix
     ./zsh.nix
     ./tmux.nix
     ./container.nix
     ./fonts.nix
-    ./games.nix
     ./fcitx5.nix
     ./xdg-desktop-portal.nix
   ];

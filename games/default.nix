@@ -18,7 +18,7 @@ in
   xdg.desktopEntries.LegacyLauncher = gameEntry // {
     name = "Legacy Launcher";
     genericName = "Minecraft";
-    icon = ./desktop-icons/legacy-launcher.png;
+    icon = ../desktop-icons/legacy-launcher.png;
     exec = "${pkgs.toybox}/bin/env __GL_THREADED_OPTIMIZATIONS=0 LIBGL_ALWAYS_SOFTWARE=1 ${pkgs.alsa-oss}/bin/aoss ${config.programs.java.package}/bin/java -jar ${legacyLauncher}";
   };
   xdg.desktopEntries.Karlson = gameEntry // {
@@ -34,13 +34,13 @@ in
   xdg.desktopEntries.ZenlessZoneZero = gameEntry // {
     name = "Zenless Zone Zero";
     genericName = "zzz";
-    icon = ./desktop-icons/zzz.png;
+    icon = ../desktop-icons/zzz.png;
     exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/zzz.toml";
   };
   xdg.desktopEntries.PlantVsZombiesRH = gameEntry // {
     name = "PlantVsZombiesRH";
     genericName = "pvz-fusion";
-    icon = ./desktop-icons/pvz-fusion.jpg;
+    icon = ../desktop-icons/pvz-fusion.jpg;
     exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.5.1.toml";
     actions.V2-3-1 = {
       name = "Version 2.3.1";
