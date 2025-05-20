@@ -55,4 +55,6 @@ in
       exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.5.1.toml";
     };
   };
+
+  imports = [ ./lutris.nix ];
 }
