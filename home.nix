@@ -154,6 +154,7 @@
   programs.lazydocker.enable = true;
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
+  # programs.lutris.enable = true;
 
   programs.kitty.package = config.lib.nixGL.wrap pkgs.kitty;
   programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
