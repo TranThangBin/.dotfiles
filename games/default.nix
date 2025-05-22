@@ -6,8 +6,8 @@
 }:
 let
   umu-launcher = pkgs.umu-launcher-unwrapped;
-  gamesDirectory = "${config.home.homeDirectory}/Games";
-  umuConfigDirectory = "${gamesDirectory}/umu/config";
+  gamesDir = "${config.home.homeDirectory}/Games";
+  umuConfigDir = "${gamesDir}/umu/config";
   gameEntry = {
     type = "Application";
     categories = [ "Game" ];
@@ -23,38 +23,41 @@ in
   };
   xdg.desktopEntries.Karlson = gameEntry // {
     name = "Karlson";
-    icon = "${gamesDirectory}/karlson/Karlson_linux_Data/Resources/UnityPlayer.png";
-    exec = "${gamesDirectory}/karlson/Karlson_linux.x86_64";
+    icon = "${gamesDir}/karlson/Karlson_linux_Data/Resources/UnityPlayer.png";
+    exec = "${gamesDir}/karlson/Karlson_linux.x86_64";
   };
   xdg.desktopEntries.Rerun = gameEntry // {
     name = "Rerun";
-    icon = "${gamesDirectory}/rerun/RERUN_linux_Data/Resources/UnityPlayer.png";
-    exec = "${gamesDirectory}/rerun/RERUN_linux.x86_64";
+    icon = "${gamesDir}/rerun/RERUN_linux_Data/Resources/UnityPlayer.png";
+    exec = "${gamesDir}/rerun/RERUN_linux.x86_64";
   };
   xdg.desktopEntries.ZenlessZoneZero = gameEntry // {
     name = "Zenless Zone Zero";
     genericName = "zzz";
     icon = ../desktop-icons/zzz.png;
-    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/zzz.toml";
+    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/zzz.toml";
   };
   xdg.desktopEntries.PlantVsZombiesRH = gameEntry // {
     name = "PlantVsZombiesRH";
     genericName = "pvz-fusion";
     icon = ../desktop-icons/pvz-fusion.jpg;
-    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.5.1.toml";
+    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.5.1.toml";
     actions.V2-3-1 = {
       name = "Version 2.3.1";
-      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.3.1.toml";
+      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.3.1.toml";
     };
     actions.V2-4-2 = {
       name = "Version 2.4.2";
-      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.4.2.toml";
+      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.4.2.toml";
     };
     actions.V2-5-1 = {
       name = "Version 2.5.1";
-      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDirectory}/pvz-2.5.1.toml";
+      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.5.1.toml";
     };
   };
 
-  imports = [ ./lutris.nix ];
+  imports = [
+    ./lutris.nix
+    ./steam.nix
+  ];
 }
