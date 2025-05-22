@@ -19,7 +19,7 @@ let
 in
 {
   xdg.desktopEntries = builtins.listToAttrs (
-    map (gameID: {
+    builtins.map (gameID: {
       name = gameID;
       value = buildSteamEntry gameID;
     }) (builtins.attrNames steamGames)

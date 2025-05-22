@@ -12,9 +12,7 @@ in
     ++ (with pkgs; [
       pwvucontrol
       helvum
-      tree
       alsa-utils
-      alsa-firmware
       alsa-tools
       alsa-lib
       alsa-plugins

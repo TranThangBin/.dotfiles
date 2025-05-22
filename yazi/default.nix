@@ -5,6 +5,14 @@
   ...
 }:
 {
+  home.packages = with pkgs; [
+    imagemagick
+    exiftool
+    wl-clipboard
+    xclip
+    xsel
+    ueberzugpp
+  ];
   programs.yazi = {
     enableZshIntegration = true;
     initLua = ./init.lua;

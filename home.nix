@@ -75,13 +75,6 @@
     powertop
     trash-cli
 
-    imagemagick
-    exiftool
-    wl-clipboard
-    xclip
-    xsel
-    ueberzugpp
-
     sl
     lolcat
     cowsay
@@ -89,7 +82,6 @@
     mongosh
     tlrc
     ncdu
-    uwsm
     sqlite
     dysk
     umu-launcher-unwrapped

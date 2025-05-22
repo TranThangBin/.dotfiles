@@ -12,6 +12,16 @@ in
 {
   wayland.systemd.target = "wayland-session@hyprland.desktop.target";
 
+  home.packages = lib.mkIf hyprland.enable (
+    with pkgs;
+    [
+      uwsm
+      hyprshot
+      hyprpicker
+      wofi-emoji
+    ]
+  );
+
   programs.hyprlock.enable = hyprland.enable;
   programs.waybar.enable = hyprland.enable;
   programs.wofi.enable = hyprland.enable;
