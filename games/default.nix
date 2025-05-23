@@ -56,8 +56,5 @@ in
     };
   };
 
-  imports = [
-    ./lutris.nix
-    ./steam.nix
-  ];
+  imports = [ ./steam.nix ];
 }

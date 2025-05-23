@@ -89,7 +89,6 @@
     gimp3
     openshot-qt
     vlc
-    brave
     resources
     qbittorrent-enhanced
     postman
@@ -98,6 +97,7 @@
     sfxr
     libreoffice
 
+    (config.lib.nixGL.wrapOffload brave)
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload discord)
@@ -146,8 +146,8 @@
   programs.lazydocker.enable = true;
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
-  # programs.lutris.enable = true;
 
+  programs.firefox.package = config.lib.nixGL.wrapOffload pkgs.firefox;
   programs.kitty.package = config.lib.nixGL.wrap pkgs.kitty;
   programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
 
