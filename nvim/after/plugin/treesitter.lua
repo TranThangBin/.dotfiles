@@ -13,10 +13,10 @@ require("nvim-treesitter.configs").setup({
 			local ok, stats =
 				pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
 			if ok and stats and stats.size > max_filesize then
-				vim.notify(
+				require("fidget").notify(
 					"File larger than 100KB treesitter disabled for performance",
 					vim.log.levels.WARN,
-					{ title = "Treesitter" }
+					{ group = "Treesitter" }
 				)
 				return true
 			end

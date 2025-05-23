@@ -4,25 +4,24 @@
     defaultEditor = true;
     vimAlias = true;
     plugins = with pkgs.vimPlugins; [
-      plenary-nvim
-      nvim-web-devicons
       vim-obsession
       telescope-nvim
+      telescope-fzf-native-nvim
       harpoon2
       rose-pine
       tokyonight-nvim
       catppuccin-nvim
       nvim-lspconfig
       SchemaStore-nvim
-      lsp-zero-nvim
       nvim-cmp
       cmp-nvim-lsp
       cmp-buffer
       cmp-path
       cmp-cmdline
+      luasnip
       cmp_luasnip
       friendly-snippets
-      lsp-overloads-nvim
+      lspkind-nvim
       lazydev-nvim
       luvit-meta
       undotree
@@ -32,9 +31,7 @@
       nvim-ts-autotag
       nvim-surround
       oil-nvim
-      comment-nvim
       vim-fugitive
-      telescope-fzf-native-nvim
       todo-comments-nvim
       fidget-nvim
       gitsigns-nvim
@@ -74,6 +71,7 @@
         p.prolog
       ]))
       plainline
+      tailwindcss-colorizer-cmp-nvim
     ];
     extraPackages = with pkgs; [
       pyright

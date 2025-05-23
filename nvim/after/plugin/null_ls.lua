@@ -9,9 +9,9 @@ null_ls.setup({
 		null_ls.builtins.formatting.prettierd,
 		null_ls.builtins.formatting.shfmt,
 		null_ls.builtins.formatting.nixfmt,
-		require("null-ls.helpers").make_builtin({
+		{
 			method = null_ls.methods.FORMATTING,
-			name = "templfmt",
+			name = "templ_fmt",
 			filetypes = { "templ" },
 			generator = null_ls.formatter({
 				command = "templ",
@@ -19,7 +19,7 @@ null_ls.setup({
 				from_stdin = true,
 				to_stdin = true,
 			}),
-		}),
+		},
 
 		null_ls.builtins.diagnostics.gdlint,
 	},

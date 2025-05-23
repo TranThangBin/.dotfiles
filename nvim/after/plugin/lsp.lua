@@ -1,11 +1,15 @@
 require("lspconfig.ui.windows").default_options.border = "rounded"
 
 local builtin = require("telescope.builtin")
-local lsp_zero = require("lsp-zero")
 local lspconfig = require("lspconfig")
 local schemastore = require("schemastore")
 
-local capabilities = lsp_zero.get_capabilities()
+local capabilities = vim.tbl_extend(
+	"force",
+	{},
+	vim.lsp.protocol.make_client_capabilities(),
+	require("cmp_nvim_lsp").default_capabilities()
+)
 
 local servers = {
 	"ccls",
@@ -24,7 +28,7 @@ local servers = {
 	"taplo",
 	"zls",
 	"nil_ls",
-	lua_ls = lsp_zero.nvim_lua_ls(),
+	"lua_ls",
 	ruff = { init_options = { settings = { logLevel = "debug" } } },
 	pyright = {
 		settings = {
@@ -75,11 +79,15 @@ vim.diagnostic.config({
 	},
 })
 
-lsp_zero.set_sign_icons({
-	error = "✘",
-	warn = "▲",
-	hint = "⚑",
-	info = "»",
+vim.diagnostic.config({
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "✘",
+			[vim.diagnostic.severity.WARN] = "▲",
+			[vim.diagnostic.severity.HINT] = "⚑",
+			[vim.diagnostic.severity.INFO] = "»",
+		},
+	},
 })
 
 local keys = {
@@ -100,6 +108,9 @@ local keys = {
 	end,
 	["<leader>rn"] = function()
 		vim.lsp.buf.rename()
+	end,
+	["<M-s>"] = function()
+		vim.lsp.buf.signature_help({ border = "rounded" })
 	end,
 	["K"] = function()
 		vim.lsp.buf.hover({ border = "rounded" })
@@ -128,40 +139,15 @@ local keys = {
 	end,
 }
 
-lsp_zero.on_attach(function(client, bufnr)
-	for key, exec in pairs(keys) do
-		vim.keymap.set("n", key, function()
-			exec(bufnr)
-		end, { buffer = bufnr })
-	end
-	if client:supports_method("signatureHelpProvider") then
-		require("lsp-overloads").setup(client, {
-			silent = true,
-			display_automatically = false,
-			ui = {
-				border = "rounded",
-				wrap = true,
-				close_events = { "CursorMoved", "BufHidden", "InsertLeave" },
-				focusable = true,
-				focus = false,
-				offset_x = 0,
-				offset_y = 0,
-				floating_window_above_cur_line = false,
-				silent = true,
-			},
-			keymaps = {
-				next_signature = "<C-j>",
-				previous_signature = "<C-k>",
-				next_parameter = "<C-l>",
-				previous_parameter = "<C-h>",
-				close_signature = "<M-s>",
-			},
-		})
-		vim.keymap.set(
-			{ "n", "i" },
-			"<M-s>",
-			"<cmd>LspOverloadsSignature<CR>",
-			{ buffer = bufnr }
-		)
-	end
-end)
+local lsp_group = vim.api.nvim_create_augroup("tranquangthang/lsp", {})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = lsp_group,
+	callback = function(e)
+		for key, exec in pairs(keys) do
+			vim.keymap.set("n", key, function()
+				exec(e.buf)
+			end, { buffer = e.buf })
+		end
+	end,
+})
