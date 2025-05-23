@@ -6,6 +6,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixgl.url = "github:nix-community/nixGL";
     darkly.url = "github:Bali10050/Darkly";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,6 +30,7 @@
       nixpkgs,
       home-manager,
       nixgl,
+      neovim-nightly-overlay,
       nur,
       yazi-flavors,
       plainline,
@@ -42,6 +44,7 @@
         overlays = [
           nur.overlays.default
           nixgl.overlay
+          neovim-nightly-overlay.overlays.default
           (final: prev: {
             darkly-qt5 = darkly.packages."${system}".darkly-qt5;
             vimPlugins = prev.vimPlugins // {

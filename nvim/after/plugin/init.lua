@@ -40,3 +40,11 @@ require("ccc").setup({
 		lsp = true,
 	},
 })
+require("hardtime").setup({
+	callback = function(text)
+		require("fidget").notify(text, vim.log.levels.WARN, {
+			group = "Hardtime",
+			ttl = require("hardtime.config").config.timeout / 1000,
+		})
+	end,
+})
