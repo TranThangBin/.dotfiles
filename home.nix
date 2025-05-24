@@ -227,8 +227,8 @@
     ./hyprland
     ./audio
     ./games
+    ./ghostty
     ./kitty.nix
-    ./ghostty.nix
     ./zsh.nix
     ./tmux.nix
     ./container.nix
