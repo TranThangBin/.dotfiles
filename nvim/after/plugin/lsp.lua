@@ -1,12 +1,11 @@
 require("lspconfig.ui.windows").default_options.border = "rounded"
 
-local builtin = require("telescope.builtin")
 local lspconfig = require("lspconfig")
 local schemastore = require("schemastore")
+local ts_builtin = require("telescope.builtin")
 
 local capabilities = vim.tbl_extend(
 	"force",
-	{},
 	vim.lsp.protocol.make_client_capabilities(),
 	require("cmp_nvim_lsp").default_capabilities()
 )
@@ -77,9 +76,6 @@ vim.diagnostic.config({
 		header = "",
 		prefix = "",
 	},
-})
-
-vim.diagnostic.config({
 	signs = {
 		text = {
 			[vim.diagnostic.severity.ERROR] = "✘",
@@ -90,18 +86,18 @@ vim.diagnostic.config({
 	},
 })
 
-local keys = {
+local keys_normal = {
 	["gd"] = function()
-		builtin.lsp_definitions()
+		ts_builtin.lsp_definitions()
 	end,
 	["gr"] = function()
-		builtin.lsp_references()
+		ts_builtin.lsp_references()
 	end,
 	["<leader>ws"] = function()
-		builtin.lsp_workspace_symbols()
+		ts_builtin.lsp_workspace_symbols()
 	end,
 	["<leader>ds"] = function()
-		builtin.lsp_document_symbols()
+		ts_builtin.lsp_document_symbols()
 	end,
 	["<leader>ca"] = function()
 		vim.lsp.buf.code_action()
@@ -109,7 +105,7 @@ local keys = {
 	["<leader>rn"] = function()
 		vim.lsp.buf.rename()
 	end,
-	["<M-s>"] = function()
+	["<C-s>"] = function()
 		vim.lsp.buf.signature_help({ border = "rounded" })
 	end,
 	["K"] = function()
@@ -129,24 +125,34 @@ local keys = {
 			bufnr = bufnr,
 			async = true,
 			filter = function(cl)
-				return (
-					vim.lsp.get_clients({ bufnr = bufnr, name = "null-ls" })[1]
-						== nil
-					and cl.name ~= "null-ls"
-				) or cl.name == "null-ls"
+				local null_ls_attached = #vim.lsp.get_clients({
+					bufnr = bufnr,
+					name = "null-ls",
+				}) > 0
+				return cl.name == "null-ls"
+					or (not null_ls_attached and cl.name ~= "null-ls")
 			end,
 		})
 	end,
 }
 
-local lsp_group = vim.api.nvim_create_augroup("tranquangthang/lsp", {})
+local keys_insert = { ["<C-s>"] = keys_normal["<C-s>"] }
+
+local lsp_group =
+	vim.api.nvim_create_augroup("tranquangthang/lsp", { clear = true })
 
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = lsp_group,
 	callback = function(e)
-		for key, exec in pairs(keys) do
+		for key, exec in pairs(keys_normal) do
 			vim.keymap.set("n", key, function()
 				exec(e.buf)
+			end, { buffer = e.buf })
+		end
+
+		for key, exec in pairs(keys_insert) do
+			vim.keymap.set("i", key, function()
+				exec()
 			end, { buffer = e.buf })
 		end
 	end,

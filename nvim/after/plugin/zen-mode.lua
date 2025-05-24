@@ -3,7 +3,8 @@ local zen_mode = require("zen-mode")
 local number = vim.wo.number
 local rnu = vim.wo.rnu
 local colorcolumn = vim.opt.colorcolumn
-local zen_group = vim.api.nvim_create_augroup("tranquangthang/zen", {})
+local zen_group =
+	vim.api.nvim_create_augroup("tranquangthang/zen", { clear = true })
 
 zen_mode.setup({
 	window = {

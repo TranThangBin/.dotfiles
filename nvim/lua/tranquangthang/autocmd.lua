@@ -1,4 +1,4 @@
-local my_group = vim.api.nvim_create_augroup("tranquangthang", {})
+local my_group = vim.api.nvim_create_augroup("tranquangthang", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
 	group = my_group,
