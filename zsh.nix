@@ -14,34 +14,31 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     initContent = "[ -z $TMUX ] && ${config.programs.fastfetch.package}/bin/fastfetch";
-    shellAliases = {
-      home-manager = "home-manager --flake ${config.home.homeDirectory}/.dotfiles";
-      mount-smb = "${pkgs.writeShellScript "mount-smb.sh" ''
-        sudo=${
-          assert lib.pathExists "/usr/bin/sudo";
-          "sudo"
-        }
+    shellAliases.mount-smb = "${pkgs.writeShellScript "mount-smb.sh" ''
+      sudo=${
+        assert lib.pathExists "/usr/bin/sudo";
+        "sudo"
+      }
 
-        printf "Enter your address (e.g: //192.168.1.5/share): "
-        read -r address
+      printf "Enter your address (e.g: //192.168.1.5/share): "
+      read -r address
 
-        printf "mount point (e.g: /mnt/share): "
-        read -r mount_point
+      printf "mount point (e.g: /mnt/share): "
+      read -r mount_point
 
-        printf "username: "
-        read -r username
+      printf "username: "
+      read -r username
 
-        printf "password: "
-        read -rs password
+      printf "password: "
+      read -rs password
 
-        echo
+      echo
 
-        "$sudo" mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
-        "$sudo" -k
+      "$sudo" mount -t cifs "$address" "$mount_point" --mkdir -o username="$username",password="$password"
+      "$sudo" -k
 
-        unset sudo address mount_point username password
-      ''}";
-    };
+      unset sudo address mount_point username password
+    ''}";
     history = {
       ignoreAllDups = true;
       ignoreSpace = true;

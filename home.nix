@@ -57,6 +57,7 @@
   programs.git.userEmail = "thangdev04@gmail.com";
 
   home.stateVersion = "25.05";
+  home.sessionVariables.DOTFILES_DIR = "${config.home.homeDirectory}/.dotfiles";
 
   home.packages = with pkgs; [
     templ
