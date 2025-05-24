@@ -34,12 +34,16 @@ for key, exec in pairs(todo_keys) do
 end
 
 require("cloak").setup()
-require("ccc").setup({
-	highlighter = {
-		auto_enable = false,
-		lsp = true,
-	},
-})
+
+require("ccc").setup()
+local ccc_keys = {
+	["<leader>cp"] = "<cmd>CccPick<CR>",
+	["<leader>cv"] = "<cmd>CccConvert<CR>",
+}
+for key, exec in pairs(ccc_keys) do
+	vim.keymap.set("n", key, exec)
+end
+
 require("hardtime").setup({
 	callback = function(text)
 		require("fidget").notify(text, vim.log.levels.WARN, {
