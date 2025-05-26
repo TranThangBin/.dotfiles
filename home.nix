@@ -97,6 +97,7 @@
     ventoy-full-gtk
     sfxr
     libreoffice
+    tor-browser
 
     (config.lib.nixGL.wrapOffload brave)
     (config.lib.nixGL.wrapOffload godot_4)
