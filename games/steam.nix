@@ -6,22 +6,21 @@ let
     "582010" = "Monster Hunter: World";
     "1899060" = "Pocket Mirror ~ GoldenerTraum";
   };
-  buildSteamEntry = gameID: {
-    name = steamGames."${gameID}";
-    comment = "Play this game on Steam";
-    exec = "steam steam://rungameid/${gameID}";
-    icon = "steam_icon_${gameID}";
-    terminal = false;
-    type = "Application";
-    categories = [ "Game" ];
-    prefersNonDefaultGPU = true;
-  };
 in
 {
   xdg.desktopEntries = builtins.listToAttrs (
     builtins.map (gameID: {
       name = gameID;
-      value = buildSteamEntry gameID;
+      value = {
+        name = steamGames.${gameID};
+        comment = "Play this game on Steam";
+        exec = "steam steam://rungameid/${gameID}";
+        icon = "steam_icon_${gameID}";
+        terminal = false;
+        type = "Application";
+        categories = [ "Game" ];
+        prefersNonDefaultGPU = true;
+      };
     }) (builtins.attrNames steamGames)
   );
 }

@@ -138,6 +138,7 @@ in
     export __GLX_VENDOR_LIBRARY_NAME=${__GLX_VENDOR_LIBRARY_NAME}
     export LIBVA_DRIVER_NAME=${LIBVA_DRIVER_NAME}
     export AQ_DRM_DEVICES=${lib.concatStringsSep ":" AQ_DRM_DEVICES}
+
     export ALSA_PLUGIN_DIR=${pkgs.pipewire}/lib/alsa-lib
   '';
 

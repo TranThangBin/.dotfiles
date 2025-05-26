@@ -51,7 +51,7 @@
           nixgl.overlay
           neovim-nightly-overlay.overlays.default
           (final: prev: {
-            darkly-qt5 = darkly.packages."${system}".darkly-qt5;
+            darkly-qt5 = darkly.packages.${prev.system}.darkly-qt5;
             vimPlugins = prev.vimPlugins // {
               plainline = prev.vimUtils.buildVimPlugin {
                 pname = "plainline";
