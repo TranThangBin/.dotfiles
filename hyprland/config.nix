@@ -18,18 +18,20 @@ let
   yazi = config.programs.yazi;
   btop = config.programs.btop;
 
-  toybox = pkgs.toybox;
+  pidof = "${pkgs.toybox}/bin/pidof";
+
+  cmdPrefix = "(${pidof} wlogout || ${pidof} hyprpicker || ${pidof} wofi || ${pidof} slurp)";
 
   settings = {
     terminal = {
       kitty = "${kitty.package}/bin/kitty";
       ghostty = "${ghostty.package}/bin/ghostty";
     };
-    logoutMenu = "${toybox}/bin/pidof wlogout || ${wlogout.package}/bin/wlogout";
-    colorPicker = "${toybox}/bin/pidof hyprpicker || ${pkgs.hyprpicker}/bin/hyprpicker -a";
-    emojiPicker = "${toybox}/bin/pidof wofi || ${pkgs.wofi-emoji}/bin/wofi-emoji";
+    logoutMenu = "${cmdPrefix} || ${wlogout.package}/bin/wlogout";
+    colorPicker = "${cmdPrefix} || ${pkgs.hyprpicker}/bin/hyprpicker -a";
+    emojiPicker = "${cmdPrefix} || ${pkgs.wofi-emoji}/bin/wofi-emoji";
     menuOutput = pkgs.writeShellScript "wofi.sh" ''
-      app=$( ${toybox}/bin/pidof wofi || ${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true )
+      app=$( ${cmdPrefix} || ${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true )
       if [[ "$app" == *'desktop '* ]]; then
          echo "''${app%.desktop *}.desktop:''${app#*.desktop }"
       elif [[ "$app" == *'desktop' ]]; then
@@ -40,10 +42,10 @@ let
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
     clipboard = {
-      picker = "${toybox}/bin/pidof wofi || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' | ${cliphist.package}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy";
-      delete = "${toybox}/bin/pidof wofi || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete";
+      picker = "${cmdPrefix} || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' | ${cliphist.package}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy";
+      delete = "${cmdPrefix} || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete";
       wipe = pkgs.writeShellScript "clipboard-wipe.sh" ''
-        confirm=$( ${toybox}/bin/pidof wofi || ( echo no; echo yes; ) | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
+        confirm=$( ${cmdPrefix} || ( echo no; echo yes; ) | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
         if [[ $confirm = "yes" ]] then
             ${cliphist.package}/bin/cliphist wipe
         fi
@@ -52,14 +54,14 @@ let
     };
     screenshot = {
       save = {
-        region = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m region";
-        window = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m window";
-        output = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m output";
+        region = "${cmdPrefix} || ${hyprshot}/bin/hyprshot -m region";
+        window = "${cmdPrefix} || ${hyprshot}/bin/hyprshot -m window";
+        output = "${cmdPrefix} || ${hyprshot}/bin/hyprshot -m output";
       };
       clipboard = {
-        region = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m region --clipboard-only";
-        window = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m window --clipboard-only";
-        output = "${toybox}/bin/pidof slurp || ${hyprshot}/bin/hyprshot -m output --clipboard-only";
+        region = "${cmdPrefix} || ${hyprshot}/bin/hyprshot -m region --clipboard-only";
+        window = "${cmdPrefix} || ${hyprshot}/bin/hyprshot -m window --clipboard-only";
+        output = "${cmdPrefix} || ${hyprshot}/bin/hyprshot -m output --clipboard-only";
       };
     };
   };
