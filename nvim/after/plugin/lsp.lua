@@ -26,8 +26,20 @@ local servers = {
 	"rust_analyzer",
 	"taplo",
 	"zls",
-	"nil_ls",
 	"lua_ls",
+	nil_ls = {
+		settings = {
+			["nil"] = {
+				nix = {
+					maxMemoryMB = 3072,
+					flake = {
+						autoArchive = true,
+						autoEvalInputs = true,
+					},
+				},
+			},
+		},
+	},
 	ruff = { init_options = { settings = { logLevel = "debug" } } },
 	pyright = {
 		settings = {
