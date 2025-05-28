@@ -161,8 +161,9 @@
   services.poweralertd.enable = true;
   services.network-manager-applet.enable = true;
 
-  xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".enable = true;
-  xdg.configFile."systemd/user/dconf.service.d/override.conf".enable = true;
+  xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".enable =
+    config.services.network-manager-applet.enable;
+  xdg.configFile."systemd/user/dconf.service.d/override.conf".enable = config.dconf.enable;
 
   xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".text = ''
     [Service]
