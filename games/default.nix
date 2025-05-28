@@ -19,7 +19,7 @@ in
     name = "Legacy Launcher";
     genericName = "Minecraft";
     icon = ../desktop-icons/legacy-launcher.png;
-    exec = "${pkgs.toybox}/bin/env __GL_THREADED_OPTIMIZATIONS=0 ${config.programs.java.package}/bin/java -jar ${legacyLauncher}";
+    exec = "${pkgs.toybox}/bin/env __GL_THREADED_OPTIMIZATIONS=0 LD_PRELOAD=${pkgs.openal}/lib/libopenal.so.1 ${config.programs.java.package}/bin/java -jar ${legacyLauncher}";
   };
   xdg.desktopEntries.Karlson = gameEntry // {
     name = "Karlson";

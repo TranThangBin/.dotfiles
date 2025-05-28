@@ -19,7 +19,6 @@ let
   btop = config.programs.btop;
 
   pidof = "${pkgs.toybox}/bin/pidof";
-
   cmdPrefix = "(${pidof} wlogout || ${pidof} hyprpicker || ${pidof} wofi || ${pidof} slurp)";
 
   settings = {

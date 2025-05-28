@@ -16,7 +16,7 @@ in
       alsa-tools
       alsa-lib
       alsa-plugins
-      alsa-oss
+      openal
     ]);
 
   home.file.".asoundrc".source = "${pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
