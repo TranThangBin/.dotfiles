@@ -21,7 +21,10 @@ let
   };
 in
 {
-  imports = [ ./config.nix ];
+  imports = [
+    ./firefox.nix
+    ./thunderbird.nix
+  ];
 
   xdg.desktopEntries.Messenger = firefoxEntry // {
     name = "Messenger";
@@ -39,12 +42,6 @@ in
     name = "Youtube";
     icon = "${../desktop-icons/YouTube_full-color_icon_2017.svg}";
     exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window youtube.com";
-  };
-
-  xdg.desktopEntries.Gmail = firefoxEntry // {
-    name = "Gmail";
-    icon = "${../desktop-icons/Gmail_icon_2020.svg}";
-    exec = "${config.programs.firefox.finalPackage}/bin/firefox --new-window gmail.com";
   };
 
   xdg.desktopEntries.ChatGPT = firefoxEntry // {

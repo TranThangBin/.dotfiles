@@ -148,6 +148,7 @@
   programs.lazydocker.enable = true;
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
+  programs.thunderbird.enable = true;
 
   programs.firefox.package = config.lib.nixGL.wrapOffload pkgs.firefox;
   programs.kitty.package = config.lib.nixGL.wrap pkgs.kitty;
@@ -222,7 +223,7 @@
   };
 
   imports = [
-    ./firefox
+    ./mozilla
     ./nvim
     ./yazi
     ./hyprland
