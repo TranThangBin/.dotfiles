@@ -31,11 +31,7 @@ local servers = {
 		settings = {
 			["nil"] = {
 				nix = {
-					maxMemoryMB = 3072,
-					flake = {
-						autoArchive = true,
-						autoEvalInputs = true,
-					},
+					flake = { autoArchive = false },
 				},
 			},
 		},
