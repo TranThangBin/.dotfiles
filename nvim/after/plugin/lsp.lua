@@ -1,6 +1,3 @@
-require("lspconfig.ui.windows").default_options.border = "rounded"
-
-local lspconfig = require("lspconfig")
 local schemastore = require("schemastore")
 local ts_builtin = require("telescope.builtin")
 
@@ -27,6 +24,7 @@ local servers = {
 	"taplo",
 	"zls",
 	"lua_ls",
+	"roslyn_ls",
 	nil_ls = {
 		settings = {
 			["nil"] = {
@@ -63,15 +61,20 @@ local servers = {
 }
 
 for k, v in pairs(servers) do
-	if type(k) == "number" then
-		local server = v
-		lspconfig[server].setup({ capabilities = capabilities })
-	else
-		local server = k
-		local opts = v
+	local server = ""
+	local opts = {}
+
+	if type(k) == "number" and type(v) == "string" then
+		server = v
+		opts.capabilities = capabilities
+	elseif type(k) == "string" and type(v) == "table" then
+		server = k
+		opts = v
 		opts.capabilities = opts.capabilities or capabilities
-		lspconfig[server].setup(opts)
 	end
+
+	vim.lsp.enable(server)
+	vim.lsp.config(server, opts)
 end
 
 vim.diagnostic.config({

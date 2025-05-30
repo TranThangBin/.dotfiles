@@ -50,6 +50,7 @@
       (nvim-treesitter.withPlugins (p: [
         p.c
         p.cpp
+        p.c-sharp
         p.go
         p.rust
         p.zig
@@ -79,6 +80,7 @@
       nil
       nixfmt-rfc-style
       lua-language-server
+      roslyn-ls
       stylua
       ccls
       prettierd
