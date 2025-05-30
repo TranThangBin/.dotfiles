@@ -29,25 +29,25 @@ let
     logoutMenu = "${cmdPrefix} || ${wlogout.package}/bin/wlogout";
     colorPicker = "${cmdPrefix} || ${pkgs.hyprpicker}/bin/hyprpicker -a";
     emojiPicker = "${cmdPrefix} || ${pkgs.wofi-emoji}/bin/wofi-emoji";
-    menuOutput = pkgs.writeShellScript "wofi.sh" ''
-      app=$( ${cmdPrefix} || ${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true )
+    launcherUwsmWrapped = "${cmdPrefix} || ${pkgs.writeShellScript "wofi.sh" ''
+      app=$( ${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true )
       if [[ "$app" == *'desktop '* ]]; then
-         echo "''${app%.desktop *}.desktop:''${app#*.desktop }"
+         ${uwsm}/bin/uwsm-app "''${app%.desktop *}.desktop:''${app#*.desktop }"
       elif [[ "$app" == *'desktop' ]]; then
-         echo "$app"
+         ${uwsm}/bin/uwsm-app "$app"
       fi
-    '';
+    ''}";
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
     clipboard = {
       picker = "${cmdPrefix} || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' | ${cliphist.package}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy";
       delete = "${cmdPrefix} || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete";
-      wipe = pkgs.writeShellScript "clipboard-wipe.sh" ''
-        confirm=$( ${cmdPrefix} || ( echo no; echo yes; ) | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
+      wipe = "${cmdPrefix} || ${pkgs.writeShellScript "clipboard-wipe.sh" ''
+        confirm=$( echo -e "no\nyes" | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
         if [[ $confirm = "yes" ]] then
             ${cliphist.package}/bin/cliphist wipe
         fi
-      '';
+      ''}";
     };
     screenshot = {
       save = {
@@ -154,9 +154,9 @@ in
 
         [
           "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
-          "${mainMod}, Space, exec, ${uwsm}/bin/uwsm-app $( ${settings.menuOutput} )"
           "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
           "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
+          "${mainMod}, Space, exec, ${settings.launcherUwsmWrapped}"
           "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
           "${mainMod}, C, exec, ${settings.colorPicker}"
           "${mainMod} SHIFT, Space, exec, ${settings.emojiPicker}"

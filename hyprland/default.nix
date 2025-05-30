@@ -8,6 +8,10 @@ let
   hyprland = config.wayland.windowManager.hyprland;
   systemd = pkgs.systemd;
   systemctl = config.systemd.user.systemctlPath;
+  hyprlandDestkop = (
+    assert lib.pathExists "/usr/share/wayland-sessions/hyprland.desktop";
+    "hyprland.desktop"
+  );
 in
 {
   wayland.systemd.target = "wayland-session@hyprland.desktop.target";
@@ -112,16 +116,13 @@ in
 
   home.file.".profile".enable = hyprland.enable;
 
-  home.file.".profile".source = pkgs.writeShellScript ".profile" ''
+  home.file.".profile".text = ''
     if [[ "$(tty)" = "/dev/tty1" ]]; then
     	printf "Do you want to start Hyprland? (Y/n): "
     	read -rn 1 answer
         echo
         if [[ "$answer" = "Y" ]] && ${pkgs.uwsm}/bin/uwsm check may-start; then
-            exec ${pkgs.uwsm}/bin/uwsm start ${
-              assert lib.pathExists "/usr/share/wayland-sessions/hyprland.desktop";
-              "hyprland.desktop"
-            }
+            exec ${pkgs.uwsm}/bin/uwsm start ${hyprlandDestkop}
         fi
     fi
   '';
