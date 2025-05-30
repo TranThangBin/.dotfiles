@@ -36,7 +36,6 @@ let
       elif [[ "$app" == *'desktop' ]]; then
          echo "$app"
       fi
-      unset app
     '';
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
@@ -48,7 +47,6 @@ let
         if [[ $confirm = "yes" ]] then
             ${cliphist.package}/bin/cliphist wipe
         fi
-        unset confirm
       '';
     };
     screenshot = {

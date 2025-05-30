@@ -63,9 +63,13 @@
     templ
     zig
     rustup
+    swi-prolog
     python314
     nodejs_24
-    swi-prolog
+    (dotnetCorePackages.combinePackages [
+      dotnet-sdk_8
+      dotnet-sdk_9
+    ])
 
     unzip
     zip
