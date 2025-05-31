@@ -49,7 +49,7 @@
       opener = {
         play = [
           {
-            run = ''${pkgs.vlc}/bin/vlc "$@"'';
+            run = ''${pkgs.mpv}/bin/mpv "$@"'';
             orphan = true;
             for = "unix";
           }
@@ -59,6 +59,12 @@
             run = ''${config.programs.neovim.finalPackage}/bin/nvim "$@"'';
             block = true;
             for = "unix";
+          }
+        ];
+        open = [
+          {
+            run = ''${pkgs.uwsm}/bin/uwsm-app "$@"'';
+            desc = "Open";
           }
         ];
       };

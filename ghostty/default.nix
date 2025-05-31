@@ -16,11 +16,7 @@
       cursor-style-blink = false;
       background-opacity = 0.95;
       background-blur = true;
-      custom-shader = [
-        # "${./shaders/starfield-colors.glsl}"
-        # "${./shaders/galaxy.glsl}"
-        "${./shaders/just-snow.glsl}"
-      ];
+      custom-shader = [ ];
       keybind = [
         "ctrl+equal=increase_font_size:1"
         "ctrl+minus=decrease_font_size:1"

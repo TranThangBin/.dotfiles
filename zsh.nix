@@ -1,8 +1,15 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
+let
+  sudo = (
+    assert lib.pathExists "/usr/bin/sudo";
+    "sudo"
+  );
+in
 {
   home.shell.enableZshIntegration = config.programs.zsh.enable;
 
@@ -16,32 +23,104 @@
       [ -z $TMUX ] && ${config.programs.fastfetch.package}/bin/fastfetch
 
       mount-smb() {
-        local sudo=${
-          assert lib.pathExists "/usr/bin/sudo";
-          "sudo"
-        }
+          local address mount_point username password
 
-        local address mount_point username password
+          printf "Enter your address (e.g: //192.168.1.5/share): "
+          read -r address
 
-        printf "Enter your address (e.g: //192.168.1.5/share): "
-        read -r address
+          printf "mount point (e.g: /mnt/share): "
+          read -r mount_point
 
-        printf "mount point (e.g: /mnt/share): "
-        read -r mount_point
+          printf "username: "
+          read -r username
 
-        printf "username: "
-        read -r username
+          printf "password: "
+          read -rs password
 
-        printf "password: "
-        read -rs password
+          echo
 
-        echo
-
-        "$sudo" mount -t cifs "$address" "$mount_point" --mkdir -o "username=$username,password=$password"
-        "$sudo" -k
+          ${sudo} mount -t cifs "$address" "$mount_point" --mkdir -o "username=$username,password=$password"
+          ${sudo} -k
       }
 
       code-run() {
+          local lang source in out
+
+          for arg in "$@"; do
+              case "$arg" in
+              --lang=*)
+                  lang=''${arg#--lang=}
+                  ;;
+              --source=*)
+                  source=''${arg#--source=}
+                  ;;
+              --in=*)
+                  in=''${arg#--in=}
+                  ;;
+              --out=*)
+                  out=''${arg#--out=}
+                  ;;
+              --help)
+                  echo "INFO: this flag has not been implemented which $0 instead"
+                  return 0
+                  ;;
+              *)
+                  echo "WARN: unrecognizable argument $arg"
+                  ;;
+              esac
+          done
+
+          if [[ -z "$source" ]]; then
+              echo "ERROR: source is not provided"
+              return 1
+          fi
+
+          if [[ -z "$lang" ]]; then
+              lang=''${source##*.}
+              [[ -z "$lang" ]] && echo "ERROR: cannot infer lang from $source"
+          fi
+
+          local tool compileCmd execCmd
+          local tempfile=$(${pkgs.toybox}/bin/mktemp)
+
+          case "$lang" in
+              c)
+                  tool=gcc
+                  compileCmd="gcc -o \"$tempfile\" \"$source\""
+                  ;;
+              cpp)
+                  tool=g++
+                  compileCmd="g++ -o \"$tempfile\" \"$source\""
+                  ;;
+              go)
+                  tool=go
+                  compileCmd="go build -o \"$tempfile\" \"$source\""
+                  ;;
+              py)
+                  tool=python3
+                  execCmd=python3 $source
+                  ;;
+              *)
+                  echo "ERROR: $lang is not supported" && rm "$tempfile" && return 1
+                  ;;
+          esac
+
+          command -v "$tool" >/dev/null
+          [[ "$?" != 0 ]] && echo "ERROR: $tool is not in PATH" && rm "$tempfile" && return 1
+
+          if [[ -n "$compileCmd" ]] && eval "$compileCmd"; then
+              execCmd="$tempfile"
+          else
+              rm "$tempfile" && return 1
+          fi
+
+          if [[ -n "$execCmd" ]]; then
+              [[ -n "$in" ]] && execCmd="$execCmd <\"$in\""
+              [[ -n "$out" ]] && execCmd="$execCmd > $out"
+              eval "$execCmd"
+          fi
+
+          rm "$tempfile"
       }
     '';
 

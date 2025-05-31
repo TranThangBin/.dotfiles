@@ -93,7 +93,6 @@
 
     gimp3
     openshot-qt
-    vlc
     resources
     qbittorrent-enhanced
     postman
@@ -102,6 +101,7 @@
     sfxr
     libreoffice
     tor-browser
+    mpv
 
     (config.lib.nixGL.wrapOffload brave)
     (config.lib.nixGL.wrapOffload godot_4)
@@ -167,11 +167,17 @@
 
   xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".enable =
     config.services.network-manager-applet.enable;
+  xdg.configFile."systemd/user/hyprpaper.service.d/override.conf".enable =
+    config.services.hyprpaper.enable;
   xdg.configFile."systemd/user/dconf.service.d/override.conf".enable = config.dconf.enable;
 
   xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".text = ''
     [Service]
     Restart=on-failure
+  '';
+  xdg.configFile."systemd/user/hyprpaper.service.d/override.conf".text = ''
+    [Unit]
+    Conflicts=mpvpaper.service
   '';
   xdg.configFile."systemd/user/dconf.service.d/override.conf".text = ''
     [Install]
@@ -242,5 +248,6 @@
     ./fonts.nix
     ./fcitx5.nix
     ./xdg-desktop-portal.nix
+    ./mpvpaper.nix
   ];
 }
