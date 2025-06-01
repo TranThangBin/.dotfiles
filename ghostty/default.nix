@@ -14,7 +14,7 @@
       cursor-style = "block";
       cursor-text = "#000000";
       cursor-style-blink = false;
-      background-opacity = 0.95;
+      background-opacity = 0.8;
       background-blur = true;
       custom-shader = [ ];
       keybind = [

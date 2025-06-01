@@ -76,7 +76,6 @@
     p7zip
     rar
     cifs-utils
-    yt-dlp
     powertop
     trash-cli
 
@@ -101,7 +100,6 @@
     sfxr
     libreoffice
     tor-browser
-    mpv
 
     (config.lib.nixGL.wrapOffload brave)
     (config.lib.nixGL.wrapOffload godot_4)
@@ -153,10 +151,14 @@
   programs.ripgrep.enable = true;
   programs.fd.enable = true;
   programs.thunderbird.enable = true;
+  programs.mpv.enable = true;
+  programs.mpvpaper.enable = true;
+  programs.yt-dlp.enable = true;
 
   programs.firefox.package = config.lib.nixGL.wrapOffload pkgs.firefox;
   programs.kitty.package = config.lib.nixGL.wrap pkgs.kitty;
   programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
+  programs.mpvpaper.package = config.lib.nixGL.wrap pkgs.mpvpaper;
 
   services.playerctld.enable = true;
   services.psd.enable = true;
