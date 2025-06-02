@@ -60,5 +60,8 @@ in
     };
   };
 
-  imports = [ ./steam.nix ];
+  imports = [
+    ./steam.nix
+    ./epic-games.nix
+  ];
 }
