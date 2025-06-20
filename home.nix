@@ -99,6 +99,7 @@
     ventoy-full-gtk
     sfxr
     libreoffice
+    teams-for-linux
     tor-browser
 
     (config.lib.nixGL.wrapOffload brave)

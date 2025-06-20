@@ -67,7 +67,7 @@
         Locked = true;
       };
       Homepage = {
-        URL = "https://itch.io/jams/joined";
+        URL = "https://itch.io/jams/in-progress/joined";
         Locked = true;
         StartPage = "homepage-locked";
       };

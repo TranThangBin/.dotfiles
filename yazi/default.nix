@@ -61,12 +61,6 @@
             for = "unix";
           }
         ];
-        open = [
-          {
-            run = ''${pkgs.uwsm}/bin/uwsm-app "$@"'';
-            desc = "Open";
-          }
-        ];
       };
       plugin = {
         append_previewers = [

@@ -20,6 +20,7 @@ in
     with pkgs;
     [
       uwsm
+      wev
       hyprshot
       hyprpicker
       wofi-emoji
@@ -87,8 +88,12 @@ in
   services.hyprpaper.enable = hyprland.enable;
   services.hypridle.enable = hyprland.enable;
   services.hyprsunset.enable = hyprland.enable;
+  services.xembed-sni-proxy.enable = hyprland.enable;
 
-  services.swaync.style = ./swaync.css;
+  services.swaync = {
+    style = ./swaync.css;
+    settings.timeout = 5;
+  };
   services.cliphist.systemdTargets = config.wayland.systemd.target;
   # services.hyprsunset.transitions = {
   #   sunrise = {

@@ -72,6 +72,10 @@ in
   wayland.windowManager.hyprland = {
     systemd.enable = false;
     settings = {
+      animations.enabled = true;
+      gestures.workspace_swipe = false;
+      master.new_status = "master";
+
       monitor = [
         ",preferred,auto,1"
         "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
@@ -81,13 +85,12 @@ in
         gaps_in = 5;
         gaps_out = 5;
         border_size = 2;
+        resize_on_border = false;
+        allow_tearing = false;
         "col.active_border" = pink;
         "col.inactive_border" = surface0;
         "col.nogroup_border_active" = flamingo;
         "col.nogroup_border" = surface0;
-        resize_on_border = false;
-        allow_tearing = false;
-        layout = "dwindle";
       };
 
       decoration = {
@@ -106,28 +109,6 @@ in
         };
       };
 
-      animations = {
-        enabled = true;
-        bezier = "myBezier, 0.3, 1, 0.7, 1";
-        animation = [
-          "windows, 1, 7, myBezier"
-          "windowsOut, 1, 7, default, popin 80%"
-          "border, 1, 10, default"
-          "borderangle, 1, 8, default"
-          "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
-        ];
-      };
-
-      dwindle = {
-        pseudotile = true;
-        preserve_split = true;
-      };
-
-      master = {
-        new_status = "master";
-      };
-
       misc = {
         force_default_wallpaper = -1;
         disable_hyprland_logo = true;
@@ -135,23 +116,12 @@ in
 
       input = {
         kb_layout = "us";
-        kb_variant = "";
-        kb_model = "";
-        kb_options = "";
-        kb_rules = "";
         follow_mouse = 1;
         sensitivity = 2;
-        touchpad = {
-          natural_scroll = false;
-        };
-      };
-
-      gestures = {
-        workspace_swipe = false;
+        touchpad.natural_scroll = false;
       };
 
       bind =
-
         [
           "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
           "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
@@ -183,8 +153,8 @@ in
           "${mainMod}, M, togglespecialworkspace, magic"
           "${mainMod} SHIFT, M, movetoworkspace, special:magic"
 
-          "${mainMod} CTRL SHIFT, L, workspace, e+1"
-          "${mainMod} CTRL SHIFT, H, workspace, e-1"
+          "${mainMod}, code:35, workspace, e+1"
+          "${mainMod}, code:34, workspace, e-1"
 
           "${mainMod}, L, movefocus, r"
           "${mainMod} SHIFT, L, movewindow, r"
@@ -199,16 +169,10 @@ in
           "${mainMod} SHIFT, J, movewindow, d"
         ]
         ++ lib.concatLists (
-          [
-            [
-              "${mainMod}, 0, workspace, 10"
-              "${mainMod} SHIFT, 0, movetoworkspace, 10"
-            ]
-          ]
-          ++ (lib.genList (i: [
+          lib.genList (i: [
             "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
             "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
-          ]) 9)
+          ]) 10
         );
 
       binde = [

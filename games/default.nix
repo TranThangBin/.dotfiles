@@ -58,6 +58,10 @@ in
       name = "Version 2.5.1";
       exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.5.1.toml";
     };
+    actions.V2-6 = {
+      name = "Version 2.6";
+      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.6.toml";
+    };
   };
 
   imports = [
