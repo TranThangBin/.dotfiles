@@ -44,7 +44,7 @@ let
       delete = "${cmdPrefix} || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete";
       wipe = "${cmdPrefix} || ${pkgs.writeShellScript "clipboard-wipe.sh" ''
         confirm=$( echo -e "no\nyes" | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
-        if [[ $confirm = "yes" ]] then
+        if [[ $confirm = "yes" ]]; then
             ${cliphist.package}/bin/cliphist wipe
         fi
       ''}";
@@ -153,9 +153,6 @@ in
           "${mainMod}, M, togglespecialworkspace, magic"
           "${mainMod} SHIFT, M, movetoworkspace, special:magic"
 
-          "${mainMod}, code:35, workspace, e+1"
-          "${mainMod}, code:34, workspace, e-1"
-
           "${mainMod}, L, movefocus, r"
           "${mainMod} SHIFT, L, movewindow, r"
 
@@ -169,7 +166,17 @@ in
           "${mainMod} SHIFT, J, movewindow, d"
         ]
         ++ lib.concatLists (
-          lib.genList (i: [
+          [
+            [
+              "${mainMod}, code:35, workspace, e+1"
+              "${mainMod} SHIFT, code:35, movetoworkspace, e+1"
+            ]
+            [
+              "${mainMod}, code:34, workspace, e-1"
+              "${mainMod} SHIFT, code:34, movetoworkspace, e-1"
+            ]
+          ]
+          ++ lib.genList (i: [
             "${mainMod}, code:1${toString i}, workspace, ${toString (i + 1)}"
             "${mainMod} SHIFT, code:1${toString i}, movetoworkspace, ${toString (i + 1)}"
           ]) 10

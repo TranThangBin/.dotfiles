@@ -24,6 +24,7 @@ in
       hyprshot
       hyprpicker
       wofi-emoji
+      (config.lib.nixGL.wrap hyprsysteminfo)
     ]
   );
 

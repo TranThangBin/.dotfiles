@@ -167,6 +167,7 @@
   services.easyeffects.enable = true;
   services.poweralertd.enable = true;
   services.network-manager-applet.enable = true;
+  services.blueman-applet.enable = true;
 
   xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".enable =
     config.services.network-manager-applet.enable;

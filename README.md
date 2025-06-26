@@ -11,7 +11,7 @@
 
 - `NetworkManager`
 - `cups`
-- `bluez`
+- `blueman`
 - `ufw`
 - `sbctl`
 - `hyprpolkitagent`
