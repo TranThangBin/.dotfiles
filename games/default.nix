@@ -45,7 +45,7 @@ in
     name = "PlantVsZombiesRH";
     genericName = "pvz-fusion";
     icon = ./icons/pvz-fusion.jpg;
-    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.5.1.toml";
+    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.6.toml";
     actions.V2-3-1 = {
       name = "Version 2.3.1";
       exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.3.1.toml";

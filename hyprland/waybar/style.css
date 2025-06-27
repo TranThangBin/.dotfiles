@@ -75,6 +75,7 @@
 #backlight,
 #clock,
 #battery,
+#power-profiles-daemon,
 #wireplumber,
 #pulseaudio,
 #custom-lock,
@@ -120,6 +121,20 @@
 	margin-left: 1rem;
 }
 
+#power-profiles-daemon {
+	border-radius: 1rem 0px 0px 1rem;
+}
+
+#power-profiles-daemon.performance {
+	color: @yellow;
+}
+#power-profiles-daemon.balanced {
+	color: @peach;
+}
+#power-profiles-daemon.power-saver {
+	color: @green;
+}
+
 #custom-player {
 	color: @mauve;
 	border-radius: 1rem;
@@ -127,7 +142,7 @@
 
 #custom-notification {
 	margin-right: 1rem;
-	border-radius: 1rem;
+	border-radius: 0px 1rem 1rem 0px;
 	color: @yellow;
 }
 

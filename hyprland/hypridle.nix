@@ -1,13 +1,24 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   brightnessctl = pkgs.brightnessctl;
-  hyprctlBin = /usr/bin/hyprctl;
+  hyprctlBin = (
+    assert lib.pathExists "/usr/bin/hyprctl";
+    "/usr/bin/hyprctl"
+  );
 in
 {
   services.hypridle = {
     settings = {
       general = {
-        lock_cmd = "${pkgs.toybox}/bin/pidof hyprlock || ${/usr/bin/hyprlock}";
+        lock_cmd = "${pkgs.toybox}/bin/pidof hyprlock || ${
+          assert lib.pathExists "/usr/bin/hyprlock";
+          "hyprlock"
+        }";
         before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
         after_sleep_cmd = "${hyprctlBin} dispatch dpms on";
       };

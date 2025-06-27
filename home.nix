@@ -64,7 +64,6 @@
     zig
     rustup
     swi-prolog
-    python314
     nodejs_24
     (dotnetCorePackages.combinePackages [
       dotnet-sdk_8
@@ -76,7 +75,6 @@
     p7zip
     rar
     cifs-utils
-    powertop
     trash-cli
 
     sl

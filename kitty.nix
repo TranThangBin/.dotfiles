@@ -15,7 +15,7 @@
       cursor_shape = "block";
       cursor_shape_unfocused = "block";
       cursor_blink_interval = 0;
-      background_opacity = 0.8;
+      background_opacity = 0.95;
       background_blur = 20;
     };
   };

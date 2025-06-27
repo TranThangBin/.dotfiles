@@ -86,6 +86,15 @@
           darkreader
         ];
       };
+      search = {
+        default = "ddg";
+        privateDefault = "ddg";
+        force = true;
+        order = [
+          "ddg"
+          "google"
+        ];
+      };
       settings = {
         "sidebar.verticalTabs" = true;
         "sidebar.visibility" = "hide-sidebar";
@@ -115,7 +124,6 @@
               "unified-extensions-button"
             ];
             toolbar-menubar = [ "menubar-items" ];
-            TabsToolbar = [ ];
             vertical-tabs = [ "tabbrowser-tabs" ];
             PersonalToolbar = [
               "import-button"

@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   programs.waybar = {
     systemd.enable = true;
@@ -15,10 +20,10 @@
           "battery"
           "clock"
           "tray"
+          "power-profiles-daemon"
           "custom/notification"
         ];
         "hyprland/workspaces" = {
-          disable-scroll = true;
           sort-by-name = true;
           format = " <big>{icon}</big> ";
           format-icons = {
@@ -39,13 +44,13 @@
           spacing = 10;
         };
         "custom/player" = with config.services; {
-          format = "  {}";
+          format = " ";
           escape = true;
           interval = 5;
-          tooltip = false;
+          tooltip = true;
+          tooltip-format = "{text}";
           exec = "${playerctld.package}/bin/playerctl metadata --format='{{ title }}'";
           on-click = "${playerctld.package}/bin/playerctl play-pause";
-          max-length = 50;
         };
         clock = {
           timezone = "Asia/Ho_Chi_Minh";
@@ -92,6 +97,10 @@
             charging = "󰂄";
             plugged = "";
           };
+          on-click = "${pkgs.uwsm}/bin/uwsm-app ${
+            assert lib.pathExists "/usr/bin/tuned-gui";
+            "/usr/bin/tuned-gui"
+          }";
         };
         pulseaudio = with pkgs; {
           format = "{icon} {volume}% | {format_source}";
@@ -109,8 +118,15 @@
           on-click-middle = "${uwsm}/bin/uwsm-app ${helvum}/bin/helvum";
           on-click-right = "${uwsm}/bin/uwsm-app ${config.services.easyeffects.package}/bin/easyeffects";
         };
+        power-profiles-daemon = {
+          format-icons = {
+            default = "";
+            performance = "";
+            balanced = "󰗑";
+            power-saver = "";
+          };
+        };
         "custom/notification" = with config.services; {
-          tooltip = false;
           format = "{icon}";
           format-icons = {
             notification = "󱅫";

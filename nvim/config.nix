@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
+  programs.neovide.enable = true;
+  programs.neovide.package = config.lib.nixGL.wrap pkgs.neovide;
+
   programs.neovim = {
     defaultEditor = true;
     vimAlias = true;

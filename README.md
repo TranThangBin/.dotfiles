@@ -14,6 +14,7 @@
 - `blueman`
 - `ufw`
 - `sbctl`
+- `tuned-ppd`
 - `hyprpolkitagent`
 
 ## Installation
