@@ -8,7 +8,7 @@ let
   brightnessctl = pkgs.brightnessctl;
   hyprctlBin = (
     assert lib.pathExists "/usr/bin/hyprctl";
-    "/usr/bin/hyprctl"
+    "hyprctl"
   );
 in
 {

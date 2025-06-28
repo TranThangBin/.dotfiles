@@ -1,14 +1,13 @@
 {
   config,
-  lib,
   pkgs,
   legacyLauncher,
   ...
 }:
 let
-  umu-launcher = pkgs.umu-launcher-unwrapped;
   gamesDir = "${config.home.homeDirectory}/Games";
   umuConfigDir = "${gamesDir}/umu/config";
+  umuRunBin = "${pkgs.umu-launcher-unwrapped}/bin/umu-run";
   gameEntry = {
     type = "Application";
     categories = [ "Game" ];
@@ -20,10 +19,11 @@ in
     name = "Legacy Launcher";
     genericName = "Minecraft";
     icon = ./icons/legacy-launcher.png;
-    exec = lib.concatStringsSep " " [
-      "${pkgs.toybox}/bin/env __GL_THREADED_OPTIMIZATIONS=0 LD_PRELOAD=${pkgs.openal}/lib/libopenal.so.1"
-      "${config.programs.java.package}/bin/java -jar ${legacyLauncher}"
-    ];
+    exec = "${pkgs.writeShellScript "minecraft.sh" ''
+      export __GL_THREADED_OPTIMIZATIONS=0
+      export LD_PRELOAD=${pkgs.openal}/lib/libopenal.so.1
+      ${config.programs.java.package}/bin/java -jar ${legacyLauncher}
+    ''}";
   };
   xdg.desktopEntries.Karlson = gameEntry // {
     name = "Karlson";
@@ -39,28 +39,28 @@ in
     name = "Zenless Zone Zero";
     genericName = "zzz";
     icon = ./icons/zzz.png;
-    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/zzz.toml";
+    exec = "${umuRunBin} --config ${umuConfigDir}/zzz.toml";
   };
   xdg.desktopEntries.PlantVsZombiesRH = gameEntry // {
     name = "PlantVsZombiesRH";
     genericName = "pvz-fusion";
     icon = ./icons/pvz-fusion.jpg;
-    exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.6.toml";
+    exec = "${umuRunBin} --config ${umuConfigDir}/pvz-2.6.toml";
     actions.V2-3-1 = {
       name = "Version 2.3.1";
-      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.3.1.toml";
+      exec = "${umuRunBin} --config ${umuConfigDir}/pvz-2.3.1.toml";
     };
     actions.V2-4-2 = {
       name = "Version 2.4.2";
-      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.4.2.toml";
+      exec = "${umuRunBin} --config ${umuConfigDir}/pvz-2.4.2.toml";
     };
     actions.V2-5-1 = {
       name = "Version 2.5.1";
-      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.5.1.toml";
+      exec = "${umuRunBin} --config ${umuConfigDir}/pvz-2.5.1.toml";
     };
     actions.V2-6 = {
       name = "Version 2.6";
-      exec = "${umu-launcher}/bin/umu-run --config ${umuConfigDir}/pvz-2.6.toml";
+      exec = "${umuRunBin} --config ${umuConfigDir}/pvz-2.6.toml";
     };
   };
 

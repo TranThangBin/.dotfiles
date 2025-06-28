@@ -72,7 +72,10 @@ in
   wayland.windowManager.hyprland = {
     systemd.enable = false;
     settings = {
-      animations.enabled = true;
+      animations = {
+        enabled = true;
+        animation = "workspaces, 1, 8, default, fade";
+      };
       gestures.workspace_swipe = false;
       master.new_status = "master";
 

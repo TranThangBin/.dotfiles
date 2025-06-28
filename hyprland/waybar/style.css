@@ -70,7 +70,6 @@
 	border-radius: 1rem;
 }
 
-#custom-player,
 #tray,
 #backlight,
 #clock,
@@ -78,53 +77,16 @@
 #power-profiles-daemon,
 #wireplumber,
 #pulseaudio,
-#custom-lock,
-#custom-power,
+#custom-player,
 #custom-notification {
 	background-color: @surface0;
 	padding: 0.5rem 1rem;
 	margin: 5px 0;
 }
 
-#clock {
-	color: @blue;
-	border-radius: 0px 1rem 1rem 0px;
-	margin-right: 1rem;
-}
-
-#battery {
-	color: @green;
-}
-
-#battery.charging {
-	color: @green;
-}
-
-#battery.warning:not(.charging),
-#battery.critical:not(.charging) {
-	color: @red;
-}
-
-#backlight {
-	color: @peach;
-}
-
-#backlight,
-#battery {
-	border-radius: 0;
-}
-
-#pulseaudio,
-#wireplumber {
-	color: @maroon;
-	border-radius: 1rem 0px 0px 1rem;
-	margin-left: 1rem;
-}
-
 #power-profiles-daemon {
-	border-radius: 1rem 0px 0px 1rem;
+	border-radius: 1rem 0 0 1rem;
 }
-
 #power-profiles-daemon.performance {
 	color: @yellow;
 }
@@ -135,25 +97,65 @@
 	color: @green;
 }
 
-#custom-player {
-	color: @mauve;
+#tray {
+	margin-right: 1rem;
 	border-radius: 1rem;
+}
+
+#pulseaudio,
+#backlight,
+#battery,
+#clock {
+	padding: 1rem 0.5rem;
+	margin: 0 5px;
+}
+
+#pulseaudio {
+	color: @maroon;
+}
+#pulseaudio.speaker {
+	border-radius: 1rem 1rem 0 0;
+}
+
+#backlight,
+#battery {
+	border-radius: 0;
+}
+
+#backlight {
+	color: @peach;
+}
+
+#battery {
+	color: @green;
+}
+#battery.charging {
+	color: @green;
+}
+#battery.warning:not(.charging),
+#battery.critical:not(.charging) {
+	color: @red;
+}
+
+#clock {
+	color: @blue;
+	border-radius: 0 0 1rem 1rem;
+	margin-bottom: 1rem;
+}
+
+#custom-player {
+	border-radius: 1rem;
+	color: @mauve;
 }
 
 #custom-notification {
 	margin-right: 1rem;
-	border-radius: 0px 1rem 1rem 0px;
+	border-radius: 0 1rem 1rem 0;
 	color: @yellow;
 }
-
 #custom-notification.notification,
 #custom-notification.dnd-notification,
 #custom-notification.inhibited-notification,
 #custom-notification.dnd-inhibited-notification {
 	color: @red;
-}
-
-#tray {
-	margin-right: 1rem;
-	border-radius: 1rem;
 }
