@@ -9,6 +9,7 @@
 @define-color surface0 rgba(49, 50, 68, 0.8);
 @define-color surface1 #45475a;
 @define-color surface2 #585b70;
+@define-color surface3 rgba(137, 180, 250, 0.8);
 
 @define-color overlay0 #6c7086;
 @define-color overlay1 #7f849c;
@@ -48,35 +49,43 @@
 }
 
 #workspaces {
-	border-radius: 1rem;
-	margin: 5px;
+	border-radius: 1rem 0 0 1rem;
+	margin: 5px 0;
 	background-color: @surface0;
 	margin-left: 1rem;
 }
-
 #workspaces button {
 	color: @lavender;
 	border-radius: 1rem;
 	padding: 0.4rem;
 }
-
 #workspaces button.active {
 	color: @sky;
 	border-radius: 1rem;
 }
-
 #workspaces button:hover {
 	color: @sapphire;
 	border-radius: 1rem;
 }
 
+#window {
+	background-color: @surface0;
+	color: @rosewater;
+	padding: 0.5rem 1rem;
+	margin: 5px 0;
+	border-radius: 0 1rem 1rem 0;
+}
+
+#memory,
+#cpu,
+#disk,
 #tray,
 #backlight,
 #clock,
 #battery,
 #power-profiles-daemon,
 #wireplumber,
-#image,
+#custom-menu,
 #pulseaudio,
 #custom-player,
 #custom-notification {
@@ -89,7 +98,37 @@
 	border-radius: 1rem;
 }
 
-#image,
+#memory.warning,
+#cpu.warning,
+#disk.warning,
+#battery.warning {
+	color: @yellow;
+}
+#memory.critical,
+#cpu.critical,
+#disk.critical,
+#battery.critical {
+	color: @red;
+}
+
+#memory {
+	color: @green;
+	border-radius: 1rem 0 0 1rem;
+}
+
+#cpu {
+	color: @green;
+}
+
+#disk {
+	color: @green;
+}
+#disk.home {
+	border-radius: 0 1rem 1rem 0;
+	margin-right: 1rem;
+}
+
+#custom-menu,
 #custom-notification,
 #power-profiles-daemon,
 #pulseaudio,
@@ -100,9 +139,15 @@
 	margin: 0 5px;
 }
 
-#image {
+#custom-menu {
+	background-color: @surface3;
+	font-size: 24px;
 	margin-top: 5px;
 	border-radius: 1rem;
+	transition: background-color 0.2s;
+}
+#custom-menu:hover {
+	background-color: @blue;
 }
 
 #power-profiles-daemon {
@@ -139,10 +184,6 @@
 #battery.charging {
 	color: @green;
 }
-#battery.warning:not(.charging),
-#battery.critical:not(.charging) {
-	color: @red;
-}
 
 #custom-player {
 	border-radius: 1rem;
@@ -159,4 +200,11 @@
 #custom-notification.inhibited-notification,
 #custom-notification.dnd-inhibited-notification {
 	color: @red;
+}
+
+menu separator {
+	background-color: @text;
+}
+menuitem {
+	padding: 5px;
 }

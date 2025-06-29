@@ -59,6 +59,8 @@
   home.stateVersion = "25.05";
   home.sessionVariables.DOTFILES_DIR = "${config.home.homeDirectory}/.dotfiles";
 
+  lib.modifiedPackages.brave = config.lib.nixGL.wrapOffload pkgs.brave;
+
   home.packages = with pkgs; [
     templ
     zig
@@ -100,7 +102,7 @@
     teams-for-linux
     tor-browser
 
-    (config.lib.nixGL.wrapOffload brave)
+    config.lib.modifiedPackages.brave
     (config.lib.nixGL.wrapOffload godot_4)
     (config.lib.nixGL.wrapOffload obs-studio)
     (config.lib.nixGL.wrapOffload discord)
@@ -207,7 +209,7 @@
   };
   programs.btop = {
     settings = {
-      color_theme = "${pkgs.btop}/share/btop/themes/tokyo-storm.theme";
+      color_theme = "${config.programs.btop.package}/share/btop/themes/tokyo-storm.theme";
       theme_background = false;
       vim_keys = true;
     };
@@ -236,6 +238,7 @@
   };
 
   imports = [
+    ./scripts
     ./mozilla
     ./nvim
     ./yazi

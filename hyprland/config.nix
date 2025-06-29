@@ -7,14 +7,13 @@
 let
   mainMod = "SUPER";
 
+  scripts = config.lib.scripts;
   uwsm = pkgs.uwsm;
   hyprshot = pkgs.hyprshot;
-  cliphist = config.services.cliphist;
 
   kitty = config.programs.kitty;
   ghostty = config.programs.ghostty;
   wlogout = config.programs.wlogout;
-  wofi = config.programs.wofi;
   yazi = config.programs.yazi;
   btop = config.programs.btop;
 
@@ -29,25 +28,13 @@ let
     logoutMenu = "${cmdPrefix} || ${wlogout.package}/bin/wlogout";
     colorPicker = "${cmdPrefix} || ${pkgs.hyprpicker}/bin/hyprpicker -a";
     emojiPicker = "${cmdPrefix} || ${pkgs.wofi-emoji}/bin/wofi-emoji";
-    launcherUwsmWrapped = "${cmdPrefix} || ${pkgs.writeShellScript "wofi.sh" ''
-      app=$( ${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true )
-      if [[ "$app" == *'desktop '* ]]; then
-         ${uwsm}/bin/uwsm-app "''${app%.desktop *}.desktop:''${app#*.desktop }"
-      elif [[ "$app" == *'desktop' ]]; then
-         ${uwsm}/bin/uwsm-app "$app"
-      fi
-    ''}";
+    launcher = "${cmdPrefix} || ${scripts.wofiUwsmWrapped}";
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
     clipboard = {
-      picker = "${cmdPrefix} || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' | ${cliphist.package}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy";
-      delete = "${cmdPrefix} || ${cliphist.package}/bin/cliphist list | ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard delete:' | ${cliphist.package}/bin/cliphist delete";
-      wipe = "${cmdPrefix} || ${pkgs.writeShellScript "clipboard-wipe.sh" ''
-        confirm=$( echo -e "no\nyes" | ${wofi.package}/bin/wofi -S dmenu -p 'Do you want to wipe the clipboard?' )
-        if [[ $confirm = "yes" ]]; then
-            ${cliphist.package}/bin/cliphist wipe
-        fi
-      ''}";
+      picker = "${cmdPrefix} || ${scripts.clipboardPicker}";
+      delete = "${cmdPrefix} || ${scripts.clipboardDelete}";
+      wipe = "${cmdPrefix} || ${scripts.clipboardWipe}";
     };
     screenshot = {
       save = {
@@ -126,10 +113,10 @@ in
 
       bind =
         [
-          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
+          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.kitty}"
           "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
           "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
-          "${mainMod}, Space, exec, ${settings.launcherUwsmWrapped}"
+          "${mainMod}, Space, exec, ${settings.launcher}"
           "${mainMod} SHIFT, E, exec, ${settings.logoutMenu}"
           "${mainMod}, C, exec, ${settings.colorPicker}"
           "${mainMod} SHIFT, Space, exec, ${settings.emojiPicker}"
@@ -201,7 +188,7 @@ in
       ];
 
       bindel = with pkgs; [
-        ", XF86AudioRaiseVolume, exec, ${wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioRaiseVolume, exec, ${wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, ${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
         ", XF86AudioMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ", XF86AudioMicMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"

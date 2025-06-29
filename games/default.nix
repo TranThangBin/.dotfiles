@@ -19,11 +19,7 @@ in
     name = "Legacy Launcher";
     genericName = "Minecraft";
     icon = ./icons/legacy-launcher.png;
-    exec = "${pkgs.writeShellScript "minecraft.sh" ''
-      export __GL_THREADED_OPTIMIZATIONS=0
-      export LD_PRELOAD=${pkgs.openal}/lib/libopenal.so.1
-      ${config.programs.java.package}/bin/java -jar ${legacyLauncher}
-    ''}";
+    exec = "${config.lib.scripts.minecraft}";
   };
   xdg.desktopEntries.Karlson = gameEntry // {
     name = "Karlson";

@@ -38,7 +38,7 @@ in
 
         {
           timeout = 300;
-          on-timeout = "${pkgs.systemd}/bin/loginctl lock-session";
+          on-timeout = "${pkgs.systemd}/bin/loginctl lock-session && ${config.services.playerctld.package}/bin/playerctl stop";
         }
 
         {

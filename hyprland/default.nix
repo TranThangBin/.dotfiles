@@ -38,10 +38,16 @@ in
   i18n.inputMethod.fcitx5.waylandFrontend = hyprland.enable;
 
   programs.wofi.settings = {
+    columns = 2;
+    width = "60%";
     hide_scroll = true;
     insensitive = true;
     allow_images = true;
     style = "${./wofi.css}";
+    key_up = "Ctrl-k";
+    key_down = "Ctrl-j";
+    key_left = "Ctrl-h";
+    key_right = "Ctrl-l";
     key_expand = "Ctrl-space";
   };
 
