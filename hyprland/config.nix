@@ -147,6 +147,7 @@ in
           "CTRL SHIFT, PRINT, exec, ${settings.screenshot.clipboard.output}"
         ]
         ++ [
+          "${mainMod}, code:23, exec, ${pkgs.toybox}/bin/pkill -SIGUSR1 waybar"
           "${mainMod} SHIFT, Q, killactive,"
           "${mainMod}, F, fullscreen,"
           "${mainMod} SHIFT, F, togglefloating,"
