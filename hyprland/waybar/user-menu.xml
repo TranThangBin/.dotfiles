@@ -28,6 +28,24 @@
             <object class="GtkSeparatorMenuItem"/>
         </child>
         <child>
+            <object class="GtkMenuItem" id="neovide">
+                <property name="label">⌨️ Text editor</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkMenuItem" id="btop">
+                <property name="label">🧰 Resources monitor</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkMenuItem" id="yazi">
+                <property name="label">📂 File explorer</property>
+            </object>
+        </child>
+        <child>
+            <object class="GtkSeparatorMenuItem"/>
+        </child>
+        <child>
             <object class="GtkMenuItem" id="power">
                 <property name="label">🔴 Power</property>
             </object>

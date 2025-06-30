@@ -59,13 +59,16 @@ in
         ];
         "custom/menu" = {
           format = "<big>󰣇</big>";
-          tooltip-format = "Menu";
+          tooltip-format = "Left click to open the apps menu\nRight click for more options";
           on-click = "${config.lib.scripts.wofiUwsmWrapped}";
           menu = "on-click-right";
-          menu-file = "${./menu.xml}";
+          menu-file = "${./user-menu.xml}";
           menu-actions = with config.programs; {
             kitty = "${pkgs.uwsm}/bin/uwsm-app ${kitty.package}/bin/kitty &>/dev/null & disown";
             ghostty = "${pkgs.uwsm}/bin/uwsm-app ${ghostty.package}/bin/ghostty &>/dev/null & disown";
+            btop = "${pkgs.uwsm}/bin/uwsm-app ${btop.package}/share/applications/btop.desktop &>/dev/null & disown";
+            yazi = "${pkgs.uwsm}/bin/uwsm-app ${yazi.package}/share/applications/yazi.desktop &>/dev/null & disown";
+            neovide = "${pkgs.uwsm}/bin/uwsm-app ${neovide.package}/bin/neovide &>/dev/null & disown";
             firefox = "${pkgs.uwsm}/bin/uwsm-app ${firefox.finalPackage}/bin/firefox &>/dev/null & disown";
             brave = "${pkgs.uwsm}/bin/uwsm-app ${config.lib.modifiedPackages.brave}/bin/brave &>/dev/null & disown";
             power = "${wlogout.package}/bin/wlogout &>/dev/null & disown";
