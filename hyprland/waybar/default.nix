@@ -5,7 +5,7 @@
   ...
 }:
 let
-  pulseaudio-menu = {
+  pulseaudioMenu = {
     menu = "on-click-right";
     menu-file = "${./audio-apps.xml}";
     menu-actions = with pkgs; {
@@ -14,27 +14,18 @@ let
       easyeffects = "${uwsm}/bin/uwsm-app ${config.services.easyeffects.package}/bin/easyeffects &>/dev/null & disown";
     };
   };
-  resource_module = {
+  resourcesModule = {
+    on-click = "${pkgs.uwsm}/bin/uwsm-app ${config.programs.btop.package}/share/applications/btop.desktop";
     states = {
       warning = 60;
       critical = 80;
     };
-    format-icons = [
-      "▁"
-      "▂"
-      "▃"
-      "▄"
-      "▅"
-      "▆"
-      "▇"
-      "█"
-    ];
   };
-  disk_module = {
+  diskModule = {
     format = "<big></big>:{path} {percentage_used}%";
     tooltip-format = "{specific_used:0.2f} GiB / {specific_total:0.2f} GiB";
     unit = "GB";
-    inherit (resource_module) states;
+    inherit (resourcesModule) states;
   };
 in
 {
@@ -50,12 +41,16 @@ in
           "custom/notification"
           "power-profiles-daemon"
         ];
-        modules-right = [
+        modules-center = [
           "clock"
           "pulseaudio#speaker"
           "pulseaudio#microphone"
           "backlight"
+        ];
+        modules-right = [
           "battery"
+          "memory"
+          "cpu"
         ];
         "custom/menu" = {
           format = "<big>󰣇</big>";
@@ -71,7 +66,8 @@ in
             neovide = "${pkgs.uwsm}/bin/uwsm-app ${neovide.package}/bin/neovide &>/dev/null & disown";
             firefox = "${pkgs.uwsm}/bin/uwsm-app ${firefox.finalPackage}/bin/firefox &>/dev/null & disown";
             brave = "${pkgs.uwsm}/bin/uwsm-app ${config.lib.modifiedPackages.brave}/bin/brave &>/dev/null & disown";
-            power = "${wlogout.package}/bin/wlogout &>/dev/null & disown";
+            swaync = "${config.services.swaync.package}/bin/swaync-client -t -sw";
+            wlogout = "${wlogout.package}/bin/wlogout &>/dev/null & disown";
           };
         };
         power-profiles-daemon = {
@@ -116,7 +112,7 @@ in
             ];
           };
           on-click = "${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-          inherit (pulseaudio-menu) menu menu-file menu-actions;
+          inherit (pulseaudioMenu) menu menu-file menu-actions;
         };
         "pulseaudio#microphone" = with pkgs; {
           justify = "center";
@@ -126,7 +122,7 @@ in
           on-click = "${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
           on-scroll-up = "${wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SOURCE@ 1%+";
           on-scroll-down = "${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 1%-";
-          inherit (pulseaudio-menu) menu menu-file menu-actions;
+          inherit (pulseaudioMenu) menu menu-file menu-actions;
         };
         backlight = {
           device = "intel_backlight";
@@ -174,6 +170,17 @@ in
             "tuned-gui"
           }";
         };
+        memory = {
+          format = "<big></big>\n{percentage}%";
+          tooltip-format = "{used:0.1f} GiB / {total:0.1f} GiB";
+          justify = "center";
+          inherit (resourcesModule) states on-click;
+        };
+        cpu = {
+          format = "<big></big>\n{usage}%";
+          justify = "center";
+          inherit (resourcesModule) states on-click;
+        };
         "custom/notification" = with config.services; {
           format = "{icon}";
           format-icons = {
@@ -201,8 +208,6 @@ in
         ];
         modules-center = [ "custom/player" ];
         modules-right = [
-          "memory"
-          "cpu"
           "disk#root"
           "disk#home"
           "tray"
@@ -231,18 +236,12 @@ in
             "" = "🐧";
           };
         };
-        memory = {
-          format = "<big></big> {percentage}% {icon}";
-          tooltip-format = "{used:0.1f} GiB / {total:0.1f} GiB";
-          inherit (resource_module) format-icons states;
+        "disk#root" = diskModule // {
+          on-click = "${pkgs.uwsm}/bin/uwsm-app ${config.home.profileDirectory}/share/applications/ncdu.desktop /";
         };
-        cpu = {
-          format = "<big></big> {usage}% {icon}";
-          inherit (resource_module) format-icons states;
-        };
-        "disk#root" = disk_module;
-        "disk#home" = disk_module // {
+        "disk#home" = diskModule // {
           path = "/home";
+          on-click = "${pkgs.uwsm}/bin/uwsm-app ${config.home.profileDirectory}/share/applications/ncdu.desktop";
         };
         tray = {
           icon-size = 21;

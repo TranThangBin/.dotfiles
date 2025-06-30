@@ -111,17 +111,11 @@
 	color: @red;
 }
 
-#memory {
-	color: @green;
-	border-radius: 1rem 0 0 1rem;
-}
-
-#cpu {
-	color: @green;
-}
-
 #disk {
 	color: @green;
+}
+#disk.root {
+	border-radius: 1rem 0 0 1rem;
 }
 #disk.home {
 	border-radius: 0 1rem 1rem 0;
@@ -131,10 +125,12 @@
 #custom-menu,
 #custom-notification,
 #power-profiles-daemon,
+#clock,
 #pulseaudio,
 #backlight,
 #battery,
-#clock {
+#memory,
+#cpu {
 	padding: 1rem 0.5rem;
 	margin: 0 5px;
 }
@@ -174,15 +170,25 @@
 
 #backlight {
 	color: @peach;
+	border-radius: 0 0 1rem 1rem;
 }
 
 #battery {
-	margin-bottom: 1rem;
+	border-radius: 1rem 1rem 0 0;
 	color: @green;
-	border-radius: 0 0 1rem 1rem;
 }
 #battery.charging {
 	color: @green;
+}
+
+#memory {
+	color: @green;
+}
+
+#cpu {
+	margin-bottom: 1rem;
+	color: @green;
+	border-radius: 0 0 1rem 1rem;
 }
 
 #custom-player {

@@ -188,6 +188,24 @@
     WantedBy=default.target
   '';
 
+  xdg.desktopEntries.ncdu = {
+    name = "Ncdu";
+    comment = "Disk usage analyzer with an ncurses interface";
+    terminal = true;
+    exec = "${pkgs.ncdu}/bin/ncdu %f";
+    type = "Application";
+    mimeType = [ "inode/directory" ];
+    categories = [
+      "Utility"
+      "Core"
+      "System"
+      "FileTools"
+      "FileManager"
+      "ConsoleOnly"
+    ];
+    settings.Keywords = "System;Explorer;Browser";
+  };
+
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";
   i18n.glibcLocales = pkgs.glibcLocales.override {
