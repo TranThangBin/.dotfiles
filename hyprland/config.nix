@@ -8,8 +8,8 @@ let
   mainMod = "SUPER";
 
   scripts = config.lib.scripts;
-  uwsm = pkgs.uwsm;
-  hyprshot = pkgs.hyprshot;
+  uwsm = config.lib.packages.uwsm;
+  hyprshot = config.lib.packages.hyprshot;
 
   kitty = config.programs.kitty;
   ghostty = config.programs.ghostty;
@@ -26,8 +26,8 @@ let
       ghostty = "${ghostty.package}/bin/ghostty";
     };
     logoutMenu = "${cmdPrefix} || ${wlogout.package}/bin/wlogout";
-    colorPicker = "${cmdPrefix} || ${pkgs.hyprpicker}/bin/hyprpicker -a";
-    emojiPicker = "${cmdPrefix} || ${pkgs.wofi-emoji}/bin/wofi-emoji";
+    colorPicker = "${cmdPrefix} || ${config.lib.packages.hyprpicker}/bin/hyprpicker -a";
+    emojiPicker = "${cmdPrefix} || ${config.lib.packages.wofi-emoji}/bin/wofi-emoji";
     launcher = "${cmdPrefix} || ${scripts.wofiUwsmWrapped}";
     fileManager = "${yazi.package}/share/applications/yazi.desktop";
     resourceMonitor = "${btop.package}/share/applications/btop.desktop";
@@ -113,7 +113,7 @@ in
 
       bind =
         [
-          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.kitty}"
+          "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${settings.terminal.ghostty}"
           "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${settings.resourceMonitor}"
           "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${settings.fileManager}"
           "${mainMod}, Space, exec, ${settings.launcher}"
@@ -187,7 +187,7 @@ in
         ", XF86AudioPrev, exec, ${playerctld.package}/bin/playerctl previous"
       ];
 
-      bindel = with pkgs; [
+      bindel = with config.lib.packages; [
         ", XF86AudioRaiseVolume, exec, ${wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, ${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
         ", XF86AudioMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"

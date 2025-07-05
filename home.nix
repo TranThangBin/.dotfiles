@@ -2,8 +2,12 @@
   config,
   lib,
   pkgs,
+  yaziFlavors,
   ...
 }:
+let
+  hyprland = config.wayland.windowManager.hyprland;
+in
 {
   nix.package = pkgs.nix;
 
@@ -37,6 +41,25 @@
           cp $out/share/psd/contrib/brave $out/share/psd/browsers/brave
         '';
       });
+      ncdu = prev.ncdu.overrideAttrs (prevAttrs: {
+        postInstall = ''
+          ${prevAttrs.postInstall}
+          mkdir -p $out/share/applications
+          cat << EOF > $out/share/applications/ncdu.desktop
+          [Desktop Entry]
+          Categories=Utility;Core;System;FileTools;FileManager;ConsoleOnly
+          Comment=Disk usage analyzer with an ncurses interface
+          Exec=ncdu %f
+          Keywords=System;Explorer;Browser
+          MimeType=inode/directory
+          Name=Ncdu
+          Terminal=true
+          Type=Application
+          Version=1.4
+          Icon=${./desktop-icons/Ncdu.png}
+          EOF
+        '';
+      });
     })
   ];
 
@@ -53,60 +76,174 @@
   home.username = "trant";
   home.homeDirectory = "/home/trant";
 
-  programs.git.userName = "TranThangBin";
-  programs.git.userEmail = "thangdev04@gmail.com";
-
   home.stateVersion = "25.05";
   home.sessionVariables.DOTFILES_DIR = "${config.home.homeDirectory}/.dotfiles";
 
-  lib.modifiedPackages.brave = config.lib.nixGL.wrapOffload pkgs.brave;
+  home.packages = builtins.attrValues config.lib.packages;
 
-  home.packages = with pkgs; [
-    templ
-    zig
-    rustup
-    swi-prolog
-    nodejs_24
-    (dotnetCorePackages.combinePackages [
-      dotnet-sdk_8
-      dotnet-sdk_9
-    ])
+  lib.packages = builtins.listToAttrs (
+    builtins.map
+      (package: rec {
+        name = if builtins.isString package then package else package.name;
+        value =
+          if builtins.isAttrs package && package ? wrapFn then package.wrapFn pkgs.${name} else pkgs.${name};
+      })
+      (
+        [
+          "templ"
+          "zig"
+          "rustup"
+          "swi-prolog"
+          "nodejs_24"
+          "unzip"
+          "zip"
+          "p7zip"
+          "rar"
+          "cifs-utils"
+          "trash-cli"
+          "sl"
+          "lolcat"
+          "cowsay"
+          "cmatrix"
+          "mongosh"
+          "tlrc"
+          "sqlite"
+          "dysk"
+          "umu-launcher-unwrapped"
+          "gimp3"
+          "openshot-qt"
+          "resources"
+          "qbittorrent-enhanced"
+          "postman"
+          "drawio"
+          "ventoy-full-gtk"
+          "sfxr"
+          "libreoffice"
+          "teams-for-linux"
+          "tor-browser"
+          "pipewire"
+          "wireplumber"
+          "pwvucontrol"
+          "helvum"
+          "alsa-utils"
+          "alsa-tools"
+          "alsa-lib"
+          "alsa-plugins"
+          "openal"
+          "umu-launcher-unwrapped"
+          "systemd"
+          "brightnessctl"
+          "ncdu"
+          {
+            name = "brave";
+            wrapFn = config.lib.nixGL.wrapOffload;
+          }
+          {
+            name = "obs-studio";
+            wrapFn = config.lib.nixGL.wrapOffload;
+          }
+          {
+            name = "discord";
+            wrapFn = config.lib.nixGL.wrapOffload;
+          }
+        ]
+        ++ lib.lists.optionals hyprland.enable [
+          "uwsm"
+          "wev"
+          "hyprshot"
+          "hyprpicker"
+          "wofi-emoji"
+          "wl-clipboard"
+          {
+            name = "hyprsysteminfo";
+            wrapFn = config.lib.nixGL.wrap;
+          }
+        ]
+        ++ lib.lists.optionals config.programs.yazi.enable [
+          "imagemagick"
+          "exiftool"
+          "wl-clipboard"
+          "xclip"
+          "xsel"
+          "ueberzugpp"
+          "hexyl"
+          "glow"
+          "eza"
+        ]
+        ++ lib.lists.optional config.services.podman.enable "podman-compose"
+      )
+  );
 
-    unzip
-    zip
-    p7zip
-    rar
-    cifs-utils
-    trash-cli
+  programs = import ./programs {
+    hyprlandEnabled = config.wayland.windowManager.hyprland.enable;
+    fastfetch = config.programs.fastfetch.package;
+    zsh = config.programs.zsh.package;
+    btop = config.programs.btop.package;
+    yazi = config.programs.yazi.package;
+    wlogout = config.programs.wlogout.package;
+    firefox = config.lib.nixGL.wrapOffload pkgs.firefox;
+    kitty = config.lib.nixGL.wrap pkgs.kitty;
+    ghostty = config.lib.nixGL.wrap pkgs.ghostty;
+    mpv = config.lib.nixGL.wrapOffload pkgs.mpv;
+    mpvpaper = config.lib.nixGL.wrapOffload pkgs.mpvpaper;
+    neovide = config.lib.nixGL.wrap pkgs.neovide;
+    easyeffects = config.services.easyeffects.package;
+    swaync = config.services.swaync.package;
+    playerctl = config.services.playerctld.package;
+    neovimFinal = config.programs.neovim.finalPackage;
+    firefoxFinal = config.programs.firefox.finalPackage;
+    inherit yaziFlavors;
+    inherit (config.home) username;
+    inherit (config.xdg) configHome;
+    inherit (config.lib.scripts) wofiUwsmWrapped;
+    inherit (config.lib.packages)
+      uwsm
+      pwvucontrol
+      helvum
+      hyprsysteminfo
+      brave
+      wireplumber
+      ncdu
+      ;
+    inherit (pkgs)
+      emptyDirectory
+      nur
+      hexyl
+      glow
+      eza
+      yaziPlugins
+      toybox
+      tmuxPlugins
+      vimPlugins
+      pyright
+      ruff
+      nil
+      nixfmt-rfc-style
+      lua-language-server
+      roslyn-ls
+      stylua
+      ccls
+      prettierd
+      vscode-langservers-extracted
+      emmet-language-server
+      tailwindcss-language-server
+      typescript-language-server
+      yaml-language-server
+      taplo
+      gopls
+      dockerfile-language-server-nodejs
+      docker-compose-language-service
+      bash-language-server
+      shfmt
+      svelte-language-server
+      rust-analyzer
+      zls
+      tree-sitter
+      gdtoolkit_4
+      ;
+  };
 
-    sl
-    lolcat
-    cowsay
-    cmatrix
-    mongosh
-    tlrc
-    ncdu
-    sqlite
-    dysk
-    umu-launcher-unwrapped
-
-    gimp3
-    openshot-qt
-    resources
-    qbittorrent-enhanced
-    postman
-    drawio
-    ventoy-full-gtk
-    sfxr
-    libreoffice
-    teams-for-linux
-    tor-browser
-
-    config.lib.modifiedPackages.brave
-    (config.lib.nixGL.wrapOffload godot_4)
-    (config.lib.nixGL.wrapOffload obs-studio)
-    (config.lib.nixGL.wrapOffload discord)
-  ];
+  systemd.user.systemctlPath = "${config.lib.packages.systemd}/bin/systemctl";
 
   targets.genericLinux.enable = true;
 
@@ -127,39 +264,12 @@
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
 
-  programs.home-manager.enable = true;
-  programs.firefox.enable = true;
-  programs.neovim.enable = true;
-  programs.kitty.enable = true;
-  programs.ghostty.enable = true;
-  programs.zsh.enable = true;
-  programs.tmux.enable = true;
-  programs.bat.enable = true;
-  programs.bun.enable = true;
-  programs.go.enable = true;
-  programs.java.enable = true;
-  programs.fastfetch.enable = true;
-  programs.ssh.enable = true;
-  programs.git.enable = true;
-  programs.yazi.enable = true;
-  programs.zoxide.enable = true;
-  programs.fzf.enable = true;
-  programs.less.enable = true;
-  programs.btop.enable = true;
-  programs.jq.enable = true;
-  programs.jqp.enable = true;
-  programs.lazydocker.enable = true;
-  programs.ripgrep.enable = true;
-  programs.fd.enable = true;
-  programs.thunderbird.enable = true;
-  programs.mpv.enable = true;
-  programs.mpvpaper.enable = true;
-  programs.yt-dlp.enable = true;
-
-  programs.firefox.package = config.lib.nixGL.wrapOffload pkgs.firefox;
-  programs.kitty.package = config.lib.nixGL.wrap pkgs.kitty;
-  programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
-  programs.mpvpaper.package = config.lib.nixGL.wrap pkgs.mpvpaper;
+  services.swaync.enable = hyprland.enable;
+  services.cliphist.enable = hyprland.enable;
+  services.hyprpaper.enable = hyprland.enable;
+  services.hypridle.enable = hyprland.enable;
+  services.hyprsunset.enable = hyprland.enable;
+  # services.xembed-sni-proxy.enable = hyprland.enable;
 
   services.playerctld.enable = true;
   services.psd.enable = true;
@@ -188,50 +298,19 @@
     WantedBy=default.target
   '';
 
-  xdg.desktopEntries.ncdu = {
-    name = "Ncdu";
-    comment = "Disk usage analyzer with an ncurses interface";
-    terminal = true;
-    exec = "${pkgs.ncdu}/bin/ncdu %f";
-    type = "Application";
-    mimeType = [ "inode/directory" ];
-    categories = [
-      "Utility"
-      "Core"
-      "System"
-      "FileTools"
-      "FileManager"
-      "ConsoleOnly"
-    ];
-    settings.Keywords = "System;Explorer;Browser";
-  };
-
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";
   i18n.glibcLocales = pkgs.glibcLocales.override {
     locales = [ "en_US.UTF-8/UTF-8" ];
   };
 
-  i18n.inputMethod.fcitx5.addons = with pkgs; [
-    kdePackages.fcitx5-unikey
-    fcitx5-tokyonight
-  ];
-
   qt.enable = true;
   gtk.enable = true;
 
-  programs.zoxide.enableZshIntegration = true;
-  programs.fzf = {
-    enableZshIntegration = true;
-    tmux.enableShellIntegration = true;
-  };
-  programs.btop = {
-    settings = {
-      color_theme = "${config.programs.btop.package}/share/btop/themes/tokyo-storm.theme";
-      theme_background = false;
-      vim_keys = true;
-    };
-  };
+  services.poweralertd.extraArgs = [
+    "-s"
+    "-S"
+  ];
 
   qt = {
     platformTheme = {
@@ -259,14 +338,9 @@
     ./scripts
     ./mozilla
     ./nvim
-    ./yazi
     ./hyprland
     ./audio
     ./games
-    ./ghostty
-    ./kitty.nix
-    ./zsh.nix
-    ./tmux.nix
     ./container.nix
     ./fonts.nix
     ./fcitx5.nix

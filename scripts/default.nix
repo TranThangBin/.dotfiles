@@ -1,7 +1,7 @@
 {
   config,
-  pkgs,
   legacyLauncher,
+  pkgs,
   ...
 }:
 let
@@ -12,16 +12,16 @@ in
   lib.scripts = {
     minecraft = pkgs.writeShellScript "minecraft.sh" ''
       export __GL_THREADED_OPTIMIZATIONS=0
-      export LD_PRELOAD=${pkgs.openal}/lib/libopenal.so.1
+      export LD_PRELOAD=${config.lib.packages.openal}/lib/libopenal.so.1
       ${config.programs.java.package}/bin/java -jar ${legacyLauncher}
     '';
 
     wofiUwsmWrapped = pkgs.writeShellScript "wofi-uwsm-wrapped.sh" ''
       app=$( ${wofi.package}/bin/wofi --show drun --define=drun-print_desktop_file=true )
       if [[ "$app" == *'desktop '* ]]; then
-         ${pkgs.uwsm}/bin/uwsm-app "''${app%.desktop *}.desktop:''${app#*.desktop }"
+         ${config.lib.packages.uwsm}/bin/uwsm-app "''${app%.desktop *}.desktop:''${app#*.desktop }"
       elif [[ "$app" == *'desktop' ]]; then
-         ${pkgs.uwsm}/bin/uwsm-app "$app"
+         ${config.lib.packages.uwsm}/bin/uwsm-app "$app"
       fi
     '';
 
@@ -29,7 +29,7 @@ in
       ${cliphist.package}/bin/cliphist list |
           ${wofi.package}/bin/wofi -S dmenu -p 'Clipboard pick:' |
           ${cliphist.package}/bin/cliphist decode |
-          ${pkgs.wl-clipboard}/bin/wl-copy
+          ${config.lib.packages.wl-clipboard}/bin/wl-copy
     '';
 
     clipboardDelete = pkgs.writeShellScript "clipboard-delete.sh" ''

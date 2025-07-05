@@ -43,12 +43,17 @@
             </object>
         </child>
         <child>
+            <object class="GtkSeparatorMenuItem"/>
+        </child>
+        <child>
             <object class="GtkMenuItem" id="swaync">
                 <property name="label">🔔 Notifications</property>
             </object>
         </child>
         <child>
-            <object class="GtkSeparatorMenuItem"/>
+            <object class="GtkMenuItem" id="hyprsysteminfo">
+                <property name="label">ℹ️ System information</property>
+            </object>
         </child>
         <child>
             <object class="GtkMenuItem" id="wlogout">

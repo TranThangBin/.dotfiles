@@ -1,5 +1,9 @@
 { pkgs, ... }:
 {
+  i18n.inputMethod.fcitx5.addons = with pkgs; [
+    fcitx5-unikey
+    fcitx5-tokyonight
+  ];
   i18n.inputMethod.fcitx5.ignoreUserConfig = true;
   i18n.inputMethod.fcitx5.themes.Tokyonight-Storm.theme =
     "${pkgs.fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";

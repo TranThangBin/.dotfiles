@@ -54,9 +54,7 @@ cmp.setup({
 	},
 
 	window = {
-		completion = cmp.config.window.bordered({
-			max_height = 100,
-		}),
+		completion = cmp.config.window.bordered(),
 		documentation = cmp.config.window.bordered(),
 	},
 

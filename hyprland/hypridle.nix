@@ -5,7 +5,7 @@
   ...
 }:
 let
-  brightnessctl = pkgs.brightnessctl;
+  brightnessctl = config.lib.packages.brightnessctl;
   hyprctlBin = (
     assert lib.pathExists "/usr/bin/hyprctl";
     "hyprctl"
@@ -15,11 +15,11 @@ in
   services.hypridle = {
     settings = {
       general = {
-        lock_cmd = "${pkgs.toybox}/bin/pidof hyprlock || ${
+        lock_cmd = "${pkgs.toybox}/bin/pidof hyprlock || ${config.services.playerctld.package}/bin/playerctl stop && ${
           assert lib.pathExists "/usr/bin/hyprlock";
           "hyprlock"
         }";
-        before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
+        before_sleep_cmd = "${config.lib.packages.systemd}/bin/loginctl lock-session";
         after_sleep_cmd = "${hyprctlBin} dispatch dpms on";
       };
 
@@ -38,7 +38,7 @@ in
 
         {
           timeout = 300;
-          on-timeout = "${pkgs.systemd}/bin/loginctl lock-session && ${config.services.playerctld.package}/bin/playerctl stop";
+          on-timeout = "${config.lib.packages.systemd}/bin/loginctl lock-session";
         }
 
         {

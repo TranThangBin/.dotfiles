@@ -11,7 +11,7 @@ let
   font = "FiraMono Nerd Font Mono";
 in
 {
-  programs.hyprlock.settings = {
+  settings = {
     general = {
       disable_loading_bar = true;
       hide_cursor = true;
@@ -19,7 +19,7 @@ in
 
     background = {
       monitor = "";
-      path = "${./Mountain_Sunset.png}";
+      path = "${./hyprlock-Mountain_Sunset.png}";
       blur_passes = 0;
       color = base;
     };
@@ -72,7 +72,7 @@ in
 
     image = {
       monitor = "";
-      path = "${./Go_Gopher.webp}";
+      path = "${./hyprlock-Go_Gopher.webp}";
       size = 100;
       border_color = accent;
       position = "0, 75";

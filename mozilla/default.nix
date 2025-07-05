@@ -21,11 +21,6 @@ let
   };
 in
 {
-  imports = [
-    ./firefox.nix
-    ./thunderbird.nix
-  ];
-
   xdg.desktopEntries.Messenger = firefoxEntry // {
     name = "Messenger";
     icon = "${../desktop-icons/Facebook_Messenger_logo_2018.svg}";

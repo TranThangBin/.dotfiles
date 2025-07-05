@@ -1,6 +1,6 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 let
-  umu-launcher = pkgs.umu-launcher-unwrapped;
+  umu-launcher = config.lib.packages.umu-launcher-unwrapped;
   gamesDir = "${config.home.homeDirectory}/Games";
   umuConfigDir = "${gamesDir}/umu/config";
   gameEntry = {

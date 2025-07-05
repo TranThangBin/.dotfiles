@@ -1,13 +1,8 @@
-{
-  config,
-  pkgs,
-  legacyLauncher,
-  ...
-}:
+{ config, ... }:
 let
   gamesDir = "${config.home.homeDirectory}/Games";
   umuConfigDir = "${gamesDir}/umu/config";
-  umuRunBin = "${pkgs.umu-launcher-unwrapped}/bin/umu-run";
+  umuRunBin = "${config.lib.packages.umu-launcher-unwrapped}/bin/umu-run";
   gameEntry = {
     type = "Application";
     categories = [ "Game" ];

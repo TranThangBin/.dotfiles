@@ -193,6 +193,8 @@
 
 #custom-player {
 	border-radius: 1rem;
+	margin-left: 1rem;
+	margin-right: 1rem;
 	color: @mauve;
 }
 

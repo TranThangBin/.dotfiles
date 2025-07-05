@@ -1,26 +1,18 @@
+{ fastfetch, toybox }:
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  sudo = (
-    assert lib.pathExists "/usr/bin/sudo";
-    "sudo"
-  );
-in
-{
-  home.shell.enableZshIntegration = config.programs.zsh.enable;
-
-  programs.zsh = {
-    oh-my-zsh.enable = true;
-
-    enableCompletion = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    initContent = ''
-      [ -z $TMUX ] && ${config.programs.fastfetch.package}/bin/fastfetch
+  oh-my-zsh.enable = true;
+  enableCompletion = true;
+  autosuggestion.enable = true;
+  syntaxHighlighting.enable = true;
+  initContent =
+    let
+      sudo = (
+        assert builtins.pathExists "/usr/bin/sudo";
+        "sudo"
+      );
+    in
+    ''
+      [ -z $TMUX ] && ${fastfetch}/bin/fastfetch
 
       mount-smb() {
           local address mount_point username password
@@ -81,7 +73,7 @@ in
           fi
 
           local tool compileCmd execCmd
-          local tempfile=$(${pkgs.toybox}/bin/mktemp)
+          local tempfile=$(${toybox}/bin/mktemp)
 
           case "$lang" in
               c)
@@ -124,23 +116,25 @@ in
       }
     '';
 
-    history = {
-      ignoreAllDups = true;
-      ignoreSpace = true;
-      ignorePatterns = [ "clear" ];
-    };
+  history = {
+    ignoreAllDups = true;
+    ignoreSpace = true;
+    ignorePatterns = [
+      "clear"
+      "sudo *"
+    ];
+  };
 
-    oh-my-zsh = {
-      theme = "robbyrussell";
-      plugins = [
-        "tmux"
-        "vi-mode"
-        "systemd"
-        "git"
-      ];
-      extraConfig = ''
-        bindkey '^ ' autosuggest-accept
-      '';
-    };
+  oh-my-zsh = {
+    theme = "robbyrussell";
+    plugins = [
+      "tmux"
+      "vi-mode"
+      "systemd"
+      "git"
+    ];
+    extraConfig = ''
+      bindkey '^ ' autosuggest-accept
+    '';
   };
 }

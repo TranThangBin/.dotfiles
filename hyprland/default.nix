@@ -1,143 +1,76 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, ... }:
 let
   hyprland = config.wayland.windowManager.hyprland;
-  systemd = pkgs.systemd;
-  systemctl = config.systemd.user.systemctlPath;
-  hyprlandDestkop = (
-    assert lib.pathExists "/usr/share/wayland-sessions/hyprland.desktop";
-    "hyprland.desktop"
-  );
+  hyprsunsetTransitions = {
+    sunrise = {
+      calendar = "*-*-* 06:00:00";
+      requests = [
+        [
+          "temperature"
+          "6000"
+        ]
+      ];
+    };
+    sunset = {
+      calendar = "*-*-* 19:00:00";
+      requests = [
+        [
+          "temperature"
+          "4000"
+        ]
+      ];
+    };
+  };
 in
 {
   wayland.systemd.target = "wayland-session@hyprland.desktop.target";
 
-  home.packages = lib.mkIf hyprland.enable (
-    with pkgs;
-    [
-      uwsm
-      wev
-      hyprshot
-      hyprpicker
-      wofi-emoji
-      (config.lib.nixGL.wrap hyprsysteminfo)
-    ]
-  );
-
-  programs.hyprlock.enable = hyprland.enable;
-  programs.waybar.enable = hyprland.enable;
-  programs.wofi.enable = hyprland.enable;
-  programs.wlogout.enable = hyprland.enable;
-
-  programs.hyprlock.package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
-
   i18n.inputMethod.fcitx5.waylandFrontend = hyprland.enable;
-
-  programs.wofi.settings = {
-    columns = 2;
-    width = "60%";
-    hide_scroll = true;
-    insensitive = true;
-    allow_images = true;
-    style = "${./wofi.css}";
-    key_up = "Ctrl-k";
-    key_down = "Ctrl-j";
-    key_left = "Ctrl-h";
-    key_right = "Ctrl-l";
-    key_expand = "Ctrl-space";
-  };
-
-  programs.wlogout.layout = [
-    {
-      label = "lock";
-      action = "${systemd}/bin/loginctl lock-session";
-      text = "Lock";
-      keybind = "l";
-    }
-    {
-      label = "hibernate";
-      action = "${systemctl} hibernate";
-      text = "Hibernate";
-      keybind = "h";
-    }
-    {
-      label = "logout";
-      action = "${pkgs.uwsm}/bin/uwsm stop";
-      text = "Logout";
-      keybind = "e";
-    }
-    {
-      label = "shutdown";
-      action = "${systemctl} poweroff";
-      text = "Shutdown";
-      keybind = "s";
-    }
-    {
-      label = "suspend";
-      action = "${systemctl} suspend";
-      text = "Suspend";
-      keybind = "u";
-    }
-    {
-      label = "reboot";
-      action = "${systemctl} reboot";
-      text = "Reboot";
-      keybind = "r";
-    }
-  ];
-
-  services.swaync.enable = hyprland.enable;
-  services.cliphist.enable = hyprland.enable;
-  services.hyprpaper.enable = hyprland.enable;
-  services.hypridle.enable = hyprland.enable;
-  services.hyprsunset.enable = hyprland.enable;
-  services.xembed-sni-proxy.enable = hyprland.enable;
 
   services.swaync = {
     style = ./swaync.css;
     settings.timeout = 5;
   };
   services.cliphist.systemdTargets = config.wayland.systemd.target;
-  # services.hyprsunset.transitions = {
-  #   sunrise = {
-  #     calendar = "*-*-* 06:00:00";
-  #     requests = [
-  #       [
-  #         "temperature"
-  #         "6500"
-  #       ]
-  #       [ "gamma 100" ]
-  #     ];
-  #   };
-  #   sunset = {
-  #     calendar = "*-*-* 19:00:00";
-  #     requests = [
-  #       [
-  #         "temperature"
-  #         "3500"
-  #       ]
-  #     ];
-  #   };
-  # };
+  systemd.user = lib.mkIf hyprland.enable {
+    services = lib.mapAttrs' (
+      name: transitionCfg:
+      lib.nameValuePair "hyprsunset-${name}" {
+        Install = { };
+        Unit = {
+          ConditionEnvironment = "WAYLAND_DISPLAY";
+          Description = "hyprsunset transition for ${name}";
+          After = [ "hyprsunset.service" ];
+          Requires = [ "hyprsunset.service" ];
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = lib.concatMapStringsSep " && " (
+            cmd: "hyprctl hyprsunset ${lib.escapeShellArgs cmd}"
+          ) transitionCfg.requests;
+        };
+      }
+    ) hyprsunsetTransitions;
+    timers = lib.mapAttrs' (
+      name: transitionCfg:
+      lib.nameValuePair "hyprsunset-${name}" {
+        Install = {
+          WantedBy = [ config.wayland.systemd.target ];
+        };
+
+        Unit = {
+          Description = "Timer for hyprsunset transition (${name})";
+        };
+
+        Timer = {
+          OnCalendar = transitionCfg.calendar;
+          Persistent = true;
+        };
+      }
+    ) hyprsunsetTransitions;
+  };
 
   home.pointerCursor.hyprcursor.enable = hyprland.enable;
-
-  home.file.".profile".enable = hyprland.enable;
-
-  home.file.".profile".text = ''
-    if [[ "$(tty)" = "/dev/tty1" ]]; then
-    	printf "Do you want to start Hyprland? (Y/n): "
-    	read -rn 1 answer
-        echo
-        if [[ "$answer" = "Y" ]] && ${pkgs.uwsm}/bin/uwsm check may-start; then
-            exec ${pkgs.uwsm}/bin/uwsm start ${hyprlandDestkop}
-        fi
-    fi
-  '';
 
   xdg.portal.config = {
     common.default = [ "hyprland" ];
@@ -148,7 +81,7 @@ in
   xdg.configFile."uwsm/env-hyprland".enable = hyprland.enable;
 
   xdg.configFile."uwsm/env".text = ''
-    export ALSA_PLUGIN_DIR=${pkgs.pipewire}/lib/alsa-lib
+    export ALSA_PLUGIN_DIR=${config.lib.packages.pipewire}/lib/alsa-lib
     export ELECTRON_OZONE_PLATFORM_HINT=wayland
   '';
   xdg.configFile."uwsm/env-hyprland".text = with import ./gpu-env.nix; ''
@@ -160,8 +93,6 @@ in
 
   imports = [
     ./config.nix
-    ./waybar
-    ./hyprlock
     ./hyprpaper.nix
     ./hypridle.nix
   ];

@@ -1,24 +1,9 @@
-{ pkgs, ... }:
+{ config, ... }:
 let
-  pipewire = pkgs.pipewire;
-  wireplumber = pkgs.wireplumber;
+  pipewire = config.lib.packages.pipewire;
+  wireplumber = config.lib.packages.wireplumber;
 in
 {
-  home.packages =
-    [
-      pipewire
-      wireplumber
-    ]
-    ++ (with pkgs; [
-      pwvucontrol
-      helvum
-      alsa-utils
-      alsa-tools
-      alsa-lib
-      alsa-plugins
-      openal
-    ]);
-
   home.file.".asoundrc".source = "${pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
 
   systemd.user = {

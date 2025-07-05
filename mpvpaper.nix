@@ -4,13 +4,6 @@ let
   preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
 in
 {
-  programs.mpvpaper = {
-    pauseList = " ";
-    stopList = ''
-      steam
-      wineserver
-    '';
-  };
   systemd.user.services.mpvpaper = {
     Unit = {
       Conflicts = "hyprpaper.service";
