@@ -1,6 +1,6 @@
 {
-  services.easyeffects.preset = "LoudnessEqualizer";
-  services.easyeffects.extraPresets = {
+  preset = "LoudnessEqualizer";
+  extraPresets = {
     LoudnessEqualizer = {
       output = {
         blocklist = [ ];

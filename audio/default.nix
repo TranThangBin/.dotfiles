@@ -152,6 +152,4 @@ in
       };
     };
   };
-
-  imports = [ ./easyeffects.nix ];
 }

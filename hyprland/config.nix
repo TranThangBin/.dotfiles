@@ -181,24 +181,29 @@ in
       ];
 
       bindl = with config.services; [
-        ", XF86AudioNext, exec, ${playerctld.package}/bin/playerctl next"
-        ", XF86AudioPause, exec,${playerctld.package}/bin/playerctl play-pause"
-        ", XF86AudioPlay, exec, ${playerctld.package}/bin/playerctl play-pause"
-        ", XF86AudioPrev, exec, ${playerctld.package}/bin/playerctl previous"
+        ", XF86AudioNext, exec, ${swayosd.package}/bin/swayosd-client --playerctl next"
+        ", XF86AudioPause, exec,${swayosd.package}/bin/swayosd-client --playerctl play-pause"
+        ", XF86AudioPlay, exec, ${swayosd.package}/bin/swayosd-client --playerctl play-pause"
+        ", XF86AudioPrev, exec,${swayosd.package}/bin/swayosd-client --playerctl previous"
       ];
 
-      bindel = with config.lib.packages; [
-        ", XF86AudioRaiseVolume, exec, ${wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
-        ", XF86AudioLowerVolume, exec, ${wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        ", XF86AudioMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-        ", XF86AudioMicMute, exec, ${wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ", XF86MonBrightnessUp, exec, ${brightnessctl}/bin/brightnessctl s 10%+"
-        ", XF86MonBrightnessDown, exec, ${brightnessctl}/bin/brightnessctl s 10%-"
+      bindel = with config.services; [
+        ", XF86AudioRaiseVolume, exec, ${swayosd.package}/bin/swayosd-client --output-volume raise"
+        ", XF86AudioLowerVolume, exec, ${swayosd.package}/bin/swayosd-client --output-volume lower"
+        ", XF86AudioMute, exec, ${swayosd.package}/bin/swayosd-client --output-volume mute-toggle"
+        ", XF86AudioMicMute, exec, ${swayosd.package}/bin/swayosd-client --input-volume mute-toggle"
+        ", XF86MonBrightnessUp, exec, ${swayosd.package}/bin/swayosd-client --brightness raise"
+        ", XF86MonBrightnessDown, exec, ${swayosd.package}/bin/swayosd-client --brightness lower"
       ];
 
       bindm = [
         "${mainMod} SHIFT, mouse:272, movewindow"
         "${mainMod} SHIFT, mouse:273, resizewindow"
+      ];
+
+      bindc = with config.services; [
+        "Caps_Lock, Caps_Lock, exec, ${swayosd.package}/bin/swayosd-client --caps-lock"
+        "Mod2, Num_Lock, exec, ${swayosd.package}/bin/swayosd-client --num-lock"
       ];
 
       windowrulev2 = [

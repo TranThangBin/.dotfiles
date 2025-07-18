@@ -6,7 +6,86 @@
   ...
 }:
 let
-  hyprland = config.wayland.windowManager.hyprland;
+  hyprlandEnabled = config.wayland.windowManager.hyprland.enable;
+  wrap = config.lib.nixGL.wrap;
+  wrapOffload = config.lib.nixGL.wrapOffload;
+  mkMerge = lib.mkMerge;
+  systemctlPath = config.systemd.user.systemctlPath;
+  preferedWallpaper = ./wallpapers/Snow-valley.jpg;
+  binaries = builtins.listToAttrs (
+    builtins.map
+      (path: {
+        name = builtins.baseNameOf path + "Bin";
+        value =
+          assert builtins.pathExists path;
+          builtins.baseNameOf path;
+      })
+      [
+        "/usr/bin/sudo"
+        "/usr/bin/mktemp"
+        "/usr/bin/pidof"
+        "/usr/bin/hyprlock"
+        "/usr/bin/hyprctl"
+      ]
+  );
+  packages =
+    (with config.programs; {
+      fastfetch = fastfetch.package;
+      zsh = zsh.package;
+      btop = btop.package;
+      yazi = yazi.package;
+      wlogout = wlogout.package;
+      firefox = firefox.finalPackage;
+      kitty = kitty.package;
+      ghostty = ghostty.package;
+      mpv = mpv.package;
+      neovim = neovim.finalPackage;
+      neovide = neovide.package;
+    })
+    // (with config.services; {
+      easyeffects = easyeffects.package;
+      swaync = swaync.package;
+      playerctl = playerctld.package;
+    })
+    // (with pkgs; {
+      inherit
+        nur
+        podman-compose
+        hexyl
+        glow
+        eza
+        systemd
+        brightnessctl
+        yaziPlugins
+        tmuxPlugins
+        vimPlugins
+        pyright
+        ruff
+        nil
+        nixfmt-rfc-style
+        lua-language-server
+        roslyn-ls
+        stylua
+        ccls
+        prettierd
+        vscode-langservers-extracted
+        emmet-language-server
+        tailwindcss-language-server
+        typescript-language-server
+        yaml-language-server
+        taplo
+        gopls
+        dockerfile-language-server-nodejs
+        docker-compose-language-service
+        bash-language-server
+        shfmt
+        svelte-language-server
+        rust-analyzer
+        zls
+        tree-sitter
+        gdtoolkit_4
+        ;
+    });
 in
 {
   nix.package = pkgs.nix;
@@ -136,18 +215,18 @@ in
           "ncdu"
           {
             name = "brave";
-            wrapFn = config.lib.nixGL.wrapOffload;
+            wrapFn = wrapOffload;
           }
           {
             name = "obs-studio";
-            wrapFn = config.lib.nixGL.wrapOffload;
+            wrapFn = wrapOffload;
           }
           {
             name = "discord";
-            wrapFn = config.lib.nixGL.wrapOffload;
+            wrapFn = wrapOffload;
           }
         ]
-        ++ lib.lists.optionals hyprland.enable [
+        ++ lib.lists.optionals hyprlandEnabled [
           "uwsm"
           "wev"
           "hyprshot"
@@ -156,7 +235,7 @@ in
           "wl-clipboard"
           {
             name = "hyprsysteminfo";
-            wrapFn = config.lib.nixGL.wrap;
+            wrapFn = wrap;
           }
         ]
         ++ lib.lists.optionals config.programs.yazi.enable [
@@ -174,76 +253,103 @@ in
       )
   );
 
-  programs = import ./programs {
-    hyprlandEnabled = config.wayland.windowManager.hyprland.enable;
-    fastfetch = config.programs.fastfetch.package;
-    zsh = config.programs.zsh.package;
-    btop = config.programs.btop.package;
-    yazi = config.programs.yazi.package;
-    wlogout = config.programs.wlogout.package;
-    firefox = config.lib.nixGL.wrapOffload pkgs.firefox;
-    kitty = config.lib.nixGL.wrap pkgs.kitty;
-    ghostty = config.lib.nixGL.wrap pkgs.ghostty;
-    mpv = config.lib.nixGL.wrapOffload pkgs.mpv;
-    mpvpaper = config.lib.nixGL.wrapOffload pkgs.mpvpaper;
-    neovide = config.lib.nixGL.wrap pkgs.neovide;
-    easyeffects = config.services.easyeffects.package;
-    swaync = config.services.swaync.package;
-    playerctl = config.services.playerctld.package;
-    neovimFinal = config.programs.neovim.finalPackage;
-    firefoxFinal = config.programs.firefox.finalPackage;
-    inherit yaziFlavors;
-    inherit (config.home) username;
-    inherit (config.xdg) configHome;
-    inherit (config.lib.scripts) wofiUwsmWrapped;
-    inherit (config.lib.packages)
-      uwsm
-      pwvucontrol
-      helvum
-      hyprsysteminfo
-      brave
-      wireplumber
-      ncdu
+  programs = mkMerge [
+    {
+      hyprlock.package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
+      firefox.package = wrapOffload pkgs.firefox;
+      kitty.package = wrap pkgs.kitty;
+      ghostty.package = wrap pkgs.ghostty;
+      mpv.package = wrapOffload pkgs.mpv;
+      mpvpaper.package = wrapOffload pkgs.mpvpaper;
+      neovide.package = wrap pkgs.neovide;
+    }
+    (import ./programs {
+      inherit yaziFlavors hyprlandEnabled mkMerge;
+      inherit (config.home) username;
+      inherit (config.xdg) configHome;
+      inherit (config.lib.scripts) wofiUwsmWrapped;
+      inherit (config.lib.packages)
+        uwsm
+        pwvucontrol
+        helvum
+        hyprsysteminfo
+        brave
+        wireplumber
+        ncdu
+        ;
+      inherit (binaries) mktempBin sudoBin;
+      inherit (packages)
+        fastfetch
+        zsh
+        btop
+        yazi
+        wlogout
+        firefox
+        kitty
+        ghostty
+        mpv
+        neovide
+        easyeffects
+        swaync
+        playerctl
+        neovim
+        nur
+        hexyl
+        glow
+        eza
+        yaziPlugins
+        tmuxPlugins
+        vimPlugins
+        pyright
+        ruff
+        nil
+        nixfmt-rfc-style
+        lua-language-server
+        roslyn-ls
+        stylua
+        ccls
+        prettierd
+        vscode-langservers-extracted
+        emmet-language-server
+        tailwindcss-language-server
+        typescript-language-server
+        yaml-language-server
+        taplo
+        gopls
+        dockerfile-language-server-nodejs
+        docker-compose-language-service
+        bash-language-server
+        shfmt
+        svelte-language-server
+        rust-analyzer
+        zls
+        tree-sitter
+        gdtoolkit_4
+        ;
+    })
+  ];
+
+  services = import ./services {
+    inherit
+      mkMerge
+      hyprlandEnabled
+      systemctlPath
+      preferedWallpaper
       ;
-    inherit (pkgs)
-      emptyDirectory
-      nur
-      hexyl
-      glow
-      eza
-      yaziPlugins
-      toybox
-      tmuxPlugins
-      vimPlugins
-      pyright
-      ruff
-      nil
-      nixfmt-rfc-style
-      lua-language-server
-      roslyn-ls
-      stylua
-      ccls
-      prettierd
-      vscode-langservers-extracted
-      emmet-language-server
-      tailwindcss-language-server
-      typescript-language-server
-      yaml-language-server
-      taplo
-      gopls
-      dockerfile-language-server-nodejs
-      docker-compose-language-service
-      bash-language-server
-      shfmt
-      svelte-language-server
-      rust-analyzer
-      zls
-      tree-sitter
-      gdtoolkit_4
+    inherit (binaries)
+      pidofBin
+      hyprlockBin
+      hyprctlBin
+      ;
+    inherit (packages)
+      podman-compose
+      systemd
+      brightnessctl
+      playerctl
       ;
   };
 
-  systemd.user.systemctlPath = "${config.lib.packages.systemd}/bin/systemctl";
+  systemd.user.systemctlPath = "${packages.systemd}/bin/systemctl";
 
   targets.genericLinux.enable = true;
 
@@ -263,21 +369,6 @@ in
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
-
-  services.swaync.enable = hyprland.enable;
-  services.cliphist.enable = hyprland.enable;
-  services.hyprpaper.enable = hyprland.enable;
-  services.hypridle.enable = hyprland.enable;
-  services.hyprsunset.enable = hyprland.enable;
-  # services.xembed-sni-proxy.enable = hyprland.enable;
-
-  services.playerctld.enable = true;
-  services.psd.enable = true;
-  services.podman.enable = true;
-  services.easyeffects.enable = true;
-  services.poweralertd.enable = true;
-  services.network-manager-applet.enable = true;
-  services.blueman-applet.enable = true;
 
   xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".enable =
     config.services.network-manager-applet.enable;
@@ -300,17 +391,10 @@ in
 
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";
-  i18n.glibcLocales = pkgs.glibcLocales.override {
-    locales = [ "en_US.UTF-8/UTF-8" ];
-  };
+  i18n.inputMethod.fcitx5.fcitx5-with-addons = pkgs.fcitx5-with-addons;
 
   qt.enable = true;
   gtk.enable = true;
-
-  services.poweralertd.extraArgs = [
-    "-s"
-    "-S"
-  ];
 
   qt = {
     platformTheme = {

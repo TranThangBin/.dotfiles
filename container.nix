@@ -7,10 +7,6 @@
     PODMAN_COMPOSE_PROVIDER = "${config.lib.packages.podman-compose}/bin/podman-compose";
   };
 
-  services.podman.settings.containers.network.compose_providers = [
-    "${config.lib.packages.podman-compose}/bin/podman-compose"
-  ];
-
   systemd.user = {
     services.podman = {
       Unit = {

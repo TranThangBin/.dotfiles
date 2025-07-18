@@ -27,10 +27,6 @@ in
 
   i18n.inputMethod.fcitx5.waylandFrontend = hyprland.enable;
 
-  services.swaync = {
-    style = ./swaync.css;
-    settings.timeout = 5;
-  };
   services.cliphist.systemdTargets = config.wayland.systemd.target;
   systemd.user = lib.mkIf hyprland.enable {
     services = lib.mapAttrs' (
@@ -91,9 +87,5 @@ in
     export AQ_DRM_DEVICES=${lib.concatStringsSep ":" AQ_DRM_DEVICES}
   '';
 
-  imports = [
-    ./config.nix
-    ./hyprpaper.nix
-    ./hypridle.nix
-  ];
+  imports = [ ./config.nix ];
 }
