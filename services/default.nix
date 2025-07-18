@@ -1,6 +1,7 @@
 {
   mkMerge,
   hyprlandEnabled,
+  waylandSystemdTarget,
   podman-compose,
   systemd,
   systemctlPath,
@@ -40,6 +41,7 @@ mkMerge [
         ;
     };
     easyeffects = import ./easyeffects.nix;
+    cliphist.systemdTargets = waylandSystemdTarget;
     poweralertd.extraArgs = [
       "-s"
       "-S"

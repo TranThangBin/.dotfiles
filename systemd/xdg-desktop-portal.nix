@@ -1,15 +1,11 @@
-{ config, pkgs, ... }:
-let
-  xdg-desktop-portal-termfilechooser = pkgs.xdg-desktop-portal-termfilechooser;
-in
 {
-  xdg.portal.extraPortals = [ xdg-desktop-portal-termfilechooser ];
-
-  xdg.portal.config = {
-    common."org.freedesktop.impl.portal.FileChooser" = "termfilechooser";
-  };
-
-  systemd.user.services = {
+  xdg-desktop-portal,
+  waylandSystemdTarget,
+  xdg-desktop-portal-hyprland,
+  xdg-desktop-portal-termfilechooser,
+}:
+{
+  services = {
     xdg-desktop-portal = {
       Unit = {
         Description = "Portal service";
@@ -19,7 +15,7 @@ in
       Service = {
         Type = "dbus";
         BusName = "org.freedesktop.portal.Desktop";
-        ExecStart = "${pkgs.xdg-desktop-portal}/libexec/xdg-desktop-portal -v";
+        ExecStart = "${xdg-desktop-portal}/libexec/xdg-desktop-portal -v";
         Slice = "session.slice";
       };
 
@@ -29,15 +25,15 @@ in
     xdg-desktop-portal-hyprland = {
       Unit = {
         Description = "Portal service (Hyprland implementation)";
-        PartOf = config.wayland.systemd.target;
-        After = config.wayland.systemd.target;
+        PartOf = waylandSystemdTarget;
+        After = waylandSystemdTarget;
         ConditionEnvironment = "WAYLAND_DISPLAY";
       };
 
       Service = {
         Type = "dbus";
         BusName = "org.freedesktop.impl.portal.desktop.hyprland";
-        ExecStart = "${config.wayland.windowManager.hyprland.finalPortalPackage}/libexec/xdg-desktop-portal-hyprland -v";
+        ExecStart = "${xdg-desktop-portal-hyprland}/libexec/xdg-desktop-portal-hyprland -v";
         Restart = "on-failure";
         Slice = "session.slice";
       };

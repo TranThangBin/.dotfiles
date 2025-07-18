@@ -1,70 +1,11 @@
 { config, lib, ... }:
 let
   hyprland = config.wayland.windowManager.hyprland;
-  hyprsunsetTransitions = {
-    sunrise = {
-      calendar = "*-*-* 06:00:00";
-      requests = [
-        [
-          "temperature"
-          "6000"
-        ]
-      ];
-    };
-    sunset = {
-      calendar = "*-*-* 19:00:00";
-      requests = [
-        [
-          "temperature"
-          "4000"
-        ]
-      ];
-    };
-  };
 in
 {
   wayland.systemd.target = "wayland-session@hyprland.desktop.target";
 
   i18n.inputMethod.fcitx5.waylandFrontend = hyprland.enable;
-
-  services.cliphist.systemdTargets = config.wayland.systemd.target;
-  systemd.user = lib.mkIf hyprland.enable {
-    services = lib.mapAttrs' (
-      name: transitionCfg:
-      lib.nameValuePair "hyprsunset-${name}" {
-        Install = { };
-        Unit = {
-          ConditionEnvironment = "WAYLAND_DISPLAY";
-          Description = "hyprsunset transition for ${name}";
-          After = [ "hyprsunset.service" ];
-          Requires = [ "hyprsunset.service" ];
-        };
-        Service = {
-          Type = "oneshot";
-          ExecStart = lib.concatMapStringsSep " && " (
-            cmd: "hyprctl hyprsunset ${lib.escapeShellArgs cmd}"
-          ) transitionCfg.requests;
-        };
-      }
-    ) hyprsunsetTransitions;
-    timers = lib.mapAttrs' (
-      name: transitionCfg:
-      lib.nameValuePair "hyprsunset-${name}" {
-        Install = {
-          WantedBy = [ config.wayland.systemd.target ];
-        };
-
-        Unit = {
-          Description = "Timer for hyprsunset transition (${name})";
-        };
-
-        Timer = {
-          OnCalendar = transitionCfg.calendar;
-          Persistent = true;
-        };
-      }
-    ) hyprsunsetTransitions;
-  };
 
   home.pointerCursor.hyprcursor.enable = hyprland.enable;
 

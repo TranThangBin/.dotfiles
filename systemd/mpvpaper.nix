@@ -1,14 +1,14 @@
-{ config, ... }:
-let
-  mpvpaper = config.programs.mpvpaper.package;
-  preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
-in
 {
-  systemd.user.services.mpvpaper = {
+  waylandSystemdTarget,
+  mpvpaper,
+  preferedVideopaper,
+}:
+{
+  services.mpvpaper = {
     Unit = {
       Conflicts = "hyprpaper.service";
-      After = config.wayland.systemd.target;
-      PartOf = config.wayland.systemd.target;
+      After = waylandSystemdTarget;
+      PartOf = waylandSystemdTarget;
       ConditionEnvironment = "WAYLAND_DISPLAY";
     };
 

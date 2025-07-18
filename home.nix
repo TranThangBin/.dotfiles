@@ -11,7 +11,9 @@ let
   wrapOffload = config.lib.nixGL.wrapOffload;
   mkMerge = lib.mkMerge;
   systemctlPath = config.systemd.user.systemctlPath;
+  waylandSystemdTarget = config.wayland.systemd.target;
   preferedWallpaper = ./wallpapers/Snow-valley.jpg;
+  preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
   binaries = builtins.listToAttrs (
     builtins.map
       (path: {
@@ -29,7 +31,10 @@ let
       ]
   );
   packages =
-    (with config.programs; {
+    {
+      xdg-desktop-portal-hyprland = config.wayland.windowManager.hyprland.finalPortalPackage;
+    }
+    // (with config.programs; {
       fastfetch = fastfetch.package;
       zsh = zsh.package;
       btop = btop.package;
@@ -41,10 +46,12 @@ let
       mpv = mpv.package;
       neovim = neovim.finalPackage;
       neovide = neovide.package;
+      mpvpaper = mpvpaper.package;
     })
     // (with config.services; {
       easyeffects = easyeffects.package;
       swaync = swaync.package;
+      podman = podman.package;
       playerctl = playerctld.package;
     })
     // (with pkgs; {
@@ -55,6 +62,10 @@ let
         glow
         eza
         systemd
+        xdg-desktop-portal
+        xdg-desktop-portal-termfilechooser
+        pipewire
+        wireplumber
         brightnessctl
         yaziPlugins
         tmuxPlugins
@@ -335,6 +346,7 @@ in
       hyprlandEnabled
       systemctlPath
       preferedWallpaper
+      waylandSystemdTarget
       ;
     inherit (binaries)
       pidofBin
@@ -349,7 +361,21 @@ in
       ;
   };
 
-  systemd.user.systemctlPath = "${packages.systemd}/bin/systemctl";
+  systemd = mkMerge [
+    { user.systemctlPath = "${packages.systemd}/bin/systemctl"; }
+    (import ./systemd {
+      inherit mkMerge waylandSystemdTarget preferedVideopaper;
+      inherit (packages)
+        podman
+        mpvpaper
+        pipewire
+        wireplumber
+        xdg-desktop-portal
+        xdg-desktop-portal-hyprland
+        xdg-desktop-portal-termfilechooser
+        ;
+    })
+  ];
 
   targets.genericLinux.enable = true;
 
@@ -428,7 +454,5 @@ in
     ./container.nix
     ./fonts.nix
     ./fcitx5.nix
-    ./xdg-desktop-portal.nix
-    ./mpvpaper.nix
   ];
 }
