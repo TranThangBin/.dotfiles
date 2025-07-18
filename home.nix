@@ -16,6 +16,8 @@ let
   preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
   gamesDir = "${config.home.homeDirectory}/Games";
   umuConfigDir = "${gamesDir}/umu/config";
+  kittyBackgroundOpacity = toString config.programs.kitty.settings.background_opacity;
+  ghosttyBackgroundOpacity = toString config.programs.ghostty.settings.background-opacity;
   binaries = builtins.listToAttrs (
     builtins.map
       (path: {
@@ -30,6 +32,7 @@ let
         "/usr/bin/pidof"
         "/usr/bin/hyprlock"
         "/usr/bin/hyprctl"
+        "/usr/bin/pkill"
       ]
   );
   packages =
@@ -55,6 +58,7 @@ let
       swaync = swaync.package;
       podman = podman.package;
       playerctl = playerctld.package;
+      swayosd = swayosd.package;
     })
     // (with pkgs; {
       inherit
@@ -70,6 +74,10 @@ let
         wireplumber
         brightnessctl
         umu-launcher-unwrapped
+        uwsm
+        hyprpicker
+        wofi-emoji
+        hyprshot
         yaziPlugins
         tmuxPlugins
         vimPlugins
@@ -168,10 +176,15 @@ in
 
   home.username = "trant";
   home.homeDirectory = "/home/trant";
-
   home.stateVersion = "25.05";
   home.sessionVariables.DOTFILES_DIR = "${config.home.homeDirectory}/.dotfiles";
-
+  home.pointerCursor.gtk.enable = true;
+  home.pointerCursor.hyprcursor.enable = hyprlandEnabled;
+  home.pointerCursor = {
+    name = "Dracula-cursors";
+    package = pkgs.dracula-theme;
+    size = 28;
+  };
   home.packages = builtins.attrValues config.lib.packages;
 
   lib.packages = builtins.listToAttrs (
@@ -384,23 +397,55 @@ in
 
   fonts.fontconfig.enable = true;
 
-  home.pointerCursor.gtk.enable = true;
-
-  home.pointerCursor = {
-    name = "Dracula-cursors";
-    package = pkgs.dracula-theme;
-    size = 28;
-  };
-
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
+  wayland.systemd.target =
+    if hyprlandEnabled then "wayland-session@hyprland.desktop.target" else "graphical-session.target";
+  wayland.windowManager.hyprland = mkMerge [
+    {
+      enable = true;
+      package = null; # Manage hyprland with your os package manager
+      systemd.enable = false;
+    }
+    (import ./hyprland.nix {
+      inherit
+        kittyBackgroundOpacity
+        ghosttyBackgroundOpacity
+        ;
+      inherit (binaries) pkillBin;
+      inherit (config.lib.scripts)
+        wofiUwsmWrapped
+        clipboardPicker
+        clipboardDelete
+        clipboardWipe
+        ;
+      inherit (packages)
+        uwsm
+        ghostty
+        btop
+        yazi
+        hyprshot
+        wlogout
+        hyprpicker
+        wofi-emoji
+        swayosd
+        ;
+    })
+  ];
 
   xdg = mkMerge [
+    (import ./xdg {
+      inherit mkMerge gamesDir umuConfigDir;
+      inherit (config.lib.scripts) minecraft;
+      inherit (packages)
+        firefox
+        umu-launcher-unwrapped
+        pipewire
+        ;
+    })
     {
       userDirs.enable = true;
       portal = {
         enable = true;
-        config = {
+        config = lib.mkIf hyprlandEnabled {
           common.default = [ "hyprland" ];
           hyprland.default = [ "hyprland" ];
         };
@@ -414,20 +459,12 @@ in
         "systemd/user/dconf.service.d/override.conf".enable = config.dconf.enable;
       };
     }
-    (import ./xdg {
-      inherit mkMerge gamesDir umuConfigDir;
-      inherit (config.lib.scripts) minecraft;
-      inherit (packages)
-        firefox
-        umu-launcher-unwrapped
-        pipewire
-        ;
-    })
   ];
 
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";
   i18n.inputMethod.fcitx5.fcitx5-with-addons = pkgs.fcitx5-with-addons;
+  i18n.inputMethod.fcitx5.waylandFrontend = hyprlandEnabled;
 
   qt.enable = true;
   gtk.enable = true;
@@ -456,7 +493,6 @@ in
 
   imports = [
     ./scripts
-    ./hyprland
     ./audio
     ./container.nix
     ./fonts.nix
