@@ -14,6 +14,8 @@ let
   waylandSystemdTarget = config.wayland.systemd.target;
   preferedWallpaper = ./wallpapers/Snow-valley.jpg;
   preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
+  gamesDir = "${config.home.homeDirectory}/Games";
+  umuConfigDir = "${gamesDir}/umu/config";
   binaries = builtins.listToAttrs (
     builtins.map
       (path: {
@@ -67,6 +69,7 @@ let
         pipewire
         wireplumber
         brightnessctl
+        umu-launcher-unwrapped
         yaziPlugins
         tmuxPlugins
         vimPlugins
@@ -146,7 +149,7 @@ in
           Terminal=true
           Type=Application
           Version=1.4
-          Icon=${./desktop-icons/Ncdu.png}
+          Icon=${./images/Ncdu.png}
           EOF
         '';
       });
@@ -379,10 +382,6 @@ in
 
   targets.genericLinux.enable = true;
 
-  xdg.portal.enable = true;
-
-  xdg.userDirs.enable = true;
-
   fonts.fontconfig.enable = true;
 
   home.pointerCursor.gtk.enable = true;
@@ -396,24 +395,35 @@ in
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = null; # Manage hyprland with your os package manager
 
-  xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".enable =
-    config.services.network-manager-applet.enable;
-  xdg.configFile."systemd/user/hyprpaper.service.d/override.conf".enable =
-    config.services.hyprpaper.enable;
-  xdg.configFile."systemd/user/dconf.service.d/override.conf".enable = config.dconf.enable;
-
-  xdg.configFile."systemd/user/network-manager-applet.service.d/override.conf".text = ''
-    [Service]
-    Restart=on-failure
-  '';
-  xdg.configFile."systemd/user/hyprpaper.service.d/override.conf".text = ''
-    [Unit]
-    Conflicts=mpvpaper.service
-  '';
-  xdg.configFile."systemd/user/dconf.service.d/override.conf".text = ''
-    [Install]
-    WantedBy=default.target
-  '';
+  xdg = mkMerge [
+    {
+      userDirs.enable = true;
+      portal = {
+        enable = true;
+        config = {
+          common.default = [ "hyprland" ];
+          hyprland.default = [ "hyprland" ];
+        };
+      };
+      configFile = {
+        "uwsm/env".enable = hyprlandEnabled;
+        "uwsm/env-hyprland".enable = hyprlandEnabled;
+        "systemd/user/network-manager-applet.service.d/override.conf".enable =
+          config.services.network-manager-applet.enable;
+        "systemd/user/hyprpaper.service.d/override.conf".enable = config.services.hyprpaper.enable;
+        "systemd/user/dconf.service.d/override.conf".enable = config.dconf.enable;
+      };
+    }
+    (import ./xdg {
+      inherit mkMerge gamesDir umuConfigDir;
+      inherit (config.lib.scripts) minecraft;
+      inherit (packages)
+        firefox
+        umu-launcher-unwrapped
+        pipewire
+        ;
+    })
+  ];
 
   i18n.inputMethod.enable = true;
   i18n.inputMethod.type = "fcitx5";
@@ -446,11 +456,8 @@ in
 
   imports = [
     ./scripts
-    ./mozilla
-    ./nvim
     ./hyprland
     ./audio
-    ./games
     ./container.nix
     ./fonts.nix
     ./fcitx5.nix
