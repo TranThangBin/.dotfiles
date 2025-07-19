@@ -18,8 +18,6 @@
         ExecStart = "${xdg-desktop-portal}/libexec/xdg-desktop-portal -v";
         Slice = "session.slice";
       };
-
-      Install.WantedBy = [ "xdg-desktop-autostart.target" ];
     };
 
     xdg-desktop-portal-hyprland = {
@@ -37,8 +35,6 @@
         Restart = "on-failure";
         Slice = "session.slice";
       };
-
-      Install.WantedBy = [ "wayland-session-xdg-autostart@hyprland.target" ];
     };
 
     xdg-desktop-portal-termfilechooser = {
@@ -54,8 +50,6 @@
         ExecStart = "${xdg-desktop-portal-termfilechooser}/libexec/xdg-desktop-portal-termfilechooser -l TRACE -c ${xdg-desktop-portal-termfilechooser}/share/xdg-desktop-portal-termfilechooser/config";
         Restart = "on-failure";
       };
-
-      Install.WantedBy = [ "xdg-desktop-autostart.target" ];
     };
   };
 }

@@ -72,6 +72,10 @@ let
         xdg-desktop-portal-termfilechooser
         pipewire
         wireplumber
+        helvum
+        pwvucontrol
+        ncdu
+        wl-clipboard
         brightnessctl
         umu-launcher-unwrapped
         uwsm
@@ -107,6 +111,8 @@ let
         tree-sitter
         gdtoolkit_4
         ;
+      brave = wrapOffload brave;
+      hyprsysteminfo = wrap hyprsysteminfo;
     });
 in
 {
@@ -185,100 +191,80 @@ in
     package = pkgs.dracula-theme;
     size = 28;
   };
-  home.packages = builtins.attrValues config.lib.packages;
+  home.file.".asoundrc".source =
+    "${packages.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
+  home.shellAliases.docker = "${packages.podman}/bin/podman";
+  home.sessionVariables = {
+    DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+    PODMAN_COMPOSE_PROVIDER = "${packages.podman-compose}/bin/podman-compose";
+  };
+  home.packages = with pkgs; [
+    templ
+    zig
+    rustup
+    swi-prolog
+    nodejs_24
+    unzip
+    zip
+    p7zip
+    rar
+    cifs-utils
+    trash-cli
+    sl
+    lolcat
+    cowsay
+    cmatrix
+    mongosh
+    tlrc
+    sqlite
+    dysk
+    gimp3
+    openshot-qt
+    resources
+    qbittorrent-enhanced
+    postman
+    drawio
+    ventoy-full-gtk
+    sfxr
+    libreoffice
+    teams-for-linux
+    tor-browser
+    alsa-utils
+    alsa-tools
+    alsa-lib
+    alsa-plugins
+    openal
+    packages.pipewire
+    packages.wireplumber
+    packages.pwvucontrol
+    packages.helvum
+    packages.umu-launcher-unwrapped
+    packages.brightnessctl
+    packages.ncdu
+    packages.brave
+    (wrapOffload obs-studio)
+    (wrapOffload discord)
 
-  lib.packages = builtins.listToAttrs (
-    builtins.map
-      (package: rec {
-        name = if builtins.isString package then package else package.name;
-        value =
-          if builtins.isAttrs package && package ? wrapFn then package.wrapFn pkgs.${name} else pkgs.${name};
-      })
-      (
-        [
-          "templ"
-          "zig"
-          "rustup"
-          "swi-prolog"
-          "nodejs_24"
-          "unzip"
-          "zip"
-          "p7zip"
-          "rar"
-          "cifs-utils"
-          "trash-cli"
-          "sl"
-          "lolcat"
-          "cowsay"
-          "cmatrix"
-          "mongosh"
-          "tlrc"
-          "sqlite"
-          "dysk"
-          "umu-launcher-unwrapped"
-          "gimp3"
-          "openshot-qt"
-          "resources"
-          "qbittorrent-enhanced"
-          "postman"
-          "drawio"
-          "ventoy-full-gtk"
-          "sfxr"
-          "libreoffice"
-          "teams-for-linux"
-          "tor-browser"
-          "pipewire"
-          "wireplumber"
-          "pwvucontrol"
-          "helvum"
-          "alsa-utils"
-          "alsa-tools"
-          "alsa-lib"
-          "alsa-plugins"
-          "openal"
-          "umu-launcher-unwrapped"
-          "systemd"
-          "brightnessctl"
-          "ncdu"
-          {
-            name = "brave";
-            wrapFn = wrapOffload;
-          }
-          {
-            name = "obs-studio";
-            wrapFn = wrapOffload;
-          }
-          {
-            name = "discord";
-            wrapFn = wrapOffload;
-          }
-        ]
-        ++ lib.lists.optionals hyprlandEnabled [
-          "uwsm"
-          "wev"
-          "hyprshot"
-          "hyprpicker"
-          "wofi-emoji"
-          "wl-clipboard"
-          {
-            name = "hyprsysteminfo";
-            wrapFn = wrap;
-          }
-        ]
-        ++ lib.lists.optionals config.programs.yazi.enable [
-          "imagemagick"
-          "exiftool"
-          "wl-clipboard"
-          "xclip"
-          "xsel"
-          "ueberzugpp"
-          "hexyl"
-          "glow"
-          "eza"
-        ]
-        ++ lib.lists.optional config.services.podman.enable "podman-compose"
-      )
-  );
+    wev
+    packages.uwsm
+    packages.hyprshot
+    packages.hyprpicker
+    packages.wofi-emoji
+    packages.wl-clipboard
+    packages.hyprsysteminfo
+
+    imagemagick
+    exiftool
+    xclip
+    xsel
+    ueberzugpp
+    packages.hexyl
+    packages.glow
+    packages.eza
+    packages.wl-clipboard
+
+    packages.podman-compose
+  ];
 
   programs = mkMerge [
     {
@@ -295,7 +281,8 @@ in
       inherit (config.home) username;
       inherit (config.xdg) configHome;
       inherit (config.lib.scripts) wofiUwsmWrapped;
-      inherit (config.lib.packages)
+      inherit (binaries) mktempBin sudoBin;
+      inherit (packages)
         uwsm
         pwvucontrol
         helvum
@@ -303,9 +290,6 @@ in
         brave
         wireplumber
         ncdu
-        ;
-      inherit (binaries) mktempBin sudoBin;
-      inherit (packages)
         fastfetch
         zsh
         btop
@@ -446,9 +430,13 @@ in
       portal = {
         enable = true;
         config = lib.mkIf hyprlandEnabled {
-          common.default = [ "hyprland" ];
+          common = {
+            default = [ "hyprland" ];
+            "org.freedesktop.impl.portal.FileChooser" = "termfilechooser";
+          };
           hyprland.default = [ "hyprland" ];
         };
+        extraPortals = with packages; [ xdg-desktop-portal-termfilechooser ];
       };
       configFile = {
         "uwsm/env".enable = hyprlandEnabled;
@@ -493,8 +481,6 @@ in
 
   imports = [
     ./scripts
-    ./audio
-    ./container.nix
     ./fonts.nix
     ./fcitx5.nix
   ];
