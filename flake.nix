@@ -28,10 +28,6 @@
       url = "github:eduardo-antunes/plainline";
       flake = false;
     };
-    tailwindcss-colorizer-cmp-nvim = {
-      url = "github:roobert/tailwindcss-colorizer-cmp.nvim";
-      flake = false;
-    };
     yazi-flavors = {
       url = "github:yazi-rs/flavors";
       flake = false;
@@ -47,7 +43,6 @@
       nur,
       yazi-flavors,
       plainline,
-      tailwindcss-colorizer-cmp-nvim,
       darkly,
       ...
     }:
@@ -66,11 +61,6 @@
                 pname = "plainline";
                 version = "unstable";
                 src = plainline;
-              };
-              tailwindcss-colorizer-cmp-nvim = prev.vimUtils.buildVimPlugin {
-                pname = "tailwindcss-colorizer-cmp-nvim";
-                version = "unstable";
-                src = tailwindcss-colorizer-cmp-nvim;
               };
             };
           })

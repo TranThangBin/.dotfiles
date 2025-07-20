@@ -64,15 +64,15 @@
     trouble-nvim
     zen-mode-nvim
     vim-be-good
-    none-ls-nvim
+    conform-nvim
     nvim-treesitter-textobjects
     nvim-treesitter-context
-    ccc-nvim
     cloak-nvim
     vim-dadbod
     vim-dadbod-completion
     vim-dadbod-ui
     hardtime-nvim
+    nvim-colorizer-lua
     (nvim-treesitter.withPlugins (p: [
       p.c
       p.cpp
@@ -98,7 +98,6 @@
       p.prolog
     ]))
     plainline
-    tailwindcss-colorizer-cmp-nvim
   ];
   extraPackages = [
     pyright

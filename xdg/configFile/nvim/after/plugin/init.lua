@@ -35,14 +35,41 @@ end
 
 require("cloak").setup()
 
-require("ccc").setup()
-local ccc_keys = {
-	["<leader>cp"] = "<cmd>CccPick<CR>",
-	["<leader>cv"] = "<cmd>CccConvert<CR>",
-}
-for key, exec in pairs(ccc_keys) do
-	vim.keymap.set("n", key, exec)
-end
+require("colorizer").setup({
+	filetypes = {
+		"html",
+		"css",
+		"javascript",
+		"typescript",
+		cmp_menu = { always_update = true },
+		cmp_docs = { always_update = true },
+	},
+	user_default_options = {
+		names = false,
+		rgb_fn = true,
+		hsl_fn = true,
+		css = true,
+		css_fn = true,
+		tailwind = "both",
+		tailwind_opts = {
+			update_names = true,
+		},
+	},
+})
+
+require("conform").setup({
+	formatters_by_ft = {
+		lua = { "stylua" },
+		gdscript = { "gdformat" },
+		html = { "prettierd" },
+		css = { "prettierd" },
+		javascript = { "prettierd" },
+		typescript = { "prettierd" },
+		bash = { "shfmt" },
+		nix = { "nixfmt" },
+		templ = { "templ" },
+	},
+})
 
 require("hardtime").setup({
 	callback = function(text)

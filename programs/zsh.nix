@@ -87,7 +87,7 @@
                 ;;
             py)
                 tool=python3
-                execCmd=python3 $source
+                execCmd="python3 $source"
                 ;;
             *)
                 echo "ERROR: $lang is not supported" && rm "$tempfile" && return 1

@@ -1,24 +1,22 @@
 local cmp = require("cmp")
+local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
-local tailwind_colorizer_cmp = require("tailwindcss-colorizer-cmp")
 
 require("luasnip.loaders.from_vscode").lazy_load()
-tailwind_colorizer_cmp.setup({ color_square_width = 2 })
 
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 local kind_formatter = lspkind.cmp_format({})
+
+cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done)
 
 cmp.setup({
 	preselect = "item",
 	formatting = {
 		fields = { "abbr", "kind", "menu" },
 		expandable_indicator = true,
-		format = function(entry, vim_item)
-			vim_item = kind_formatter(entry, vim_item)
-			return tailwind_colorizer_cmp.formatter(entry, vim_item)
-		end,
+		format = kind_formatter,
 	},
 
 	mapping = cmp.mapping.preset.insert({

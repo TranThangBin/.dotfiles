@@ -1,3 +1,4 @@
+local conform = require("conform")
 local schemastore = require("schemastore")
 local ts_builtin = require("telescope.builtin")
 
@@ -132,17 +133,11 @@ local keys_normal = {
 		vim.diagnostic.jump({ count = -1, float = true })
 	end,
 	["<leader>f"] = function(bufnr)
-		vim.lsp.buf.format({
+		conform.format({
+			lsp_format = "fallback",
 			bufnr = bufnr,
 			async = true,
-			filter = function(cl)
-				local null_ls_attached = #vim.lsp.get_clients({
-					bufnr = bufnr,
-					name = "null-ls",
-				}) > 0
-				return cl.name == "null-ls"
-					or (not null_ls_attached and cl.name ~= "null-ls")
-			end,
+			stop_after_first = true,
 		})
 	end,
 }
