@@ -4,7 +4,6 @@
     fcitx5-unikey
     fcitx5-tokyonight
   ];
-  ignoreUserConfig = true;
   themes.Tokyonight-Storm.theme = "${fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";
   settings.inputMethod = {
     GroupOrder."0" = "Default";
