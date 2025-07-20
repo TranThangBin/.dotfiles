@@ -7,8 +7,4 @@
     [Unit]
     Conflicts=mpvpaper.service
   '';
-  "systemd/user/dconf.service.d/override.conf".text = ''
-    [Install]
-    WantedBy=default.target
-  '';
 }

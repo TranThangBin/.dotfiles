@@ -6,18 +6,18 @@
   ...
 }:
 let
+  mkMerge = lib.mkMerge;
+  preferedWallpaper = ./wallpapers/Snow-valley.jpg;
+  preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
+  umuConfigDir = "${gamesDir}/umu/config";
+  gamesDir = "${config.home.homeDirectory}/Games";
   hyprlandEnabled = config.wayland.windowManager.hyprland.enable;
   wrap = config.lib.nixGL.wrap;
   wrapOffload = config.lib.nixGL.wrapOffload;
-  mkMerge = lib.mkMerge;
   systemctlPath = config.systemd.user.systemctlPath;
   waylandSystemdTarget = config.wayland.systemd.target;
-  preferedWallpaper = ./wallpapers/Snow-valley.jpg;
-  preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
-  gamesDir = "${config.home.homeDirectory}/Games";
-  umuConfigDir = "${gamesDir}/umu/config";
-  kittyBackgroundOpacity = toString config.programs.kitty.settings.background_opacity;
-  ghosttyBackgroundOpacity = toString config.programs.ghostty.settings.background-opacity;
+  kittyBackgroundOpacity = config.programs.kitty.settings.background_opacity;
+  ghosttyBackgroundOpacity = config.programs.ghostty.settings.background-opacity;
   binaries = builtins.listToAttrs (
     builtins.map
       (path: {
@@ -77,6 +77,8 @@ let
         ncdu
         wl-clipboard
         brightnessctl
+        fcitx5-unikey
+        fcitx5-tokyonight
         umu-launcher-unwrapped
         uwsm
         hyprpicker
@@ -199,6 +201,13 @@ in
     PODMAN_COMPOSE_PROVIDER = "${packages.podman-compose}/bin/podman-compose";
   };
   home.packages = with pkgs; [
+    corefonts
+    nerd-fonts.fira-code
+    noto-fonts
+    noto-fonts-cjk-serif
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
+
     templ
     zig
     rustup
@@ -268,6 +277,43 @@ in
 
   programs = mkMerge [
     {
+      hyprlock.enable = hyprlandEnabled;
+      waybar.enable = hyprlandEnabled;
+      wofi.enable = hyprlandEnabled;
+      wlogout.enable = hyprlandEnabled;
+      home-manager.enable = true;
+      firefox.enable = true;
+      kitty.enable = true;
+      ghostty.enable = true;
+      bash.enable = true;
+      zsh.enable = true;
+      tmux.enable = true;
+      bat.enable = true;
+      bun.enable = true;
+      go.enable = true;
+      java.enable = true;
+      fastfetch.enable = true;
+      ssh.enable = true;
+      git.enable = true;
+      lazygit.enable = true;
+      yazi.enable = true;
+      zoxide.enable = true;
+      fzf.enable = true;
+      less.enable = true;
+      btop.enable = true;
+      jq.enable = true;
+      jqp.enable = true;
+      lazydocker.enable = true;
+      ripgrep.enable = true;
+      fd.enable = true;
+      thunderbird.enable = true;
+      mpv.enable = true;
+      mpvpaper.enable = true;
+      yt-dlp.enable = true;
+      neovim.enable = true;
+      neovide.enable = true;
+    }
+    {
       hyprlock.package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
       firefox.package = wrapOffload pkgs.firefox;
       kitty.package = wrap pkgs.kitty;
@@ -277,7 +323,7 @@ in
       neovide.package = wrap pkgs.neovide;
     }
     (import ./programs {
-      inherit yaziFlavors hyprlandEnabled mkMerge;
+      inherit yaziFlavors;
       inherit (config.home) username;
       inherit (config.xdg) configHome;
       inherit (config.lib.scripts) wofiUwsmWrapped;
@@ -340,26 +386,41 @@ in
     })
   ];
 
-  services = import ./services {
-    inherit
-      mkMerge
-      hyprlandEnabled
-      systemctlPath
-      preferedWallpaper
-      waylandSystemdTarget
-      ;
-    inherit (binaries)
-      pidofBin
-      hyprlockBin
-      hyprctlBin
-      ;
-    inherit (packages)
-      podman-compose
-      systemd
-      brightnessctl
-      playerctl
-      ;
-  };
+  services = mkMerge [
+    {
+      swaync.enable = hyprlandEnabled;
+      cliphist.enable = hyprlandEnabled;
+      hyprpaper.enable = hyprlandEnabled;
+      hypridle.enable = hyprlandEnabled;
+      hyprsunset.enable = hyprlandEnabled;
+      swayosd.enable = hyprlandEnabled;
+      playerctld.enable = true;
+      psd.enable = true;
+      podman.enable = true;
+      easyeffects.enable = true;
+      poweralertd.enable = true;
+      network-manager-applet.enable = true;
+      blueman-applet.enable = true;
+    }
+    (import ./services {
+      inherit
+        systemctlPath
+        preferedWallpaper
+        waylandSystemdTarget
+        ;
+      inherit (binaries)
+        pidofBin
+        hyprlockBin
+        hyprctlBin
+        ;
+      inherit (packages)
+        podman-compose
+        systemd
+        brightnessctl
+        playerctl
+        ;
+    })
+  ];
 
   systemd = mkMerge [
     { user.systemctlPath = "${packages.systemd}/bin/systemctl"; }
@@ -379,7 +440,10 @@ in
 
   targets.genericLinux.enable = true;
 
-  fonts.fontconfig.enable = true;
+  fonts = mkMerge [
+    { fontconfig.enable = true; }
+    { fontconfig = import ./fontconfig.nix; }
+  ];
 
   wayland.systemd.target =
     if hyprlandEnabled then "wayland-session@hyprland.desktop.target" else "graphical-session.target";
@@ -444,15 +508,28 @@ in
         "systemd/user/network-manager-applet.service.d/override.conf".enable =
           config.services.network-manager-applet.enable;
         "systemd/user/hyprpaper.service.d/override.conf".enable = config.services.hyprpaper.enable;
-        "systemd/user/dconf.service.d/override.conf".enable = config.dconf.enable;
       };
     }
   ];
 
-  i18n.inputMethod.enable = true;
-  i18n.inputMethod.type = "fcitx5";
-  i18n.inputMethod.fcitx5.fcitx5-with-addons = pkgs.fcitx5-with-addons;
-  i18n.inputMethod.fcitx5.waylandFrontend = hyprlandEnabled;
+  i18n = mkMerge [
+    {
+      inputMethod.fcitx5 = import ./fcitx5.nix {
+        inherit (packages)
+          fcitx5-unikey
+          fcitx5-tokyonight
+          ;
+      };
+    }
+    {
+      inputMethod = {
+        enable = true;
+        type = "fcitx5";
+        fcitx5.fcitx5-with-addons = pkgs.fcitx5-with-addons;
+        fcitx5.waylandFrontend = hyprlandEnabled;
+      };
+    }
+  ];
 
   qt.enable = true;
   gtk.enable = true;
@@ -479,9 +556,5 @@ in
     };
   };
 
-  imports = [
-    ./scripts
-    ./fonts.nix
-    ./fcitx5.nix
-  ];
+  imports = [ ./scripts ];
 }
