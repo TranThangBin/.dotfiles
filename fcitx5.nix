@@ -18,8 +18,13 @@
   settings.globalOptions = {
     Hotkey = {
       EnumerateWithTriggerKeys = true;
+      AltTriggerKeys = "";
+      EnumerateForwardKeys = "";
+      EnumerateBackwardKeys = "";
+
     };
     "Hotkey/TriggerKeys"."0" = "Control+Shift+space";
+    "Hotkey/AltTriggerKeys"."0" = "";
   };
   settings.addons = {
     clipboard.sections.TriggerKey = { };

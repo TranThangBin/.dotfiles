@@ -44,7 +44,10 @@ let
 in
 {
   systemd.enable = true;
-  style = ./waybar.css;
+  style = ''
+    @import url("${../catpuccin-mocha.css}");
+    @import url("${./waybar.css}");
+  '';
   settings = [
     {
       layer = "top";

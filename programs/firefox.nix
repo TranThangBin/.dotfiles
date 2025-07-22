@@ -149,6 +149,8 @@
         newElementCount = 2;
       };
       "widget.use-xdg-desktop-portal.file-picker" = 1;
+      "layers.acceleration.disabled" = true;
+      "gfx.webrender.software" = true;
     };
   };
 }

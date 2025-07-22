@@ -169,17 +169,22 @@
     '';
   };
   thunderbird.profiles.${username}.isDefault = true;
-  wofi.settings = {
-    columns = 2;
-    width = "60%";
-    hide_scroll = true;
-    insensitive = true;
-    allow_images = true;
-    style = "${./wofi.css}";
-    key_up = "Ctrl-k";
-    key_down = "Ctrl-j";
-    key_left = "Ctrl-h";
-    key_right = "Ctrl-l";
-    key_expand = "Ctrl-space";
+  wofi = {
+    style = ''
+      @import url("${../catpuccin-mocha.css}");
+      @import url("${./wofi.css}");
+    '';
+    settings = {
+      columns = 2;
+      width = "60%";
+      hide_scroll = true;
+      insensitive = true;
+      allow_images = true;
+      key_up = "Ctrl-k";
+      key_down = "Ctrl-j";
+      key_left = "Ctrl-h";
+      key_right = "Ctrl-l";
+      key_expand = "Ctrl-space";
+    };
   };
 }

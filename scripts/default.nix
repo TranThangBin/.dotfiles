@@ -45,17 +45,4 @@ in
       fi
     '';
   };
-
-  home.file = builtins.listToAttrs (
-    builtins.map (
-      scriptName:
-      let
-        source = config.lib.scripts.${scriptName};
-      in
-      {
-        name = ".local/bin/${source.name}";
-        value.source = source;
-      }
-    ) (builtins.attrNames config.lib.scripts)
-  );
 }

@@ -193,87 +193,109 @@ in
     package = pkgs.dracula-theme;
     size = 28;
   };
-  home.file.".asoundrc".source =
-    "${packages.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
   home.shellAliases.docker = "${packages.podman}/bin/podman";
   home.sessionVariables = {
     DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
     PODMAN_COMPOSE_PROVIDER = "${packages.podman-compose}/bin/podman-compose";
   };
-  home.packages = with pkgs; [
-    corefonts
-    nerd-fonts.fira-code
-    noto-fonts
-    noto-fonts-cjk-serif
-    noto-fonts-cjk-sans
-    noto-fonts-color-emoji
+  home.packages =
+    with pkgs;
+    let
+      hyprlandExtra = lib.lists.optionals hyprlandEnabled [
+        wev
+        packages.uwsm
+        packages.hyprshot
+        packages.hyprpicker
+        packages.wofi-emoji
+        packages.wl-clipboard
+        packages.hyprsysteminfo
+      ];
+      yaziExtra = lib.lists.optionals config.programs.yazi.enable [
+        imagemagick
+        exiftool
+        xclip
+        xsel
+        ueberzugpp
+        packages.hexyl
+        packages.glow
+        packages.eza
+        packages.wl-clipboard
+      ];
+      podmanExtra = lib.lists.optional config.services.podman.enable packages.podman-compose;
+    in
+    hyprlandExtra
+    ++ yaziExtra
+    ++ podmanExtra
+    ++ [
+      corefonts
+      nerd-fonts.fira-code
+      noto-fonts
+      noto-fonts-cjk-serif
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
 
-    templ
-    zig
-    rustup
-    swi-prolog
-    nodejs_24
-    unzip
-    zip
-    p7zip
-    rar
-    cifs-utils
-    trash-cli
-    sl
-    lolcat
-    cowsay
-    cmatrix
-    mongosh
-    tlrc
-    sqlite
-    dysk
-    gimp3
-    openshot-qt
-    resources
-    qbittorrent-enhanced
-    postman
-    drawio
-    ventoy-full-gtk
-    sfxr
-    libreoffice
-    teams-for-linux
-    tor-browser
-    alsa-utils
-    alsa-tools
-    alsa-lib
-    alsa-plugins
-    openal
-    packages.pipewire
-    packages.wireplumber
-    packages.pwvucontrol
-    packages.helvum
-    packages.umu-launcher-unwrapped
-    packages.brightnessctl
-    packages.ncdu
-    packages.brave
-    (wrapOffload obs-studio)
-    (wrapOffload discord)
-
-    wev
-    packages.uwsm
-    packages.hyprshot
-    packages.hyprpicker
-    packages.wofi-emoji
-    packages.wl-clipboard
-    packages.hyprsysteminfo
-
-    imagemagick
-    exiftool
-    xclip
-    xsel
-    ueberzugpp
-    packages.hexyl
-    packages.glow
-    packages.eza
-    packages.wl-clipboard
-
-    packages.podman-compose
-  ];
+      templ
+      zig
+      rustup
+      swi-prolog
+      nodejs_24
+      unzip
+      zip
+      p7zip
+      rar
+      cifs-utils
+      trash-cli
+      sl
+      lolcat
+      cowsay
+      cmatrix
+      mongosh
+      tlrc
+      sqlite
+      dysk
+      gimp3
+      openshot-qt
+      resources
+      qbittorrent-enhanced
+      postman
+      drawio
+      ventoy-full-gtk
+      sfxr
+      libreoffice
+      teams-for-linux
+      tor-browser
+      alsa-utils
+      alsa-tools
+      alsa-lib
+      alsa-plugins
+      openal
+      packages.pipewire
+      packages.wireplumber
+      packages.pwvucontrol
+      packages.helvum
+      packages.umu-launcher-unwrapped
+      packages.brightnessctl
+      packages.ncdu
+      packages.brave
+      (wrapOffload obs-studio)
+      (wrapOffload discord)
+    ];
+  home.file =
+    {
+      ".asoundrc".source = "${packages.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
+    }
+    // builtins.listToAttrs (
+      builtins.map (
+        scriptName:
+        let
+          source = config.lib.scripts.${scriptName};
+        in
+        {
+          name = ".local/bin/${source.name}";
+          value.source = source;
+        }
+      ) (builtins.attrNames config.lib.scripts)
+    );
 
   programs = mkMerge [
     {
@@ -418,6 +440,7 @@ in
         systemd
         brightnessctl
         playerctl
+        swayosd
         ;
     })
   ];

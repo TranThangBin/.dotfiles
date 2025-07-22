@@ -9,6 +9,7 @@
   hyprlockBin,
   hyprctlBin,
   preferedWallpaper,
+  swayosd,
 }:
 {
   hypridle = import ./hypridle.nix {
@@ -37,7 +38,8 @@
     ipc = "off";
   };
   swaync = {
-    style = ./swaync.css;
     settings.timeout = 5;
+    style = ./swaync.css;
   };
+  swayosd.stylePath = "${swayosd}/etc/xdg/swayosd/style.css";
 }
