@@ -392,6 +392,10 @@ in
               "${neovim}/bin/nvim"
               "${neovide}/bin/neovide"
             ];
+            "godotnvim.sh" = [
+              "${neovim}/bin/nvim"
+              "${neovide}/bin/neovide"
+            ];
           };
         in
         [
