@@ -1,12 +1,10 @@
-@define-color base rgba(30, 30, 46, 0.8);
-
 window {
 	font-size: 14px;
 	margin: 0px;
 	padding: 10px;
 	border: 0.16em solid @lavender;
 	border-radius: 0.1em;
-	background-color: @base;
+	background-color: @baseAlpha;
 	animation: slideIn 0.25s ease-in-out both;
 }
 
@@ -24,7 +22,7 @@ window {
 	margin: 5px;
 	padding: 10px;
 	border: none;
-	background-color: @base;
+	background-color: @baseAlpha;
 	animation: fadeIn 0.25s ease-in-out both;
 }
 
@@ -42,14 +40,14 @@ window {
 	margin: 5px;
 	padding: 10px;
 	border: none;
-	background-color: @base;
+	background-color: @baseAlpha;
 }
 
 #scroll {
 	margin: 0px;
 	padding: 10px;
 	border: none;
-	background-color: @base;
+	background-color: @baseAlpha;
 }
 
 #input {
@@ -58,7 +56,7 @@ window {
 	border: none;
 	border-radius: 0.1em;
 	color: @text;
-	background-color: @base;
+	background-color: @baseAlpha;
 	animation: fadeIn 0.25s ease-in-out both;
 }
 
@@ -79,7 +77,7 @@ window {
 }
 
 #entry {
-	background-color: @base;
+	background-color: @baseAlpha;
 }
 
 #entry arrow {

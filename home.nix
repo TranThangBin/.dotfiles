@@ -85,7 +85,13 @@ let
     })
     // (with pkgs; {
       inherit
-        nur
+        corefonts
+        nerd-fonts
+        noto-fonts
+        noto-fonts-cjk-serif
+        noto-fonts-cjk-sans
+        noto-fonts-color-emoji
+
         podman-compose
         hexyl
         glow
@@ -105,9 +111,51 @@ let
         fcitx5-tokyonight
         umu-launcher-unwrapped
         uwsm
+        wev
+        imagemagick
+        exiftool
+        ueberzugpp
         hyprpicker
         wofi-emoji
         hyprshot
+        alsa-utils
+        alsa-tools
+        alsa-lib
+        alsa-plugins
+        scrcpy
+
+        templ
+        zig
+        rustup
+        swi-prolog
+        nodejs_24
+        unzip
+        zip
+        p7zip
+        rar
+        cifs-utils
+        trash-cli
+        sl
+        lolcat
+        cowsay
+        cmatrix
+        mongosh
+        tlrc
+        sqlite
+        dysk
+        gimp3
+        openshot-qt
+        resources
+        qbittorrent-enhanced
+        postman
+        drawio
+        ventoy-full-gtk
+        sfxr
+        libreoffice
+        teams-for-linux
+        tor-browser
+
+        nur
         yaziPlugins
         tmuxPlugins
         vimPlugins
@@ -139,6 +187,8 @@ let
         ;
       brave = common.wrapOffload brave;
       hyprsysteminfo = common.wrap hyprsysteminfo;
+      obs-studio = common.wrapOffload obs-studio;
+      discord = common.wrapOffload discord;
     });
 in
 {
@@ -223,25 +273,25 @@ in
     PODMAN_COMPOSE_PROVIDER = "${packages.podman-compose}/bin/podman-compose";
   };
   home.packages =
-    with pkgs;
+    with packages;
     let
       hyprlandExtra = lib.lists.optionals common.hyprlandEnabled [
         wev
-        packages.uwsm
-        packages.hyprshot
-        packages.hyprpicker
-        packages.wofi-emoji
-        packages.wl-clipboard
-        packages.hyprsysteminfo
+        uwsm
+        hyprshot
+        hyprpicker
+        wofi-emoji
+        wl-clipboard
+        hyprsysteminfo
       ];
       yaziExtra = lib.lists.optionals config.programs.yazi.enable [
         imagemagick
         exiftool
         ueberzugpp
-        packages.hexyl
-        packages.glow
-        packages.eza
-        packages.wl-clipboard
+        hexyl
+        glow
+        eza
+        wl-clipboard
       ];
       podmanExtra = lib.lists.optional config.services.podman.enable packages.podman-compose;
     in
@@ -290,17 +340,17 @@ in
       alsa-tools
       alsa-lib
       alsa-plugins
-      packages.openal
-      packages.pipewire
-      packages.wireplumber
-      packages.pwvucontrol
-      packages.helvum
-      packages.umu-launcher-unwrapped
-      packages.brightnessctl
-      packages.ncdu
-      packages.brave
-      (common.wrapOffload obs-studio)
-      (common.wrapOffload discord)
+      openal
+      pipewire
+      wireplumber
+      pwvucontrol
+      helvum
+      umu-launcher-unwrapped
+      brightnessctl
+      ncdu
+      brave
+      obs-studio
+      discord
     ];
   home.file = common.mkMerge (
     [

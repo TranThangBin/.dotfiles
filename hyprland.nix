@@ -17,10 +17,11 @@
   pkillBin,
 }:
 let
+  catppuccin-mocha = import ./catppuccin-mocha.nix;
+  pink = catppuccin-mocha.pink;
+  surface0 = catppuccin-mocha.surface0;
+  flamingo = catppuccin-mocha.flamingo;
   mainMod = "SUPER";
-  flamingo = "rgb(f2cdcd)";
-  pink = "rgb(f5c2e7)";
-  surface0 = "rgb(313244)";
   clipboard = {
     picker = "${clipboardPickerScript}";
     delete = "${clipboardDeleteScript}";
@@ -50,7 +51,8 @@ in
 
     monitor = [
       ",preferred,auto,1"
-      "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
+      "HDMI-A-1,preferred,auto,1"
+      # "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
     ];
 
     general = {

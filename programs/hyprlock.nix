@@ -1,13 +1,13 @@
 let
-  red = "rgb(f38ba8)";
-  yellow = "rgb(f9e2af)";
-  text = "rgb(cdd6f4)";
-  textAlpha = "cdd6f4";
-  surface0 = "rgb(313244)";
-  base = "rgb(1e1e2e)";
-
-  accent = "rgb(cba6f7)";
-  accentAlpha = "cba6f7";
+  catppuccin-mocha = import ../catppuccin-mocha.nix;
+  base = catppuccin-mocha.base;
+  text = catppuccin-mocha.text;
+  textAlpha = catppuccin-mocha.textAlpha;
+  accent = catppuccin-mocha.mauve;
+  accentAlpha = catppuccin-mocha.mauveAlpha;
+  surface0 = catppuccin-mocha.surface0;
+  red = catppuccin-mocha.red;
+  yellow = catppuccin-mocha.yellow;
   font = "FiraMono Nerd Font Mono";
 in
 {

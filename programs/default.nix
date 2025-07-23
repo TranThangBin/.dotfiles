@@ -172,7 +172,7 @@
   wofi = {
     style = ''
       @import url("${../common.css}");
-      @import url("${../catpuccin-mocha.css}");
+      @import url("${../catppuccin-mocha.css}");
       @import url("${./wofi.css}");
     '';
     settings = {
