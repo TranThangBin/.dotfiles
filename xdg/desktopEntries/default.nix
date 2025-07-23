@@ -2,7 +2,7 @@
   mkMerge,
   firefox,
   gamesDir,
-  minecraft,
+  minecraftScript,
   umuConfigDir,
   umu-launcher-unwrapped,
 }:
@@ -13,7 +13,7 @@ mkMerge [
   (import ./games.nix {
     inherit
       gamesDir
-      minecraft
+      minecraftScript
       umuConfigDir
       umu-launcher-unwrapped
       ;

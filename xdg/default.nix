@@ -2,7 +2,7 @@
   mkMerge,
   firefox,
   gamesDir,
-  minecraft,
+  minecraftScript,
   umuConfigDir,
   umu-launcher-unwrapped,
   pipewire,
@@ -14,7 +14,7 @@
       mkMerge
       firefox
       gamesDir
-      minecraft
+      minecraftScript
       umuConfigDir
       umu-launcher-unwrapped
       ;

@@ -1,6 +1,6 @@
 {
   gamesDir,
-  minecraft,
+  minecraftScript,
   umuConfigDir,
   umu-launcher-unwrapped,
 }:
@@ -16,7 +16,7 @@ in
     name = "Legacy Launcher";
     genericName = "Minecraft";
     icon = ./desktop-icons/legacy-launcher.png;
-    exec = "${minecraft}";
+    exec = "${minecraftScript}";
   };
   Karlson = gameEntry // {
     name = "Karlson";

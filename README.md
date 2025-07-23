@@ -41,3 +41,21 @@ nix --extra-experimental-features "nix-command flakes" run home-manager/master -
 ```
 
 Relaunch your shell and we can use `home-manager --flake $DOTFILES_DIR switch --impure` in future rebuild
+
+## About Nvidia GPU
+
+### Install Nvidia driver
+
+Follow the guide from [korvahannu/arch-nvidia-drivers-installation-guide](https://github.com/korvahannu/arch-nvidia-drivers-installation-guide)
+
+### Post installation
+
+Follow [this](https://download.nvidia.com/XFree86/Linux-x86_64/435.17/README/powermanagement.html) document.
+
+Enable these services:
+
+```bash
+sudo systemctl enable nvidia-suspend.service
+sudo systemctl enable nvidia-hibernate.service
+sudo systemctl enable nvidia-resume.service
+```

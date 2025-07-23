@@ -348,7 +348,7 @@ in
       inherit yaziFlavors;
       inherit (config.home) username;
       inherit (config.xdg) configHome;
-      inherit (config.lib.scripts) wofiUwsmWrapped;
+      inherit (config.lib.scripts) wofiScript;
       inherit (binaries) mktempBin sudoBin;
       inherit (packages)
         uwsm
@@ -483,10 +483,10 @@ in
         ;
       inherit (binaries) pkillBin;
       inherit (config.lib.scripts)
-        wofiUwsmWrapped
-        clipboardPicker
-        clipboardDelete
-        clipboardWipe
+        wofiScript
+        clipboardPickerScript
+        clipboardDeleteScript
+        clipboardWipeScript
         ;
       inherit (packages)
         uwsm
@@ -505,7 +505,7 @@ in
   xdg = mkMerge [
     (import ./xdg {
       inherit mkMerge gamesDir umuConfigDir;
-      inherit (config.lib.scripts) minecraft;
+      inherit (config.lib.scripts) minecraftScript;
       inherit (packages)
         firefox
         umu-launcher-unwrapped

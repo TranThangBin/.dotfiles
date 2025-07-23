@@ -55,7 +55,7 @@
   brave,
   wireplumber,
   ncdu,
-  wofiUwsmWrapped,
+  wofiScript,
   mktempBin,
   sudoBin,
 }:
@@ -144,7 +144,7 @@
       brave
       wireplumber
       ncdu
-      wofiUwsmWrapped
+      wofiScript
       ;
   };
   zoxide.enableZshIntegration = true;

@@ -3,10 +3,10 @@
   ghostty,
   btop,
   yazi,
-  wofiUwsmWrapped,
-  clipboardPicker,
-  clipboardDelete,
-  clipboardWipe,
+  wofiScript,
+  clipboardPickerScript,
+  clipboardDeleteScript,
+  clipboardWipeScript,
   hyprshot,
   wlogout,
   hyprpicker,
@@ -22,9 +22,9 @@ let
   pink = "rgb(f5c2e7)";
   surface0 = "rgb(313244)";
   clipboard = {
-    picker = "${clipboardPicker}";
-    delete = "${clipboardDelete}";
-    wipe = "${clipboardWipe}";
+    picker = "${clipboardPickerScript}";
+    delete = "${clipboardDeleteScript}";
+    wipe = "${clipboardWipeScript}";
   };
   screenshot = {
     save = {
@@ -98,7 +98,7 @@ in
         "${mainMod}, Return, exec, ${uwsm}/bin/uwsm-app ${ghostty}/bin/ghostty"
         "${mainMod}, R, exec, ${uwsm}/bin/uwsm-app ${btop}/share/applications/btop.desktop"
         "${mainMod}, E, exec, ${uwsm}/bin/uwsm-app ${yazi}/share/applications/yazi.desktop"
-        "${mainMod}, Space, exec, ${wofiUwsmWrapped}"
+        "${mainMod}, Space, exec, ${wofiScript}"
         "${mainMod} SHIFT, E, exec, ${wlogout}/bin/wlogout"
         "${mainMod}, C, exec, ${hyprpicker}/bin/hyprpicker"
         "${mainMod} SHIFT, Space, exec, ${wofi-emoji}/bin/wofi-emoji"
