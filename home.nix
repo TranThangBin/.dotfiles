@@ -154,6 +154,7 @@ let
         libreoffice
         teams-for-linux
         tor-browser
+        jetbrains
 
         nur
         yaziPlugins
@@ -212,6 +213,7 @@ in
         "rar"
         "ventoy-gtk3"
         "corefonts"
+        "rider"
       ];
     permittedInsecurePackages = [ "ventoy-gtk3-1.1.05" ];
   };
@@ -351,6 +353,7 @@ in
       brave
       obs-studio
       discord
+      jetbrains.rider
     ];
   home.file = common.mkMerge (
     [
@@ -384,6 +387,10 @@ in
             "clipboard-wipe.sh" = [
               "${wofi}/bin/wofi"
               "${cliphist}/bin/cliphist"
+            ];
+            "unitynvim.sh" = [
+              "${neovim}/bin/nvim"
+              "${neovide}/bin/neovide"
             ];
           };
         in
