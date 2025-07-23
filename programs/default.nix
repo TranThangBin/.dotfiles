@@ -171,6 +171,7 @@
   thunderbird.profiles.${username}.isDefault = true;
   wofi = {
     style = ''
+      @import url("${../common.css}");
       @import url("${../catpuccin-mocha.css}");
       @import url("${./wofi.css}");
     '';

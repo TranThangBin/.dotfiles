@@ -13,9 +13,9 @@ mkMerge [
   (import ./games.nix {
     inherit
       gamesDir
-      minecraftScript
       umuConfigDir
       umu-launcher-unwrapped
+      minecraftScript
       ;
   })
 ]

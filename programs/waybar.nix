@@ -45,6 +45,7 @@ in
 {
   systemd.enable = true;
   style = ''
+    @import url("${../common.css}");
     @import url("${../catpuccin-mocha.css}");
     @import url("${./waybar.css}");
   '';

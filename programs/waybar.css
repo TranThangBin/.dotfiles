@@ -1,19 +1,9 @@
 @define-color surface0 rgba(49, 50, 68, 0.8);
 @define-color surface3 rgba(137, 180, 250, 0.8);
 
-* {
-	font-family:
-		FiraCode Nerd Font Mono,
-		Noto Sans Mono CJK JP,
-		Noto Sans Mono CJK HK,
-		Noto Sans Mono CJK KR,
-		Noto Sans Mono CJK SC,
-		Noto Sans Mono CJK TC;
+#waybar {
 	font-size: 18px;
 	min-height: 0;
-}
-
-#waybar {
 	background: transparent;
 	color: @text;
 	margin: 5px 5px;
@@ -181,9 +171,13 @@
 	color: @red;
 }
 
+tooltip {
+	font-size: 16px;
+}
 menu separator {
 	background-color: @text;
 }
 menuitem {
+	font-size: 16px;
 	padding: 5px;
 }

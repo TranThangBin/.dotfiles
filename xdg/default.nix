@@ -14,9 +14,9 @@
       mkMerge
       firefox
       gamesDir
-      minecraftScript
       umuConfigDir
       umu-launcher-unwrapped
+      minecraftScript
       ;
   };
 }
