@@ -22,6 +22,8 @@ let
   surface0 = catppuccin-mocha.surface0;
   flamingo = catppuccin-mocha.flamingo;
   mainMod = "SUPER";
+  mainMonitor = "eDP-2";
+  hdmiMonitor = "HDMI-A-1";
   clipboard = {
     picker = "${clipboardPickerScript}";
     delete = "${clipboardDeleteScript}";
@@ -51,7 +53,7 @@ in
 
     monitor = [
       ",preferred,auto,1"
-      "HDMI-A-1,preferred,auto,1"
+      "${hdmiMonitor},preferred,auto,1"
       # "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
     ];
 
@@ -188,6 +190,19 @@ in
     bindc = [
       "Caps_Lock, Caps_Lock, exec, ${swayosd}/bin/swayosd-client --caps-lock"
       "Mod2, Num_Lock, exec, ${swayosd}/bin/swayosd-client --num-lock"
+    ];
+
+    workspace = [
+      "1, monitor:${mainMonitor}, default:true"
+      "2, monitor:${mainMonitor}, default:true"
+      "3, monitor:${mainMonitor}, default:true"
+      "4, monitor:${mainMonitor}, default:true"
+      "5, monitor:${mainMonitor}, default:true"
+      "6, monitor:${hdmiMonitor}, default:true"
+      "7, monitor:${hdmiMonitor}, default:true"
+      "8, monitor:${hdmiMonitor}, default:true"
+      "9, monitor:${hdmiMonitor}, default:true"
+      "10, monitor:${hdmiMonitor}, default:true"
     ];
 
     windowrulev2 = [
