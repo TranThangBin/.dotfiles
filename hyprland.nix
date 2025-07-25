@@ -52,9 +52,9 @@ in
     master.new_status = "master";
 
     monitor = [
-      ",preferred,auto,1"
+      "${mainMonitor},preferred,auto,1"
       "${hdmiMonitor},preferred,auto,1"
-      # "HDMI-A-1,1920x1080,auto,1,mirror,eDP-2"
+      # "${hdmiMonitor},preferred,auto,1,mirror,${mainMonitor}"
     ];
 
     general = {

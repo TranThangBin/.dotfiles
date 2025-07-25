@@ -8,8 +8,7 @@
         environment="your wayland environment"
         [[ -f "${configHome}/uwsm/default-id" ]] && read -r default_id < ${configHome}/uwsm/default-id
         [[ -n "$default_id" ]] && environment="''${default_id%.*}"
-        printf "Do you want to start %s? (Y/n): " "$environment"
-        read -rn 1 answer
+        read -p "Do you want to start $environment? (Y/n): " -rn 1 answer
         echo
         [[ "$answer" = "Y" ]] && exec ${uwsm}/bin/uwsm start default
         [[ "$answer" = "n" ]] && ${uwsm}/bin/uwsm select && exec ${uwsm}/bin/uwsm start default

@@ -7,12 +7,10 @@ NEOVIDE_BIN="$2"
 FILE="$3"
 LINE="$4"
 
-shift 4
-
 PIPE="$PWD/unitynvim"
 
 if [[ -S "$PIPE" ]]; then
-    "$NEOVIM_BIN" --server "$PIPE" --remote-send "<C-\><C-n>:n${FILE}<CR>${LINE}G^" "$@"
+    "$NEOVIM_BIN" --server "$PIPE" --remote-send "<C-\><C-n>:n${FILE}<CR>${LINE}gg^"
 else
-    "$NEOVIDE_BIN" "$FILE" -- --listen "$PIPE" "$@"
+    "$NEOVIDE_BIN" "$FILE" -- --listen "$PIPE"
 fi

@@ -68,6 +68,7 @@ require("conform").setup({
 		bash = { "shfmt" },
 		nix = { "nixfmt" },
 		templ = { "templ" },
+		cs = { "csharpier" },
 	},
 })
 

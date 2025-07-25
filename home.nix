@@ -14,6 +14,7 @@ let
     inherit (config.lib.nixGL) wrap wrapOffload;
     inherit (config.systemd.user) systemctlPath;
 
+    scriptDir = ".local/bin";
     preferedWallpaper = ./wallpapers/Snow-valley.jpg;
     preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
     umuConfigDir = "${gamesDir}/umu/config";
@@ -24,18 +25,25 @@ let
     ghosttyBackgroundOpacity = config.programs.ghostty.settings.background-opacity;
   };
 
-  scripts = builtins.mapAttrs (name: value: common.homeDirectory + "/" + value) (
-    let
-      file = config.home.file;
-    in
-    {
-      minecraftScript = file.".local/bin/run-minecraft.sh".target;
-      wofiScript = file.".local/bin/run-wofi-uwsm-wrapped.sh".target;
-      clipboardPickerScript = file.".local/bin/run-clipboard-picker.sh".target;
-      clipboardDeleteScript = file.".local/bin/run-clipboard-delete.sh".target;
-      clipboardWipeScript = file.".local/bin/run-clipboard-wipe.sh".target;
-    }
-  );
+  scripts =
+    builtins.mapAttrs
+      (
+        name: value:
+        builtins.concatStringsSep "" [
+          common.homeDirectory
+          "/"
+          config.home.file."${common.scriptDir}/run-${value}".target
+        ]
+      )
+      ({
+        minecraftScript = "minecraft.sh";
+        wofiScript = "wofi-uwsm-wrapped.sh";
+        clipboardPickerScript = "clipboard-picker.sh";
+        clipboardDeleteScript = "clipboard-delete.sh";
+        clipboardWipeScript = "clipboard-wipe.sh";
+        mountSmbScript = "mount-smb.sh";
+        codeRunScript = "code-run.sh";
+      });
 
   binaries = builtins.listToAttrs (
     builtins.map
@@ -52,6 +60,12 @@ let
         "/usr/bin/hyprlock"
         "/usr/bin/hyprctl"
         "/usr/bin/pkill"
+        "/usr/bin/chmod"
+        "/usr/bin/mkdir"
+        "/usr/bin/rm"
+        "/usr/bin/gcc"
+        "/usr/bin/g++"
+        "/usr/bin/python3"
       ]
   );
 
@@ -74,6 +88,7 @@ let
       mpvpaper = mpvpaper.package;
       java = java.package;
       wofi = wofi.package;
+      go = go.package;
     })
     // (with config.services; {
       easyeffects = easyeffects.package;
@@ -164,8 +179,9 @@ let
         ruff
         nil
         nixfmt-rfc-style
-        lua-language-server
         roslyn-ls
+        csharpier
+        lua-language-server
         stylua
         ccls
         prettierd
@@ -261,7 +277,6 @@ in
   home.username = "trant";
   home.homeDirectory = "/home/trant";
   home.stateVersion = "25.05";
-  home.sessionVariables.DOTFILES_DIR = "${common.homeDirectory}/.dotfiles";
   home.pointerCursor.gtk.enable = true;
   home.pointerCursor.hyprcursor.enable = common.hyprlandEnabled;
   home.pointerCursor = {
@@ -269,8 +284,14 @@ in
     package = pkgs.dracula-theme;
     size = 28;
   };
-  home.shellAliases.docker = "${packages.podman}/bin/podman";
+  home.shellAliases = {
+    docker = "${packages.podman}/bin/podman";
+    mount-smb = scripts.mountSmbScript;
+    code-run = scripts.codeRunScript;
+  };
   home.sessionVariables = {
+    DOTFILES_DIR = "$HOME/.dotfiles";
+    SCRIPT_DIR = "$HOME/${common.scriptDir}";
     DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
     PODMAN_COMPOSE_PROVIDER = "${packages.podman-compose}/bin/podman-compose";
   };
@@ -396,17 +417,33 @@ in
               "${neovim}/bin/nvim"
               "${neovide}/bin/neovide"
             ];
+            "mount-smb.sh" = with binaries; [
+              mktempBin
+              chmodBin
+              sudoBin
+              mkdirBin
+              "${cifs-utils}/bin/mount.cifs"
+              rmBin
+            ];
+            "code-run.sh" = with binaries; [
+              mktempBin
+              gccBin
+              (binaries."g++Bin")
+              "${go}/bin/go"
+              python3Bin
+              rmBin
+            ];
           };
         in
         [
           {
-            ".local/bin/${scriptFile}" = {
+            "${common.scriptDir}/${scriptFile}" = {
               executable = true;
               source = "${./scripts}/${scriptFile}";
             };
           }
           {
-            ".local/bin/run-${scriptFile}" = {
+            "${common.scriptDir}/run-${scriptFile}" = {
               executable = true;
               text = ''
                 #!/usr/bin/env bash

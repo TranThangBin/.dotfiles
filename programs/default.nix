@@ -61,6 +61,7 @@
 }:
 {
   hyprlock = import ./hyprlock.nix;
+  thunderbird.profiles.${username}.isDefault = true;
   firefox = import ./firefox.nix {
     inherit username nur;
   };
@@ -168,7 +169,6 @@
       wineserver
     '';
   };
-  thunderbird.profiles.${username}.isDefault = true;
   wofi = {
     style = ''
       @import url("${../common.css}");
