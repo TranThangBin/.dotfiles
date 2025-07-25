@@ -75,7 +75,7 @@ py)
     ;;
 esac
 
-command -v "$tool" >/dev/null && echo "ERROR: $tool is not in PATH" && "$RM_BIN" "$tempfile" && exit 1
+! command -v "$tool" >/dev/null && echo "ERROR: $tool is not in PATH" && "$RM_BIN" "$tempfile" && exit 1
 
 if [[ -n "$compileCmd" ]] && eval "$compileCmd"; then
     execCmd="$tempfile"

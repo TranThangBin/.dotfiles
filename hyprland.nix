@@ -44,6 +44,8 @@ let
 in
 {
   settings = {
+    include = "~/.config/hypr/hyprcommon.conf";
+
     animations = {
       enabled = true;
       animation = "workspaces, 1, 8, default, fade";

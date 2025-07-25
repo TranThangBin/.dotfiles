@@ -96,6 +96,7 @@
       p.toml
       p.gitcommit
       p.prolog
+      p.hyprlang
     ]))
     plainline
   ];
