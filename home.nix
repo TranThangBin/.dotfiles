@@ -41,7 +41,7 @@ let
     builtins.concatStringsSep "" [
       common.homeDirectory
       "/"
-      config.home.file."${common.scriptDir}/run-${value}".target
+      "${common.scriptDir}/run-${value}"
     ]
   ) scriptAliases;
 
@@ -62,7 +62,7 @@ let
   };
 in
 {
-  nix.package = pkgs.nix;
+  nix.package = packages.nix;
 
   nix.settings = {
     experimental-features = [
@@ -118,7 +118,7 @@ in
   ];
 
   nixGL = {
-    packages = pkgs.nixgl;
+    packages = packages.nixgl;
     defaultWrapper = "mesa";
     offloadWrapper = "nvidiaPrime";
     installScripts = [
@@ -248,7 +248,7 @@ in
             executable = true;
             text = ''
               #!/usr/bin/env bash
-              ${common.homeDirectory}/${config.home.file.".local/bin/${scriptFile}".target} \
+              ${common.homeDirectory}/${config.home.file."${common.scriptDir}/${scriptFile}".target} \
                   ${builtins.concatStringsSep " " scriptDependencies.${scriptFile}} "$@"
             '';
           };
@@ -297,7 +297,7 @@ in
       neovide.enable = true;
     }
     {
-      hyprlock.package = pkgs.emptyDirectory; # Manage hyprlock with your os package manager
+      hyprlock.package = packages.emptyDirectory; # Manage hyprlock with your os package manager
       firefox.package = common.wrapOffload pkgs.firefox;
       kitty.package = common.wrap pkgs.kitty;
       ghostty.package = common.wrap pkgs.ghostty;
@@ -497,7 +497,6 @@ in
         extraPortals = with packages; [ xdg-desktop-portal-termfilechooser ];
       };
       configFile = {
-        "hypr/hyprcommon.conf".enable = common.hyprland.enable;
         "uwsm/env".enable = common.hyprland.enable;
         "uwsm/env-hyprland".enable = common.hyprland.enable;
         "systemd/user/network-manager-applet.service.d/override.conf".enable =
@@ -520,7 +519,7 @@ in
       inputMethod = {
         enable = true;
         type = "fcitx5";
-        fcitx5.fcitx5-with-addons = pkgs.fcitx5-with-addons;
+        fcitx5.fcitx5-with-addons = packages.fcitx5-with-addons;
         fcitx5.waylandFrontend = common.hyprland.enable;
       };
     }
@@ -532,22 +531,22 @@ in
   qt = {
     platformTheme = {
       name = "qt5ct";
-      package = pkgs.libsForQt5.qt5ct;
+      package = packages.libsForQt5.qt5ct;
     };
     style = {
       name = "Darkly";
-      package = pkgs.darkly-qt5;
+      package = packages.darkly-qt5;
     };
   };
 
   gtk = {
     theme = {
       name = "Dracula";
-      package = pkgs.dracula-theme;
+      package = packages.dracula-theme;
     };
     iconTheme = {
       name = "Dracula";
-      package = pkgs.dracula-icon-theme;
+      package = packages.dracula-icon-theme;
     };
   };
 }

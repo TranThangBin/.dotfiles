@@ -33,9 +33,10 @@
     "${podman-compose}/bin/podman-compose"
   ];
   hyprpaper.settings = {
-    preload = "${preferedWallpaper}";
-    wallpaper = ",${preferedWallpaper}";
+    "$hyprpaperBg" = "${preferedWallpaper}";
     ipc = "off";
+    preload = "$hyprpaperBg";
+    wallpaper = ",$hyprpaperBg";
   };
   swaync = {
     settings.timeout = 5;

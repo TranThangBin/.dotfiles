@@ -53,6 +53,7 @@
     ncdu
     wl-clipboard
     brightnessctl
+    fcitx5-with-addons
     fcitx5-unikey
     fcitx5-tokyonight
     umu-launcher-unwrapped
@@ -70,6 +71,8 @@
     alsa-plugins
     scrcpy
 
+    emptyDirectory
+    nix
     templ
     zig
     rustup
@@ -101,8 +104,13 @@
     teams-for-linux
     tor-browser
     jetbrains
+    darkly-qt5
+    dracula-theme
+    dracula-icon-theme
 
+    libsForQt5
     nur
+    nixgl
     yaziPlugins
     tmuxPlugins
     vimPlugins
