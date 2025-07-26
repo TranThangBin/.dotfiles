@@ -1,22 +1,22 @@
 {
-  mkMerge,
-  firefox,
-  gamesDir,
-  minecraftScript,
-  umuConfigDir,
-  umu-launcher-unwrapped,
-  pipewire,
+  common,
+  packages,
+  legacyLauncher,
 }:
 {
-  configFile = import ./configFile { inherit mkMerge pipewire; };
+  configFile = import ./configFile {
+    inherit (common) mkMerge dotfilesDir scriptPath;
+    inherit (packages) pipewire;
+  };
   desktopEntries = import ./desktopEntries {
-    inherit
-      mkMerge
+    inherit legacyLauncher;
+    inherit (common) mkMerge gamesDir;
+    inherit (packages)
       firefox
-      gamesDir
-      umuConfigDir
       umu-launcher-unwrapped
-      minecraftScript
+      toybox
+      java
+      openal
       ;
   };
 }

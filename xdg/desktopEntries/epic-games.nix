@@ -1,4 +1,4 @@
-{ umu-launcher-unwrapped, umuConfigDir }:
+{ gamesDir, umuRun }:
 let
   gameEntry = {
     type = "Application";
@@ -9,7 +9,13 @@ in
 {
   EpicGamesStore = gameEntry // {
     name = "Epic Games Launcher";
-    icon = "${./desktop-icons/Epic_Games_logo.svg}";
-    exec = "${umu-launcher-unwrapped}/bin/umu-run --config ${umuConfigDir}/egs.toml";
+    icon = "${gamesDir}/epic-games-store/drive_c/Program Files (x86)/Epic Games/Launcher/Portal/SysFiles/default_toast_epic_logo_white.png";
+    exec =
+      (umuRun {
+        store = "egs";
+        winePrefix = "${gamesDir}/epic-games-store";
+        exe = "${gamesDir}/epic-games-store/drive_c/Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe";
+      })
+      + "-opengl -SkipBuildPatchPrereq";
   };
 }

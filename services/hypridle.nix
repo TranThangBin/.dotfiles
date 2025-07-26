@@ -1,19 +1,18 @@
 {
-  pidofBin,
-  hyprlockBin,
-  systemd,
-  hyprctlBin,
   systemctlPath,
+  systemd,
+  hyprland,
   brightnessctl,
   playerctl,
+  toybox,
 }:
 {
   settings = {
-    "$pidofBin" = pidofBin;
-    "$hyprctlBin" = hyprctlBin;
+    "$pidofBin" = "${toybox}/bin/pidof";
+    "$hyprctlBin" = "${hyprland}/bin/hyprctl";
     "$loginctlBin" = "${systemd}/bin/loginctl";
     "$playerctlBin" = "${playerctl}/bin/playerctl";
-    "$hyprlockBin" = hyprlockBin;
+    "$hyprlockBin" = "${/usr/bin/hyprlock}";
     "$brightnessctlBin" = "${brightnessctl}/bin/brightnessctl";
     "$systemctlBin" = systemctlPath;
 

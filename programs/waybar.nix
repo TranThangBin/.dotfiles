@@ -4,7 +4,6 @@
   helvum,
   easyeffects,
   btop,
-  wofiScript,
   kitty,
   ghostty,
   yazi,
@@ -72,7 +71,7 @@ in
       "custom/menu" = {
         format = "<big>󰣇</big>";
         tooltip-format = "Left click to open the apps menu\nRight click for more options";
-        on-click = "${wofiScript}";
+        on-click = "$SCRIPT_DIR/run-wofi-uwsm-wrapped.sh";
         menu = "on-click-right";
         menu-file = "${./waybar-user-menu.xml}";
         menu-actions = {

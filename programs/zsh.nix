@@ -1,8 +1,4 @@
-{
-  fastfetch,
-  sudoBin,
-  mktempBin,
-}:
+{ fastfetch }:
 {
   oh-my-zsh.enable = true;
   enableCompletion = true;

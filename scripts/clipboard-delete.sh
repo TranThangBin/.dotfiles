@@ -1,6 +1,8 @@
-CLIPHIST_BIN="$1"
-WOFI_BIN="$2"
+cliphist="$SCRIPT_DIR/dependencies/bin/cliphist"
+wofi="$SCRIPT_DIR/dependencies/bin/wofi"
 
-"$CLIPHIST_BIN" list |
-    "$WOFI_BIN" -S dmenu -p 'Clipboard delete:' |
-    "$CLIPHIST_BIN" delete
+prompt="Clipboard delete:"
+
+"$cliphist" list |
+    "$wofi" -S dmenu -p "$prompt" |
+    "$cliphist" delete

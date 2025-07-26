@@ -7,58 +7,44 @@
   ...
 }:
 let
-  common = rec {
-    inherit (config.home) username homeDirectory;
-    inherit (config.xdg) configHome;
+  common = {
+    inherit (config.home) username;
     inherit (lib) mkMerge;
     inherit (config.lib.nixGL) wrap wrapOffload;
     inherit (config.systemd.user) systemctlPath;
 
-    scriptDir = ".local/bin";
+    dotfilesDir = "$HOME/.dotfiles";
+    scriptPath = "${config.home.homeDirectory}/.local/bin";
+    gamesDir = "${config.home.homeDirectory}/Games";
+
     preferedWallpaper = ./wallpapers/Snow-valley.jpg;
     preferedVideopaper = "https://youtu.be/YhUPi6-MQNE?si=zS7PKwOmwxQeGQhf";
-    umuConfigDir = "${gamesDir}/umu/config";
-    gamesDir = "${config.home.homeDirectory}/Games";
-    hyprland = config.wayland.windowManager.hyprland;
-    yazi = config.programs.yazi;
+
     waylandSystemdTarget = config.wayland.systemd.target;
+
     kittyBackgroundOpacity = config.programs.kitty.settings.background_opacity;
     ghosttyBackgroundOpacity = config.programs.ghostty.settings.background-opacity;
   };
 
-  scriptAliases = {
-    minecraftScript = "minecraft.sh";
-    wofiScript = "wofi-uwsm-wrapped.sh";
-    clipboardPickerScript = "clipboard-picker.sh";
-    clipboardDeleteScript = "clipboard-delete.sh";
-    clipboardWipeScript = "clipboard-wipe.sh";
-    mountSmbScript = "mount-smb.sh";
-    codeRunScript = "code-run.sh";
-  };
-
-  scripts = builtins.mapAttrs (
-    name: value:
-    builtins.concatStringsSep "" [
-      common.homeDirectory
-      "/"
-      "${common.scriptDir}/run-${value}"
-    ]
-  ) scriptAliases;
-
   packages =
     {
-      xdg-desktop-portal-hyprland = common.hyprland.finalPortalPackage;
+      xdg-desktop-portal-hyprland = config.wayland.windowManager.hyprland.finalPortalPackage;
     }
     // import ./packages.nix {
-      inherit pkgs;
-      inherit (config) programs services;
-      inherit (config.lib) nixGL;
+      inherit config lib pkgs;
     };
 
-  binaries = import ./binaries.nix;
-
-  scriptDependencies = import ./script-dependencies.nix {
-    inherit packages binaries legacyLauncher;
+  scriptDependencies = {
+    inherit (packages.hyprlandExtra) uwsm wl-clipboard;
+    inherit (packages)
+      wofi
+      toybox
+      cliphist
+      neovim
+      neovide
+      cifs-utils
+      go
+      ;
   };
 in
 {
@@ -131,7 +117,7 @@ in
   home.homeDirectory = "/home/trant";
   home.stateVersion = "25.05";
   home.pointerCursor.gtk.enable = true;
-  home.pointerCursor.hyprcursor.enable = common.hyprland.enable;
+  home.pointerCursor.hyprcursor.enable = config.wayland.windowManager.hyprland.enable;
   home.pointerCursor = {
     name = "Dracula-cursors";
     package = pkgs.dracula-theme;
@@ -139,42 +125,14 @@ in
   };
   home.shellAliases = {
     docker = "${packages.podman}/bin/podman";
-    mount-smb = scripts.mountSmbScript;
-    code-run = scripts.codeRunScript;
   };
   home.sessionVariables = {
-    DOTFILES_DIR = "$HOME/.dotfiles";
-    SCRIPT_DIR = "$HOME/${common.scriptDir}";
     DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
-    PODMAN_COMPOSE_PROVIDER = "${packages.podman-compose}/bin/podman-compose";
+    PODMAN_COMPOSE_PROVIDER = "${packages.podmanExtra.podman-compose}/bin/podman-compose";
   };
   home.packages =
     with packages;
-    let
-      hyprlandExtra = lib.lists.optionals common.hyprland.enable [
-        wev
-        uwsm
-        hyprshot
-        hyprpicker
-        wofi-emoji
-        wl-clipboard
-        hyprsysteminfo
-      ];
-      yaziExtra = lib.lists.optionals common.yazi.enable [
-        imagemagick
-        exiftool
-        ueberzugpp
-        hexyl
-        glow
-        eza
-        wl-clipboard
-      ];
-      podmanExtra = lib.lists.optional config.services.podman.enable packages.podman-compose;
-    in
-    hyprlandExtra
-    ++ yaziExtra
-    ++ podmanExtra
-    ++ [
+    [
       corefonts
       nerd-fonts.fira-code
       noto-fonts
@@ -228,42 +186,35 @@ in
       obs-studio
       discord
       jetbrains.rider
-    ];
+    ]
+    ++ builtins.attrValues (builtins.removeAttrs hyprlandExtra [ "hyprland" ])
+    ++ builtins.attrValues yaziExtra
+    ++ builtins.attrValues podmanExtra;
   home.file = common.mkMerge (
     [
       {
         ".asoundrc".source = "${packages.pipewire}/share/alsa/alsa.conf.d/99-pipewire-default.conf";
+        "${common.scriptPath}/dependencies".source = pkgs.symlinkJoin {
+          name = "script-dependencies";
+          paths = builtins.attrValues scriptDependencies;
+        };
       }
     ]
-    ++ builtins.concatLists (
-      builtins.map (scriptFile: [
-        {
-          "${common.scriptDir}/${scriptFile}" = {
-            executable = true;
-            source = "${./scripts}/${scriptFile}";
-          };
-        }
-        {
-          "${common.scriptDir}/run-${scriptFile}" = {
-            executable = true;
-            text = ''
-              #!/usr/bin/env bash
-              ${common.homeDirectory}/${config.home.file."${common.scriptDir}/${scriptFile}".target} \
-                  ${builtins.concatStringsSep " " scriptDependencies.${scriptFile}} "$@"
-            '';
-          };
-        }
-      ]) (builtins.attrNames (builtins.readDir ./scripts))
-    )
+    ++ builtins.map (scriptFile: {
+      "${common.scriptPath}/${scriptFile}" = {
+        executable = true;
+        source = "${./scripts}/${scriptFile}";
+      };
+    }) (builtins.attrNames (builtins.readDir ./scripts))
   );
 
   programs = common.mkMerge [
     {
-      hyprlock.enable = common.hyprland.enable;
-      waybar.enable = common.hyprland.enable;
-      wofi.enable = common.hyprland.enable;
-      wlogout.enable = common.hyprland.enable;
-      eza.enable = common.yazi.enable;
+      hyprlock.enable = config.wayland.windowManager.hyprland.enable;
+      waybar.enable = config.wayland.windowManager.hyprland.enable;
+      wofi.enable = config.wayland.windowManager.hyprland.enable;
+      wlogout.enable = config.wayland.windowManager.hyprland.enable;
+      eza.enable = config.programs.yazi.enable;
       home-manager.enable = true;
       firefox.enable = true;
       kitty.enable = true;
@@ -295,6 +246,7 @@ in
       yt-dlp.enable = true;
       neovim.enable = true;
       neovide.enable = true;
+      distrobox.enable = true;
     }
     {
       hyprlock.package = packages.emptyDirectory; # Manage hyprlock with your os package manager
@@ -306,76 +258,18 @@ in
       neovide.package = common.wrap pkgs.neovide;
     }
     (import ./programs {
-      inherit yaziFlavors;
-      inherit (common) username configHome;
-      inherit (scripts) wofiScript;
-      inherit (binaries) mktempBin sudoBin;
-      inherit (packages)
-        uwsm
-        pwvucontrol
-        helvum
-        hyprsysteminfo
-        brave
-        wireplumber
-        ncdu
-        fastfetch
-        zsh
-        btop
-        yazi
-        wlogout
-        firefox
-        kitty
-        ghostty
-        mpv
-        neovide
-        easyeffects
-        swaync
-        playerctl
-        neovim
-        nur
-        hexyl
-        glow
-        eza
-        yaziPlugins
-        tmuxPlugins
-        vimPlugins
-        pyright
-        ruff
-        nil
-        nixfmt-rfc-style
-        lua-language-server
-        roslyn-ls
-        stylua
-        ccls
-        prettierd
-        vscode-langservers-extracted
-        emmet-language-server
-        tailwindcss-language-server
-        typescript-language-server
-        yaml-language-server
-        taplo
-        gopls
-        dockerfile-language-server-nodejs
-        docker-compose-language-service
-        bash-language-server
-        shfmt
-        svelte-language-server
-        rust-analyzer
-        zls
-        tree-sitter
-        gdtoolkit_4
-        ;
+      inherit yaziFlavors common packages;
     })
   ];
 
   services = common.mkMerge [
     {
-      swaync.enable = common.hyprland.enable;
-      cliphist.enable = common.hyprland.enable;
-      hyprpaper.enable = common.hyprland.enable;
-      hypridle.enable = common.hyprland.enable;
-      hyprsunset.enable = common.hyprland.enable;
-      swayosd.enable = common.hyprland.enable;
+      swaync.enable = config.wayland.windowManager.hyprland.enable;
+      cliphist.enable = config.wayland.windowManager.hyprland.enable;
+      hyprpaper.enable = config.wayland.windowManager.hyprland.enable;
+      hypridle.enable = config.wayland.windowManager.hyprland.enable;
+      hyprsunset.enable = config.wayland.windowManager.hyprland.enable;
+      swayosd.enable = config.wayland.windowManager.hyprland.enable;
       playerctld.enable = true;
       psd.enable = true;
       podman.enable = true;
@@ -385,43 +279,14 @@ in
       blueman-applet.enable = true;
     }
     (import ./services {
-      inherit (common)
-        systemctlPath
-        preferedWallpaper
-        waylandSystemdTarget
-        ;
-      inherit (binaries)
-        pidofBin
-        hyprlockBin
-        hyprctlBin
-        ;
-      inherit (packages)
-        podman-compose
-        systemd
-        brightnessctl
-        playerctl
-        swayosd
-        ;
+      inherit common packages;
     })
   ];
 
   systemd = common.mkMerge [
     { user.systemctlPath = "${packages.systemd}/bin/systemctl"; }
     (import ./systemd {
-      inherit (common)
-        mkMerge
-        waylandSystemdTarget
-        preferedVideopaper
-        ;
-      inherit (packages)
-        podman
-        mpvpaper
-        pipewire
-        wireplumber
-        xdg-desktop-portal
-        xdg-desktop-portal-hyprland
-        xdg-desktop-portal-termfilechooser
-        ;
+      inherit common packages;
     })
   ];
 
@@ -433,7 +298,7 @@ in
   ];
 
   wayland.systemd.target =
-    if common.hyprland.enable then
+    if config.wayland.windowManager.hyprland.enable then
       "wayland-session@hyprland.desktop.target"
     else
       "graphical-session.target";
@@ -444,50 +309,19 @@ in
       systemd.enable = false;
     }
     (import ./hyprland.nix {
-      inherit (common)
-        kittyBackgroundOpacity
-        ghosttyBackgroundOpacity
-        ;
-      inherit (binaries) pkillBin;
-      inherit (scripts)
-        wofiScript
-        clipboardPickerScript
-        clipboardDeleteScript
-        clipboardWipeScript
-        ;
-      inherit (packages)
-        uwsm
-        ghostty
-        btop
-        yazi
-        hyprshot
-        wlogout
-        hyprpicker
-        wofi-emoji
-        swayosd
-        ;
+      inherit common packages;
     })
   ];
 
   xdg = common.mkMerge [
     (import ./xdg {
-      inherit (common)
-        mkMerge
-        gamesDir
-        umuConfigDir
-        ;
-      inherit (scripts) minecraftScript;
-      inherit (packages)
-        firefox
-        umu-launcher-unwrapped
-        pipewire
-        ;
+      inherit common packages legacyLauncher;
     })
     {
       userDirs.enable = true;
       portal = {
         enable = true;
-        config = lib.mkIf common.hyprland.enable {
+        config = lib.attrsets.optionalAttrs config.wayland.windowManager.hyprland.enable {
           common = {
             default = [ "hyprland" ];
             "org.freedesktop.impl.portal.FileChooser" = "termfilechooser";
@@ -497,8 +331,8 @@ in
         extraPortals = with packages; [ xdg-desktop-portal-termfilechooser ];
       };
       configFile = {
-        "uwsm/env".enable = common.hyprland.enable;
-        "uwsm/env-hyprland".enable = common.hyprland.enable;
+        "uwsm/env".enable = config.wayland.windowManager.hyprland.enable;
+        "uwsm/env-hyprland".enable = config.wayland.windowManager.hyprland.enable;
         "systemd/user/network-manager-applet.service.d/override.conf".enable =
           config.services.network-manager-applet.enable;
         "systemd/user/hyprpaper.service.d/override.conf".enable = config.services.hyprpaper.enable;
@@ -509,10 +343,7 @@ in
   i18n = common.mkMerge [
     {
       inputMethod.fcitx5 = import ./fcitx5.nix {
-        inherit (packages)
-          fcitx5-unikey
-          fcitx5-tokyonight
-          ;
+        inherit packages;
       };
     }
     {
@@ -520,7 +351,7 @@ in
         enable = true;
         type = "fcitx5";
         fcitx5.fcitx5-with-addons = packages.fcitx5-with-addons;
-        fcitx5.waylandFrontend = common.hyprland.enable;
+        fcitx5.waylandFrontend = config.wayland.windowManager.hyprland.enable;
       };
     }
   ];

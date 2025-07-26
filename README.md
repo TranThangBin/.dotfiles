@@ -50,6 +50,8 @@ Follow the guide from [korvahannu/arch-nvidia-drivers-installation-guide](https:
 
 ### Post installation
 
+#### For Nvidia GPU
+
 Follow [this](https://download.nvidia.com/XFree86/Linux-x86_64/435.17/README/powermanagement.html) document.
 
 Enable these services:
@@ -58,4 +60,16 @@ Enable these services:
 sudo systemctl enable nvidia-suspend.service
 sudo systemctl enable nvidia-hibernate.service
 sudo systemctl enable nvidia-resume.service
+```
+
+#### ufw
+
+Follow [this](https://youtu.be/QxNsyrftJ8I) video by `Chris Titus Tech`.
+
+```bash
+sudo ufw limit 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw default deny incoming
+sudo default allow outgoing
 ```

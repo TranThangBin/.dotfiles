@@ -1,10 +1,9 @@
 {
+  config,
+  lib,
   pkgs,
-  programs,
-  services,
-  nixGL,
 }:
-(with programs; {
+(with config.programs; {
   fastfetch = fastfetch.package;
   zsh = zsh.package;
   btop = btop.package;
@@ -22,7 +21,7 @@
   go = go.package;
   eza = eza.package;
 })
-// (with services; {
+// (with config.services; {
   easyeffects = easyeffects.package;
   swaync = swaync.package;
   podman = podman.package;
@@ -39,9 +38,6 @@
     noto-fonts-cjk-sans
     noto-fonts-color-emoji
 
-    podman-compose
-    hexyl
-    glow
     systemd
     xdg-desktop-portal
     xdg-desktop-portal-termfilechooser
@@ -51,30 +47,24 @@
     pwvucontrol
     openal
     ncdu
-    wl-clipboard
     brightnessctl
     fcitx5-with-addons
     fcitx5-unikey
     fcitx5-tokyonight
     umu-launcher-unwrapped
-    uwsm
-    wev
-    imagemagick
-    exiftool
-    ueberzugpp
-    hyprpicker
-    wofi-emoji
-    hyprshot
     alsa-utils
     alsa-tools
     alsa-lib
     alsa-plugins
     scrcpy
+    toybox
 
+    libgcc
     emptyDirectory
     nix
     templ
     zig
+    python3
     rustup
     swi-prolog
     nodejs_24
@@ -141,8 +131,34 @@
     tree-sitter
     gdtoolkit_4
     ;
-  brave = nixGL.wrapOffload brave;
-  hyprsysteminfo = nixGL.wrap hyprsysteminfo;
-  obs-studio = nixGL.wrapOffload obs-studio;
-  discord = nixGL.wrapOffload discord;
+  brave = config.lib.nixGL.wrapOffload brave;
+  obs-studio = config.lib.nixGL.wrapOffload obs-studio;
+  discord = config.lib.nixGL.wrapOffload discord;
+
+  hyprlandExtra = lib.attrsets.optionalAttrs config.wayland.windowManager.hyprland.enable {
+    inherit
+      hyprland
+      wev
+      uwsm
+      hyprshot
+      hyprpicker
+      wofi-emoji
+      wl-clipboard
+      ;
+    hyprsysteminfo = config.lib.nixGL.wrap hyprsysteminfo;
+  };
+
+  yaziExtra = lib.attrsets.optionalAttrs config.programs.yazi.enable {
+    inherit
+      imagemagick
+      exiftool
+      ueberzugpp
+      hexyl
+      glow
+      eza
+      wl-clipboard
+      ;
+  };
+
+  podmanExtra = lib.attrsets.optionalAttrs config.services.podman.enable { inherit podman-compose; };
 })

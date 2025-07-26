@@ -1,39 +1,26 @@
-{
-  waylandSystemdTarget,
-  podman-compose,
-  systemd,
-  systemctlPath,
-  brightnessctl,
-  playerctl,
-  pidofBin,
-  hyprlockBin,
-  hyprctlBin,
-  preferedWallpaper,
-  swayosd,
-}:
+{ common, packages }:
 {
   hypridle = import ./hypridle.nix {
-    inherit
-      pidofBin
-      hyprlockBin
-      systemd
-      hyprctlBin
-      systemctlPath
+    inherit (common) systemctlPath;
+    inherit (packages.hyprlandExtra) hyprland;
+    inherit (packages)
       brightnessctl
       playerctl
+      systemd
+      toybox
       ;
   };
   easyeffects = import ./easyeffects.nix;
-  cliphist.systemdTargets = waylandSystemdTarget;
+  cliphist.systemdTargets = common.waylandSystemdTarget;
   poweralertd.extraArgs = [
     "-s"
     "-S"
   ];
   podman.settings.containers.network.compose_providers = [
-    "${podman-compose}/bin/podman-compose"
+    "${packages.podmanExtra.podman-compose}/bin/podman-compose"
   ];
   hyprpaper.settings = {
-    "$hyprpaperBg" = "${preferedWallpaper}";
+    "$hyprpaperBg" = "${common.preferedWallpaper}";
     ipc = "off";
     preload = "$hyprpaperBg";
     wallpaper = ",$hyprpaperBg";
@@ -42,5 +29,5 @@
     settings.timeout = 5;
     style = ./swaync.css;
   };
-  swayosd.stylePath = "${swayosd}/etc/xdg/swayosd/style.css";
+  swayosd.stylePath = "${packages.swayosd}/etc/xdg/swayosd/style.css";
 }

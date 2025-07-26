@@ -1,37 +1,27 @@
+{ common, packages }:
 {
-  uwsm,
-  ghostty,
-  btop,
-  yazi,
-  wofiScript,
-  wlogout,
-  hyprpicker,
-  wofi-emoji,
-  clipboardPickerScript,
-  clipboardDeleteScript,
-  clipboardWipeScript,
-  hyprshot,
-  swayosd,
-  kittyBackgroundOpacity,
-  ghosttyBackgroundOpacity,
-  pkillBin,
-}:
-{
-  settings = {
-    "$uwsmAppBin" = "${uwsm}/bin/uwsm-app";
-    "$ghosttyBin" = "${ghostty}/bin/ghostty";
-    "$btopDesktop" = "${btop}/share/applications/btop.desktop";
-    "$yaziDesktop" = "${yazi}/share/applications/yazi.desktop";
-    "$wofiScript" = wofiScript;
-    "$wlogoutBin" = "${wlogout}/bin/wlogout";
-    "$hyprpickerBin" = "${hyprpicker}/bin/hyprpicker";
-    "$wofiEmojiBin" = "${wofi-emoji}/bin/wofi-emoji";
-    "$clipboardPickerScript" = clipboardPickerScript;
-    "$clipboardDeleteScript" = clipboardDeleteScript;
-    "$clipboardWipeScript" = clipboardWipeScript;
-    "$hyprshotBin" = "${hyprshot}/bin/hyprshot";
-    "$pkillBin" = pkillBin;
+  settings = with packages; {
+    "$terminal" = "${hyprlandExtra.uwsm}/bin/uwsm-app ${ghostty}/bin/ghostty";
+    "$resourceMonitor" = "${hyprlandExtra.uwsm}/bin/uwsm-app ${btop}/share/applications/btop.desktop";
+    "$fileExplorer" = "${hyprlandExtra.uwsm}/bin/uwsm-app ${yazi}/share/applications/yazi.desktop";
+    "$logoutMenu" = "${wlogout}/bin/wlogout";
+    "$colorPicker" = "${hyprlandExtra.hyprpicker}/bin/hyprpicker";
+    "$emojiPicker" = "${hyprlandExtra.wofi-emoji}/bin/wofi-emoji";
+    "$screenshotCMD" = "${hyprlandExtra.hyprshot}/bin/hyprshot";
+    "$screenshotRegion" = "$screenshotCMD -m region";
+    "$screenshotWindow" = "$screenshotCMD -m window";
+    "$screenshotOutput" = "$screenshotCMD -m output";
+    "$clipboardScreenshotRegion" = "$screenshotCMD -m region --clipboard-only";
+    "$clipboardScreenshotWindow" = "$screenshotCMD -m window --clipboard-only";
+    "$clipboardScreenshotOutput" = "$screenshotCMD -m output --clipboard-only";
+    "$toggleStatusBar" = "${toybox}/bin/pkill -SIGUSR1 waybar";
     "$swayosdClientBin" = "${swayosd}/bin/swayosd-client";
+    "$launcher" = "$SCRIPT_DIR/wofi-uwsm-wrapped.sh";
+    "$clipboardPicker" = "$SCRIPT_DIR/clipboard-picker.sh";
+    "$clipboardDelete" = "$SCRIPT_DIR/clipboard-delete.sh";
+    "$clipboardWipe" = "$SCRIPT_DIR/clipboard-wipe.sh";
+    "$kittyBackgroundOpacity" = toString common.kittyBackgroundOpacity;
+    "$ghosttyBackgroundOpacity" = toString common.ghosttyBackgroundOpacity;
 
     source = [
       "${./hypr/hyprcat.conf}"

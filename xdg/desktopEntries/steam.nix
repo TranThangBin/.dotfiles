@@ -5,6 +5,7 @@ let
     "1903340" = "Clair Obscur: Expedition 33";
     "582010" = "Monster Hunter: World";
     "1899060" = "Pocket Mirror ~ GoldenerTraum";
+    "3224770" = "Umamusume: Pretty Derby";
   };
 in
 builtins.listToAttrs (

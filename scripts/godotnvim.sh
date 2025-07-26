@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-NEOVIM_BIN="$1"
-NEOVIDE_BIN="$2"
+neovim="$SCRIPT_DIR/dependencies/bin/nvim"
+neovide="$SCRIPT_DIR/dependencies/bin/neovide"
 
 # {file} {Line} {col}
-FILE="$3"
-LINE="$4"
-COL="$5"
+FILE="$1"
+LINE="$2"
+COL="$3"
 
 PIPE="$PWD/godotnvim"
 
 if [[ -S "$PIPE" ]]; then
-    "$NEOVIM_BIN" --server "$PIPE" --remote-send "<C-\><C-n>:n${FILE}<CR>${LINE}gg${COL}|"
+    "$neovim" --server "$PIPE" --remote-send "<C-\><C-n>:n${FILE}<CR>${LINE}gg${COL}|"
 else
-    "$NEOVIDE_BIN" "$FILE" -- --listen "$PIPE"
+    "$neovide" "$FILE" -- --listen "$PIPE"
 fi

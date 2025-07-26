@@ -1,8 +1,10 @@
-CLIPHIST_BIN="$1"
-WOFI_BIN="$2"
-WL_COPY_BIN="$3"
+cliphist="$SCRIPT_DIR/dependencies/bin/cliphist"
+wofi="$SCRIPT_DIR/dependencies/bin/wofi"
+wl_copy="$SCRIPT_DIR/dependencies/bin/wl-copy"
 
-"$CLIPHIST_BIN" list |
-    "$WOFI_BIN" -S dmenu -p 'Clipboard pick:' |
-    "$CLIPHIST_BIN" decode |
-    "$WL_COPY_BIN"
+prompt="Clipboard pick:"
+
+"$cliphist" list |
+    "$wofi" -S dmenu -p "$prompt" |
+    "$cliphist" decode |
+    "$wl_copy"

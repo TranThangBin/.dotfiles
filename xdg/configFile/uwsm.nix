@@ -1,4 +1,8 @@
-{ pipewire }:
+{
+  pipewire,
+  dotfilesDir,
+  scriptPath,
+}:
 let
   GBM_BACKEND = "nvidia-drm";
   __GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -13,6 +17,8 @@ in
   "uwsm/env".text = ''
     export ALSA_PLUGIN_DIR=${pipewire}/lib/alsa-lib
     export ELECTRON_OZONE_PLATFORM_HINT=wayland
+    export DOTFILES_DIR=${dotfilesDir}
+    export SCRIPT_DIR=${scriptPath}
   '';
   "uwsm/env-hyprland".text = ''
     export GBM_BACKEND=${GBM_BACKEND}

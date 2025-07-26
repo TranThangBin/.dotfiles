@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-MKTEMP_BIN="$1"
-CHMOD_BIN="$2"
-SUDO_BIN="$3"
-MKDIR_BIN="$4"
-MOUNT_CIFS_BIN="$5"
-RM_BIN="$6"
+chmod="$SCRIPT_DIR/dependencies/bin/chmod"
+mktemp="$SCRIPT_DIR/dependencies/bin/mktemp"
+mkdir="$SCRIPT_DIR/dependencies/bin/mkdir"
+mount_cifs="$SCRIPT_DIR/dependencies/bin/mount.cifs"
+rm="$SCRIPT_DIR/dependencies/bin/rm"
 
 address=
 mount_point=
@@ -19,16 +18,16 @@ read -rp "Username: " username
 read -rsp "Password: " password
 echo
 
-credfile=$("$MKTEMP_BIN")
-"$CHMOD_BIN" u=rw,go= "$credfile"
+credfile=$("$mktemp")
+"$chmod" u=rw,go= "$credfile"
 {
     echo "username=$username"
     echo "password=$password"
 } >"$credfile"
 
-"$SUDO_BIN" "$MKDIR_BIN" "$mount_point"
-"$SUDO_BIN" "$MOUNT_CIFS_BIN" "$address" "$mount_point" -o "credentials=$credfile"
+sudo "$mkdir" "$mount_point"
+sudo "$mount_cifs" "$address" "$mount_point" -o "credentials=$credfile"
 
-"$SUDO_BIN" -k
+sudo -k
 
-"$RM_BIN" "$credfile"
+"$rm" "$credfile"

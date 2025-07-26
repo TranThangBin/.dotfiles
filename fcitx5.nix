@@ -1,10 +1,10 @@
-{ fcitx5-unikey, fcitx5-tokyonight }:
+{ packages }:
 {
-  addons = [
+  addons = with packages; [
     fcitx5-unikey
     fcitx5-tokyonight
   ];
-  themes.Tokyonight-Storm.theme = "${fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";
+  themes.Tokyonight-Storm.theme = "${packages.fcitx5-tokyonight}/share/fcitx5/themes/Tokyonight-Storm/theme.conf";
   settings.inputMethod = {
     GroupOrder."0" = "Default";
     "Groups/0" = {

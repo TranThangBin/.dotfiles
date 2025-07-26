@@ -1,7 +1,12 @@
-WOFI_BIN="$1"
-CLIPHIST_BIN="$2"
+cliphist="$SCRIPT_DIR/dependencies/bin/cliphist"
+wofi="$SCRIPT_DIR/dependencies/bin/wofi"
 
-confirm=$(echo -e "no\nyes" | "$WOFI_BIN" -S dmenu -p 'Do you want to wipe the clipboard?')
+prompt="Do you want to wipe the clipboard?"
+
+confirm=$({
+    echo no
+    echo yes
+} | "$wofi" -S dmenu -p "$prompt")
 if [[ $confirm = "yes" ]]; then
-    "$CLIPHIST_BIN" wipe
+    "$cliphist" wipe
 fi

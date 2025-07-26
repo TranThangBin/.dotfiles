@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
 
-MKTEMP_BIN="$1"
-GCC_BIN="$2"
-GPP_BIN="$3"
-GO_BIN="$4"
-PYTHON_BIN="$5"
-RM_BIN="$6"
-
 lang=
 source=
 in=
 out=
 
-shift 6
+mktemp="$SCRIPT_DIR/dependencies/bin/mktemp"
+gcc="$SCRIPT_DIR/dependencies/bin/gcc"
+gpp="$SCRIPT_DIR/dependencies/bin/g++"
+go="$SCRIPT_DIR/dependencies/bin/go"
+python="$SCRIPT_DIR/dependencies/bin/python3"
+rm="$SCRIPT_DIR/dependencies/bin/rm"
 
 for arg in "$@"; do
     case "$arg" in
@@ -51,36 +49,36 @@ fi
 tool=
 compileCmd=
 execCmd=
-tempfile=$($MKTEMP_BIN)
+tempfile=$("$mktemp")
 
 case "$lang" in
 c)
-    tool="$GCC_BIN"
+    tool="$gcc"
     compileCmd="$tool -o \"$tempfile\" \"$source\""
     ;;
 cpp)
-    tool="$GPP_BIN"
+    tool="$gpp"
     compileCmd="$tool -o \"$tempfile\" \"$source\""
     ;;
 go)
-    tool="$GO_BIN"
+    tool="$go"
     compileCmd="$tool build -o \"$tempfile\" \"$source\""
     ;;
 py)
-    tool="$PYTHON_BIN"
+    tool="$python"
     execCmd="$tool $source"
     ;;
 *)
-    echo "ERROR: $lang is not supported" && "$RM_BIN" "$tempfile" && exit 1
+    echo "ERROR: $lang is not supported" && "$rm" "$tempfile" && exit 1
     ;;
 esac
 
-! command -v "$tool" >/dev/null && echo "ERROR: $tool is not in PATH" && "$RM_BIN" "$tempfile" && exit 1
+! command -v "$tool" >/dev/null && echo "ERROR: $tool is not in PATH" && "$rm" "$tempfile" && exit 1
 
 if [[ -n "$compileCmd" ]] && eval "$compileCmd"; then
     execCmd="$tempfile"
 else
-    "$RM_BIN" "$tempfile" && exit 1
+    "$rm" "$tempfile" && exit 1
 fi
 
 if [[ -n "$execCmd" ]]; then
@@ -89,4 +87,4 @@ if [[ -n "$execCmd" ]]; then
     eval "$execCmd"
 fi
 
-"$RM_BIN" "$tempfile"
+"$rm" "$tempfile"

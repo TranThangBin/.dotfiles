@@ -1,9 +1,11 @@
-WOFI_BIN="$1"
-UWSM_APP_BIN="$2"
+#!/usr/bin/env bash
 
-app=$("$WOFI_BIN" --show drun --define=drun-print_desktop_file=true)
+wofi="$SCRIPT_DIR/dependencies/bin/wofi"
+uwsm_app="$SCRIPT_DIR/dependencies/bin/uwsm-app"
+
+app=$("$wofi" --show drun --define=drun-print_desktop_file=true)
 if [[ "$app" == *'desktop '* ]]; then
-    "$UWSM_APP_BIN" "''${app%.desktop *}.desktop:''${app#*.desktop }"
+    "$uwsm_app" "''${app%.desktop *}.desktop:''${app#*.desktop }"
 elif [[ "$app" == *'desktop' ]]; then
-    "$UWSM_APP_BIN" "$app"
+    "$uwsm_app" "$app"
 fi

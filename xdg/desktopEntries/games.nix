@@ -1,8 +1,10 @@
 {
   gamesDir,
-  minecraftScript,
-  umuConfigDir,
-  umu-launcher-unwrapped,
+  umuRun,
+  runWithEnv,
+  java,
+  openal,
+  legacyLauncher,
 }:
 let
   gameEntry = {
@@ -16,7 +18,12 @@ in
     name = "Legacy Launcher";
     genericName = "Minecraft";
     icon = ./desktop-icons/legacy-launcher.png;
-    exec = "${minecraftScript}";
+    exec =
+      (runWithEnv [
+        "__GL_THREADED_OPTIMIZATIONS=0"
+        "LD_PRELOAD=${openal}/lib/libopenal.so.1"
+      ])
+      + " ${java}/bin/java -jar ${legacyLauncher}";
   };
   Karlson = gameEntry // {
     name = "Karlson";
@@ -28,32 +35,54 @@ in
     icon = "${gamesDir}/rerun/RERUN_linux_Data/Resources/UnityPlayer.png";
     exec = "${gamesDir}/rerun/RERUN_linux.x86_64";
   };
+  HoYoPlay = gameEntry // {
+    name = "HoYoPlay";
+    icon = "";
+    genericName = "HoYo";
+    exec = umuRun {
+      winePrefix = "${gamesDir}/MiHoYo";
+      exe = "${gamesDir}/MiHoYo/drive_c/Program Files/HoYoPlay/launcher.exe";
+    };
+  };
   ZenlessZoneZero = gameEntry // {
     name = "Zenless Zone Zero";
     genericName = "zzz";
-    icon = ./desktop-icons/zzz.png;
-    exec = "${umu-launcher-unwrapped}/bin/umu-run --config ${umuConfigDir}/zzz.toml";
-  };
-  PlantVsZombiesRH = gameEntry // {
-    name = "PlantVsZombiesRH";
-    genericName = "pvz-fusion";
-    icon = ./desktop-icons/pvz-fusion.jpg;
-    exec = "${umu-launcher-unwrapped}/bin/umu-run --config ${umuConfigDir}/pvz-2.6.toml";
-    actions.V2-3-1 = {
-      name = "Version 2.3.1";
-      exec = "${umu-launcher-unwrapped}/bin/umu-run --config ${umuConfigDir}/pvz-2.3.1.toml";
-    };
-    actions.V2-4-2 = {
-      name = "Version 2.4.2";
-      exec = "${umu-launcher-unwrapped}/bin/umu-run --config ${umuConfigDir}/pvz-2.4.2.toml";
-    };
-    actions.V2-5-1 = {
-      name = "Version 2.5.1";
-      exec = "${umu-launcher-unwrapped}/bin/umu-run --config ${umuConfigDir}/pvz-2.5.1.toml";
-    };
-    actions.V2-6 = {
-      name = "Version 2.6";
-      exec = "${umu-launcher-unwrapped}/bin/umu-run --config ${umuConfigDir}/pvz-2.6.toml";
+    icon = "${gamesDir}/MiHoYo/drive_c/Program Files/HoYoPlay/1.8.0.264/ico/nap_global.ico";
+    exec = umuRun {
+      gameID = "umu-zenlesszonezero";
+      winePrefix = "${gamesDir}/MiHoYo";
+      exe = "${gamesDir}/MiHoYo/drive_c/Program Files/HoYoPlay/games/ZenlessZoneZero Game/ZenlessZoneZero.exe";
     };
   };
+  PlantVsZombiesRH =
+    gameEntry
+    // (
+      let
+        latest = builtins.elemAt pvzFusionCollection 0;
+        pvzFusionCollection = [
+          "2.6"
+          "2.5.1"
+          "2.4.2"
+          "2.3.1"
+        ];
+      in
+      {
+        name = "PlantVsZombiesRH";
+        genericName = "pvz-fusion";
+        icon = ./desktop-icons/pvz-fusion.jpg;
+        exec = "${gamesDir}/etc/pvz-fusion/pvz-fusion-${latest}/PlantsVsZombiesRH.exe";
+        actions = builtins.listToAttrs (
+          builtins.map (ver: {
+            name = "V" + builtins.replaceStrings [ "." ] [ "-" ] ver;
+            value = {
+              name = ver;
+              exec = umuRun {
+                winePrefix = "${gamesDir}/pvz-fusion";
+                exe = "${gamesDir}/etc/pvz-fusion/pvz-fusion-${ver}/PlantsVsZombiesRH.exe";
+              };
+            };
+          }) pvzFusionCollection
+        );
+      }
+    );
 }

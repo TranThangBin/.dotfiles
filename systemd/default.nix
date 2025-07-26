@@ -1,23 +1,15 @@
+{ common, packages }:
 {
-  mkMerge,
-  podman,
-  waylandSystemdTarget,
-  xdg-desktop-portal,
-  xdg-desktop-portal-hyprland,
-  xdg-desktop-portal-termfilechooser,
-  mpvpaper,
-  preferedVideopaper,
-  pipewire,
-  wireplumber,
-}:
-{
-  user = mkMerge [
-    (import ./podman.nix { inherit podman; })
-    (import ./mpvpaper.nix { inherit waylandSystemdTarget mpvpaper preferedVideopaper; })
-    (import ./pipewire.nix { inherit pipewire wireplumber; })
+  user = common.mkMerge [
+    (import ./podman.nix { inherit (packages) podman; })
+    (import ./mpvpaper.nix {
+      inherit (common) waylandSystemdTarget preferedVideopaper;
+      inherit (packages) mpvpaper;
+    })
+    (import ./pipewire.nix { inherit (packages) pipewire wireplumber; })
     (import ./xdg-desktop-portal.nix {
-      inherit
-        waylandSystemdTarget
+      inherit (common) waylandSystemdTarget;
+      inherit (packages)
         xdg-desktop-portal
         xdg-desktop-portal-hyprland
         xdg-desktop-portal-termfilechooser
