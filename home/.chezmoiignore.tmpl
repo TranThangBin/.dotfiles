@@ -17,11 +17,12 @@ run_onchange_1-install-packages.sh.tmpl
 
 {{ else if eq $container_id "trantbox-desktop" }}
 !.config/WebCord/
+!.config/herdr/
+!.config/lazydocker/
 !.config/neovide/
 !.config/nvim/
 !.config/opencode/
 !.config/zellij/
-!.config/herdr/
 
 {{ else if eq $container_id "trantbox-games" }}
 !.config/MangoHud/
