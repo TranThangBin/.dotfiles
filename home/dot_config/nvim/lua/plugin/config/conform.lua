@@ -1,3 +1,4 @@
+---@diagnostic disable-next-line: param-type-mismatch
 require("conform").setup({
     formatters = {
         templ = {
@@ -19,6 +20,7 @@ require("conform").setup({
     formatters_by_ft = {
         bash = { "shfmt" },
         css = { "prettierd" },
+        dockerfile = { "dockerfmt" },
         gdscript = { "gdformat" },
         html = { "prettierd" },
         javascript = { "prettierd" },
@@ -31,5 +33,6 @@ require("conform").setup({
         sh = { "shfmt" },
         templ = { "templ" },
         typescript = { "prettierd" },
+        yaml = { "prettierd" },
     },
 })
