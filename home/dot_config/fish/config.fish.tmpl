@@ -27,6 +27,10 @@ end
 if status is-interactive
     fish_config prompt choose arrow
 
+    test -z "$XDG_DATA_HOME"; and set -l XDG_DATA_HOME "$HOME/.local/share"
+
+    set -gx ATAC_KEY_BINDINGS "$XDG_DATA_HOME/atac/key_bindings/vim_key_bindings.toml"
+    set -gx ATAC_THEME "$XDG_DATA_HOME/atac/themes/catpuccin_mocha.toml"
     set -gx ETC_SRC {{ joinPath .dotfilesDir "root" "etc" | quote }}
 
     if command -q podman
