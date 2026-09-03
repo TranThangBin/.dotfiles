@@ -8,5 +8,6 @@ enable reflector.timer
 enable smartd.service
 enable systemd-timesyncd.service
 enable tuned-ppd.service
+enable tuned-ppd.service
 enable ufw.service
 disable *
